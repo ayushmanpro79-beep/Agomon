@@ -1,7 +1,6 @@
 @import "tailwindcss";
-:root { --agomon-navy: #0F172A; --agomon-yellow: #FFD60A; --agomon-yellow-soft: #FFF8E1; }
-body { background: var(--agomon-navy); color: var(--agomon-yellow-soft); }
+:root { --agomon-bg: #020617; --agomon-navy: #020617; --agomon-card: #0B1220; --agomon-yellow: #FFD60A; --agomon-yellow-soft: #FFF8E1; --agomon-border: rgba(255,214,10,0.12); }
+body { background: var(--agomon-bg); color: var(--agomon-yellow-soft); }
+* { scrollbar-width: thin; scrollbar-color: var(--agomon-border) transparent; }
 .scrollbar-hide::-webkit-scrollbar { display: none; }
 .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
-/* paper cut shadow for light cards on navy */
-.card-navy { background: white; color: #0F172A; }
