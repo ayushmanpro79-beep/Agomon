@@ -106,30 +106,33 @@ export default function BrowsePage() {
       <FadeUp delay={120}>
         <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2 mt-4">
           {AREAS.map((a) => (
-            <div key={a} className="relative">
-              <button
-                onClick={() => handleAreaClick(a)}
-                className={`whitespace-nowrap px-3 py-1 rounded-full text-xs border flex items-center gap-1 ${filter === a ? 'bg-[#FFD60A] text-[#020617] border-[#FFD60A]' : 'bg-[#0B1220] text-[#FFD60A]/60 border-[#FFD60A]/10'}`}
-              >
-                {a} {a !== 'All' && metrosForArea.length > 0 && <span className="text-[10px]">{showMetroDropdown && filter === a ? '▴' : '▾'}</span>}
-              </button>
-              {a !== 'All' && showMetroDropdown && filter === a && (
-                <div className="absolute top-8 left-0 z-20 bg-[#0B1220] border border-[#FFD60A]/20 rounded-xl shadow-xl min-w-[180px] overflow-hidden">
-                  <button onClick={() => { setSelectedMetro('All'); setShowMetroDropdown(false) }} className={`w-full text-left px-3 py-2 text-xs hover:bg-[#FFD60A]/10 ${selectedMetro === 'All' ? 'bg-[#FFD60A]/20 text-[#FFD60A] font-semibold' : 'text-white/80'}`}>* All — {pandals.length} pandals</button>
-                  {metrosForArea.map((m) => {
-                    const cnt = pandals.filter((p) => p.latitude && p.longitude && haversineKm({ lat: p.latitude, lon: p.longitude }, { lat: m.lat, lon: m.lon }) <= 1).length
-                    return (
-                      <button key={m.id} onClick={() => { setSelectedMetro(m.id); setShowMetroDropdown(false) }} className={`w-full text-left px-3 py-2 text-xs hover:bg-[#FFD60A]/10 flex justify-between ${selectedMetro === m.id ? 'bg-[#FFD60A]/20 text-[#FFD60A] font-semibold' : 'text-white/80'}`}>
-                        <span>* {m.name}</span><span className="text-white/30 text-[11px]">{cnt}</span>
-                      </button>
-                    )
-                  })}
-                  {metrosForArea.length === 0 && <p className="px-3 py-2 text-xs text-white/30">No metro within 1km</p>}
-                </div>
-              )}
-            </div>
+            <button
+              key={a}
+              onClick={() => handleAreaClick(a)}
+              className={`whitespace-nowrap px-3 py-1 rounded-full text-xs border flex items-center gap-1 ${filter === a ? 'bg-[#FFD60A] text-[#020617] border-[#FFD60A]' : 'bg-[#0B1220] text-[#FFD60A]/60 border-[#FFD60A]/10'}`}
+            >
+              {a} {a !== 'All' && filter === a && metrosForArea.length > 0 && <span className="text-[10px]">{showMetroDropdown ? '▴' : '▾'}</span>}
+            </button>
           ))}
         </div>
+        {showMetroDropdown && filter !== 'All' && (
+          <div className="mt-2 bg-[#0B1220] border border-[#FFD60A]/20 rounded-xl shadow-xl overflow-hidden">
+            <button onClick={() => { setSelectedMetro('All'); setShowMetroDropdown(false) }} className={`w-full text-left px-3 py-2.5 text-xs hover:bg-[#FFD60A]/10 flex justify-between ${selectedMetro === 'All' ? 'bg-[#FFD60A]/15 text-[#FFD60A] font-semibold' : 'text-white/80'}`}>
+              <span>* All — {pandals.length} pandals</span><span className="text-white/30">▸</span>
+            </button>
+            <div className="grid grid-cols-2 gap-0 border-t border-[#FFD60A]/10">
+              {metrosForArea.map((m) => {
+                const cnt = pandals.filter((p) => p.latitude && p.longitude && haversineKm({ lat: p.latitude, lon: p.longitude }, { lat: m.lat, lon: m.lon }) <= 1).length
+                return (
+                  <button key={m.id} onClick={() => { setSelectedMetro(m.id); setShowMetroDropdown(false) }} className={`text-left px-3 py-2.5 text-xs hover:bg-[#FFD60A]/10 flex justify-between border-b border-[#FFD60A]/5 ${selectedMetro === m.id ? 'bg-[#FFD60A]/15 text-[#FFD60A] font-semibold' : 'text-white/80'}`}>
+                    <span>* {m.name}</span><span className="text-white/30 text-[11px]">{cnt}</span>
+                  </button>
+                )
+              })}
+            </div>
+            {metrosForArea.length === 0 && <p className="px-3 py-3 text-xs text-white/30">No metro within 1km of this area</p>}
+          </div>
+        )}
       </FadeUp>
 
       <div className="mt-4">
