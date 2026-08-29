@@ -1,0 +1,6 @@
+@import "tailwindcss";
+
+:root { --agomon-bg: #FFFBF0; --agomon-accent: #B45309; }
+body { background: var(--agomon-bg); color: #1c1917; }
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
