@@ -26,7 +26,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </Link>
             <nav className="flex gap-1 text-sm">
               <Link href="/" className="px-3 py-1.5 rounded-full bg-[#FFD60A] text-[#020617] font-semibold text-xs">Welcome</Link>
-              <Link href="/map" className="px-3 py-1.5 rounded-full border border-[#FFD60A]/20 text-[#FFD60A] text-xs">Map</Link>
+              <Link href="/browse" className="px-3 py-1.5 rounded-full border border-[#FFD60A]/20 text-[#FFD60A] text-xs">Browse</Link>
             </nav>
           </div>
         </header>
