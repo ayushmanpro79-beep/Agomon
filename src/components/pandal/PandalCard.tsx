@@ -24,7 +24,7 @@ export default function PandalCard({ pandal }: { pandal: Pandal }) {
   return (
     <Link href={`/pandal/${pandal.slug}`} className="block">
       <PressButton className="w-full text-left">
-        <div className="bg-[#0B1220] rounded-2xl overflow-hidden border border-[#FFD60A]/10 hover:border-[#FFD60A]/20 transition-colors">
+        <div className="bg-[#0B1220] rounded-2xl overflow-hidden border border-[#FFD60A]/10 hover:border-[#FFD60A]/20 pc-hover transition-all duration-200">
           <div className="h-36 bg-[#020617] flex items-center justify-center relative overflow-hidden border-b border-[#FFD60A]/5">
             {hasImage ? (
               <img src={pandal.image_url!} alt={pandal.name} className="w-full h-full object-cover" />

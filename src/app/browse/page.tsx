@@ -109,7 +109,7 @@ export default function BrowsePage() {
             <button
               key={a}
               onClick={() => handleAreaClick(a)}
-              className={`whitespace-nowrap px-3 py-1 rounded-full text-xs border flex items-center gap-1 ${filter === a ? 'bg-[#FFD60A] text-[#020617] border-[#FFD60A]' : 'bg-[#0B1220] text-[#FFD60A]/60 border-[#FFD60A]/10'}`}
+              className={`whitespace-nowrap px-3 py-1 rounded-full text-xs border flex items-center gap-1 transition-all ${filter === a ? 'bg-[#FFD60A] text-[#020617] border-[#FFD60A] pc-selected' : 'bg-[#0B1220] text-[#FFD60A]/60 border-[#FFD60A]/10 pc-btn'}`}
             >
               {a} {a !== 'All' && filter === a && metrosForArea.length > 0 && <span className="text-[10px]">{showMetroDropdown ? '▴' : '▾'}</span>}
             </button>
@@ -117,14 +117,14 @@ export default function BrowsePage() {
         </div>
         {showMetroDropdown && filter !== 'All' && (
           <div className="mt-2 bg-[#0B1220] border border-[#FFD60A]/20 rounded-xl shadow-xl overflow-hidden">
-            <button onClick={() => { setSelectedMetro('All'); setShowMetroDropdown(false) }} className={`w-full text-left px-3 py-2.5 text-xs hover:bg-[#FFD60A]/10 flex justify-between ${selectedMetro === 'All' ? 'bg-[#FFD60A]/15 text-[#FFD60A] font-semibold' : 'text-white/80'}`}>
+            <button onClick={() => { setSelectedMetro('All'); setShowMetroDropdown(false) }} className={`w-full text-left px-3 py-2.5 text-xs hover:bg-[#FFD60A]/10 flex justify-between pc-btn ${selectedMetro === 'All' ? 'bg-[#FFD60A]/15 text-[#FFD60A] font-semibold pc-selected' : 'text-white/80'}`}>
               <span>* All — {pandals.length} pandals</span><span className="text-white/30">▸</span>
             </button>
             <div className="grid grid-cols-2 gap-0 border-t border-[#FFD60A]/10">
               {metrosForArea.map((m) => {
                 const cnt = pandals.filter((p) => p.latitude && p.longitude && haversineKm({ lat: p.latitude, lon: p.longitude }, { lat: m.lat, lon: m.lon }) <= 1).length
                 return (
-                  <button key={m.id} onClick={() => { setSelectedMetro(m.id); setShowMetroDropdown(false) }} className={`text-left px-3 py-2.5 text-xs hover:bg-[#FFD60A]/10 flex justify-between border-b border-[#FFD60A]/5 ${selectedMetro === m.id ? 'bg-[#FFD60A]/15 text-[#FFD60A] font-semibold' : 'text-white/80'}`}>
+                  <button key={m.id} onClick={() => { setSelectedMetro(m.id); setShowMetroDropdown(false) }} className={`text-left px-3 py-2.5 text-xs hover:bg-[#FFD60A]/10 flex justify-between border-b border-[#FFD60A]/5 pc-btn ${selectedMetro === m.id ? 'bg-[#FFD60A]/15 text-[#FFD60A] font-semibold pc-selected' : 'text-white/80'}`}>
                     <span>* {m.name}</span><span className="text-white/30 text-[11px]">{cnt}</span>
                   </button>
                 )
