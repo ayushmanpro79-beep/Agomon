@@ -91,7 +91,20 @@ export default function BrowsePage() {
       </FadeUp>
 
       <FadeUp delay={80}>
-        <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2">
+        <div className="rounded-2xl overflow-hidden border border-[#FFD60A]/10">
+          <PandalMap
+            pandals={filteredByMetro}
+            mode="browse"
+            metrosToShow={metrosToShow}
+            onPandalClick={(slug) => router.push(`/pandal/${slug}`)}
+            onMetroClick={(id) => setSelectedMetro(id)}
+          />
+        </div>
+        <p className="text-xs text-white/30 mt-2 text-center">Map shows Kolkata + {filteredByMetro.length} pandals • {metrosToShow.length} metros • OSM in-website</p>
+      </FadeUp>
+
+      <FadeUp delay={120}>
+        <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2 mt-4">
           {AREAS.map((a) => (
             <div key={a} className="relative">
               <button
@@ -117,19 +130,6 @@ export default function BrowsePage() {
             </div>
           ))}
         </div>
-      </FadeUp>
-
-      <FadeUp delay={120}>
-        <div className="rounded-2xl overflow-hidden border border-[#FFD60A]/10 mt-2">
-          <PandalMap
-            pandals={filteredByMetro}
-            mode="browse"
-            metrosToShow={metrosToShow}
-            onPandalClick={(slug) => router.push(`/pandal/${slug}`)}
-            onMetroClick={(id) => setSelectedMetro(id)}
-          />
-        </div>
-        <p className="text-xs text-white/30 mt-2 text-center">Map shows Kolkata + {filteredByMetro.length} pandals • {metrosToShow.length} metros • OSM in-website</p>
       </FadeUp>
 
       <div className="mt-4">
