@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
+import Image from "next/image";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
@@ -31,7 +32,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </div>
         </header>
         <main className="flex-1 max-w-5xl mx-auto w-full px-4 py-4">{children}</main>
-        <footer className="py-6 text-center text-xs text-[#FFD60A]/30">Agomon — 45 Popular Pujas • 2026</footer>
+        <footer className="py-6 flex flex-col items-center gap-2 text-center text-xs text-[#FFD60A]/30">
+          <span>Agomon — 45 Popular Pujas • 2026</span>
+          <Image
+            src="/soul-productions.png"
+            alt="SOUL Productions"
+            width={64}
+            height={28}
+            className="h-7 w-auto object-contain opacity-80"
+            title="SOUL Productions"
+          />
+        </footer>
       </body>
     </html>
   );
