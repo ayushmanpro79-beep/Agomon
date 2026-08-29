@@ -43,10 +43,15 @@ export default function MapPage() {
     <PageTransition>
       <FadeUp>
         <div className="flex items-center justify-between mb-3">
-          <h1 className="font-bold text-amber-900">Map</h1>
-          <Link href="/" className="text-xs bg-white border border-amber-100 px-3 py-1.5 rounded-full">List view</Link>
+          <h1 className="font-bold text-[#FFD60A]">Map</h1>
+          <Link href="/" className="text-xs bg-[#FFD60A] text-[#0F172A] px-3 py-1.5 rounded-full font-semibold">Welcome</Link>
         </div>
       </FadeUp>
+      <div className="flex justify-center gap-3 mb-3 opacity-80">
+        <span className="w-6 h-7 flex flex-col items-center"><span className="w-1.5 h-3 bg-orange-500 rounded-full animate-pulse"/><span className="w-3 h-1 bg-amber-900 rounded-full -mt-0.5"/></span>
+        <span className="w-6 h-7 flex flex-col items-center"><span className="w-1.5 h-3 bg-orange-500 rounded-full animate-pulse" style={{animationDelay:'150ms'}}/><span className="w-3 h-1 bg-amber-900 rounded-full -mt-0.5"/></span>
+        <span className="w-6 h-7 flex flex-col items-center"><span className="w-1.5 h-3 bg-orange-500 rounded-full animate-pulse" style={{animationDelay:'300ms'}}/><span className="w-3 h-1 bg-amber-900 rounded-full -mt-0.5"/></span>
+      </div>
 
       <FadeUp delay={80}>
         <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2 mb-3">
@@ -59,14 +64,16 @@ export default function MapPage() {
       </FadeUp>
 
       <FadeUp delay={120}>
-        <PandalMap pandals={pandals} onSelect={(slug) => setSelected(slug)} />
-        <p className="text-xs text-zinc-400 mt-2 text-center">🪔 Tap a pin to filter — showing {visible.length} of {pandals.length} • OSM tiles</p>
+        <div className="rounded-2xl overflow-hidden border border-[#FFD60A]/20">
+          <PandalMap pandals={pandals} onSelect={(slug) => setSelected(slug)} />
+        </div>
+        <p className="text-xs text-white/40 mt-2 text-center">🪔 Tap a pin to filter — showing {visible.length} of {pandals.length} • OSM • Navy theme</p>
       </FadeUp>
 
       <div className="mt-4">
         <div className="flex items-center justify-between mb-2">
-          <h2 className="font-semibold text-sm text-zinc-700">{selected ? 'Selected Pandal' : `Nearby Pandals • ${filter}`}</h2>
-          {selected && <button onClick={() => setSelected(null)} className="text-xs text-amber-700 underline">Show all</button>}
+          <h2 className="font-semibold text-sm text-[#FFD60A]">{selected ? 'Selected Pandal' : `Nearby Pandals • ${filter}`}</h2>
+          {selected && <button onClick={() => setSelected(null)} className="text-xs text-[#FFD60A] underline">Show all</button>}
         </div>
 
         {/* Not crowded: horizontal scroll on mobile, grid on desktop, max 8 cards */}
