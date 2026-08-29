@@ -68,12 +68,20 @@ export default function BrowsePage() {
     return m ? [{ id: m.id, name: m.name, lat: m.lat, lon: m.lon }] : []
   }, [metrosForArea, selectedMetro, filter])
 
+  const [query, setQuery] = useState('')
+
   const filteredByMetro = useMemo(() => {
     if (selectedMetro === 'All') return pandals
     const m = KOLKATA_METROS.find((x) => x.id === selectedMetro)
     if (!m) return pandals
     return pandals.filter((p) => p.latitude && p.longitude && haversineKm({ lat: p.latitude, lon: p.longitude }, { lat: m.lat, lon: m.lon }) <= 1)
   }, [pandals, selectedMetro])
+
+  const filteredBySearch = useMemo(() => {
+    if (!query.trim()) return filteredByMetro
+    const q = query.toLowerCase()
+    return filteredByMetro.filter((p) => p.name.toLowerCase().includes(q) || p.area.toLowerCase().includes(q))
+  }, [filteredByMetro, query])
 
   const handleAreaClick = (a: string) => {
     setFilter(a)
@@ -93,14 +101,31 @@ export default function BrowsePage() {
       <FadeUp delay={80}>
         <div className="rounded-2xl overflow-hidden border border-[#FFD60A]/10">
           <PandalMap
-            pandals={filteredByMetro}
+            pandals={filteredBySearch}
             mode="browse"
             metrosToShow={metrosToShow}
             onPandalClick={(slug) => router.push(`/pandal/${slug}`)}
             onMetroClick={(id) => setSelectedMetro(id)}
           />
         </div>
-        <p className="text-xs text-white/30 mt-2 text-center">Map shows Kolkata + {filteredByMetro.length} pandals • {metrosToShow.length} metros • OSM in-website</p>
+        <p className="text-xs text-white/30 mt-2 text-center">Map shows Kolkata + {filteredBySearch.length} pandals • {metrosToShow.length} metros • OSM in-website</p>
+      </FadeUp>
+
+      <FadeUp delay={100}>
+        <div className="bg-[#0B1220] rounded-2xl p-2.5 border border-[#FFD60A]/10 mt-4">
+          <div className="relative">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#FFD60A]/40 text-sm">⌕</span>
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search pandals, areas..."
+              className="w-full pl-9 pr-9 py-2.5 rounded-xl bg-[#020617] border border-[#FFD60A]/10 outline-none text-sm text-white placeholder:text-white/30 focus:border-[#FFD60A]/30 transition"
+            />
+            {query && (
+              <button onClick={() => setQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-[#FFD60A] text-sm">✕</button>
+            )}
+          </div>
+        </div>
       </FadeUp>
 
       <FadeUp delay={120}>
@@ -138,17 +163,17 @@ export default function BrowsePage() {
       <div className="mt-4">
         <div className="flex items-center justify-between mb-2">
           <h2 className="font-semibold text-sm text-[#FFD60A]">
-            {selectedMetro !== 'All' ? `Near ${KOLKATA_METROS.find((m) => m.id === selectedMetro)?.name} (1km)` : `All Pandals • ${filter}`} <span className="text-white/30 font-normal">• {filteredByMetro.length}</span>
+            {query ? `Search: "${query}"` : selectedMetro !== 'All' ? `Near ${KOLKATA_METROS.find((m) => m.id === selectedMetro)?.name} (1km)` : `All Pandals • ${filter}`} <span className="text-white/30 font-normal">• {filteredBySearch.length}</span>
           </h2>
-          {selectedMetro !== 'All' && <button onClick={() => setSelectedMetro('All')} className="text-xs text-[#FFD60A] underline">Show all</button>}
+          {(selectedMetro !== 'All' || query) && <button onClick={() => { setSelectedMetro('All'); setQuery('') }} className="text-xs text-[#FFD60A] underline">Clear</button>}
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-          {filteredByMetro.map((p) => (
+          {filteredBySearch.map((p) => (
             <PandalCard key={p.id} pandal={p} />
           ))}
         </div>
-        {filteredByMetro.length === 0 && <p className="text-xs text-white/30 text-center py-10">No pandals near this metro (1km)</p>}
+        {filteredBySearch.length === 0 && <p className="text-xs text-white/30 text-center py-10">No pandals found{query ? ` for "${query}"` : ''}</p>}
       </div>
     </PageTransition>
   )
