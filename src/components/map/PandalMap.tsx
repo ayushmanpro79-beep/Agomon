@@ -147,7 +147,7 @@ export default function PandalMap({ pandals, mode = 'browse', highlightedSlug, u
           ;(map.getSource('route') as maplibregl.GeoJSONSource).setData(routeGeoJson)
         } else {
           map.addSource('route', { type: 'geojson', data: routeGeoJson })
-          map.addLayer({ id: 'route', type: 'line', source: 'route', paint: { 'line-color': '#FFD60A', 'line-width': 4, 'line-opacity': 0.85 } })
+          map.addLayer({ id: 'route', type: 'line', source: 'route', paint: { 'line-color': '#FF7A00', 'line-width': 5, 'line-opacity': 0.9, 'line-blur': 0.5 } })
         }
         routeAdded.current = true
         // fit bounds to route

@@ -109,12 +109,8 @@ export default function PandalDetail() {
               <div className="mt-4">
                 <p className="text-xs font-semibold text-[#FFD60A]/80 mb-2">Pandal Map — in-website (OSM light) {routeInfo && <span className="text-white/40 font-normal">• {routeInfo}</span>}</p>
                 <PandalMap pandals={[pandal]} mode="detail" highlightedSlug={pandal.slug} userLocation={userLoc} routeGeoJson={routeGeoJson} metrosToShow={metrosToShow} />
-                <div className="mt-3"><Legend /></div>
-                {metros.length > 0 ? (
-                  <p className="text-xs text-white/40 mt-2">Nearby metros (1km): {metros.map((m) => m.name).join(', ')}</p>
-                ) : (
-                  <p className="text-xs text-white/30 mt-2">No metro within 1km</p>
-                )}
+                <div className="mt-3"><Legend metros={metros} /></div>
+                {routeGeoJson && <p className="text-xs text-[#FF7A00]/70 mt-2">Orange route uses small gully + footpaths if shorter (OSRM foot profile, not just main roads)</p>}
                 <div className="mt-3 grid grid-cols-2 gap-2">
                   <Link href="/map" className="bg-[#0B1220] border border-[#FFD60A]/20 text-[#FFD60A] rounded-xl py-2.5 text-sm font-medium text-center">View in Browse Map</Link>
                   <PressButton className="bg-[#FFD60A] text-[#020617] rounded-xl py-2.5 text-sm font-semibold" onClick={() => window.open(`https://www.google.com/maps/dir/?api=1&destination=${pandal.latitude},${pandal.longitude}&travelmode=walking`, '_blank')}>
