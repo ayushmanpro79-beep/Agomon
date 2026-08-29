@@ -2,6 +2,7 @@
 import { FadeUp, PageTransition } from '@/components/ui/Animated'
 import DurgaEyes from '@/components/animations/DurgaEyes'
 import { CornerDeepaks } from '@/components/animations/Deepak'
+import BlogSection from '@/components/blog/BlogSection'
 import Link from 'next/link'
 
 // src/app/page.tsx:12 - welcome only, no browse list, Browse → /browse
@@ -28,6 +29,10 @@ export default function Home() {
       </FadeUp>
 
       <FadeUp delay={200}>
+        <BlogSection />
+      </FadeUp>
+
+      <FadeUp delay={300}>
         <div className="mt-6 text-center">
           <p className="text-xs text-white/40">Welcome to Agomon. Tap Browse to explore all pandals on the map.</p>
           <div className="mt-4 flex justify-center gap-2">
