@@ -175,9 +175,8 @@ export default function PandalMap({ pandals, mode = 'browse', highlightedSlug, u
         console.log('[PandalMap] route removed')
       }
     }
-    // ensure style loaded
-    if (map.isStyleLoaded()) doRoute()
-    else map.once('load', doRoute)
+    // mapReady guarantees load, draw immediately (isStyleLoaded may be false briefly)
+    doRoute()
   }, [routeGeoJson, mapReady])
 
   return <div ref={mapRef} className="w-full h-[60vh] rounded-xl overflow-hidden border border-[#FFD60A]/10 bg-[#0B1220]" />
