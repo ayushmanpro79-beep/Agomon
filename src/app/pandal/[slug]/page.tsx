@@ -6,7 +6,7 @@ import { supabase } from '@/lib/supabase/client'
 import { FadeUp, PageTransition, PressButton } from '@/components/ui/Animated'
 import PandalMap from '@/components/map/PandalMap'
 import Legend from '@/components/map/Legend'
-import { metrosWithinKm } from '@/lib/geo'
+import { metrosWithinKm, haversineKm } from '@/lib/geo'
 
 type Pandal = {
   id: string
@@ -46,15 +46,17 @@ export default function PandalDetail() {
         const u = { lat: pos.coords.latitude, lon: pos.coords.longitude }
         setUserLoc(u)
         try {
-          const url = `https://router.project-osrm.org/route/v1/foot/${u.lon},${u.lat};${pandal.longitude},${pandal.latitude}?overview=full&geometries=geojson`
+          const straightKm = haversineKm({ lat: u.lat, lon: u.lon }, { lat: pandal.latitude!, lon: pandal.longitude! })
+          const profile = straightKm > 8 ? 'driving' : 'foot'
+          const url = `https://router.project-osrm.org/route/v1/${profile}/${u.lon},${u.lat};${pandal.longitude},${pandal.latitude}?overview=full&geometries=geojson`
           const res = await fetch(url)
           const json = await res.json()
           if (json.routes?.[0]) {
             setRouteGeoJson({ type: 'FeatureCollection', features: [{ type: 'Feature', geometry: json.routes[0].geometry, properties: {} }] })
             const dist = (json.routes[0].distance / 1000).toFixed(1)
-            // OSRM foot duration is car-speed (bug) -> compute walk time at 1.4 m/s
-            const dur = Math.round(json.routes[0].distance / 1.4 / 60)
-            setRouteInfo(`${dist} km • ${dur} min walk`)
+            const isFoot = profile === 'foot'
+            const dur = isFoot ? Math.round(json.routes[0].distance / 1.4 / 60) : Math.round(json.routes[0].duration / 60)
+            setRouteInfo(`${dist} km • ${dur} min ${isFoot ? 'walk' : 'drive'}`)
           }
         } catch {}
       },
@@ -114,7 +116,7 @@ export default function PandalDetail() {
                 {routeGeoJson && <p className="text-xs text-[#3B82F6]/70 mt-2">Route uses small gully + footpaths if shorter (OSRM foot profile, not just main roads)</p>}
                 <div className="mt-3 grid grid-cols-2 gap-2">
                   <Link href="/map" className="bg-[#0B1220] border border-[#FFD60A]/20 text-[#FFD60A] rounded-xl py-2.5 text-sm font-medium text-center">View in Browse Map</Link>
-                  <PressButton className="bg-[#FFD60A] text-[#020617] rounded-xl py-2.5 text-sm font-semibold" onClick={() => window.open(`https://www.google.com/maps/dir/?api=1&destination=${pandal.latitude},${pandal.longitude}&travelmode=walking`, '_blank')}>
+                  <PressButton className="bg-[#FFD60A] text-[#020617] rounded-xl py-2.5 text-sm font-semibold" onClick={() => window.open(`https://www.google.com/maps/dir/?api=1&destination=${pandal.latitude},${pandal.longitude}&travelmode=${haversineKm({lat: userLoc?.lat ?? 0, lon: userLoc?.lon ?? 0},{lat:pandal.latitude!, lon:pandal.longitude!}) > 8 ? 'driving' : 'walking'}`, '_blank')}>
                     Start in Google Maps
                   </PressButton>
                 </div>
