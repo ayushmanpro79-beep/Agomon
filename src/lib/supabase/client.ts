@@ -9,13 +9,20 @@ if (!supabaseUrl || !supabaseAnonKey) {
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
-// Helper for search - used in src/app/page.tsx:20
+// Helper for search - used in src/app/page.tsx:20 - handles sreebhumi = shree bhumi = shribhumi variants
+const normalizeSearch = (s: string) =>
+  s
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, '')
+    .replace(/shree/g, 'sree')
+    .replace(/shri/g, 'sree')
+    .replace(/sri/g, 'sree')
+
 export async function searchPandals(query: string) {
-  const { data, error } = await supabase
-    .from('pandals')
-    .select('*')
-    .ilike('name', `%${query}%`)
-    .order('name')
+  const q = query.toLowerCase()
+  const qNorm = normalizeSearch(query)
+  const { data, error } = await supabase.from('pandals').select('*').order('name')
   if (error) throw error
-  return data
+  // client-side normalized filter handles spelling variants without DB migration
+  return (data || []).filter((p: any) => p.name.toLowerCase().includes(q) || normalizeSearch(p.name).includes(qNorm) || normalizeSearch(p.slug).includes(qNorm))
 }

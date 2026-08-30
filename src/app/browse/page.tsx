@@ -77,10 +77,25 @@ export default function BrowsePage() {
     return pandals.filter((p) => p.latitude && p.longitude && haversineKm({ lat: p.latitude, lon: p.longitude }, { lat: m.lat, lon: m.lon }) <= 1)
   }, [pandals, selectedMetro])
 
+  // normalize for spelling variants: sreebhumi = shree bhumi = shribhumi = sribhumi
+  const normalize = (s: string) =>
+    s
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, '')
+      .replace(/shree/g, 'sree')
+      .replace(/shri/g, 'sree')
+      .replace(/sri/g, 'sree')
+
   const filteredBySearch = useMemo(() => {
     if (!query.trim()) return filteredByMetro
     const q = query.toLowerCase()
-    return filteredByMetro.filter((p) => p.name.toLowerCase().includes(q) || p.area.toLowerCase().includes(q))
+    const qNorm = normalize(query)
+    return filteredByMetro.filter((p) => {
+      const nameNorm = normalize(p.name)
+      const slugNorm = normalize(p.slug)
+      // direct match OR normalized match (handles sree/shree/shri/sri variants)
+      return p.name.toLowerCase().includes(q) || p.area.toLowerCase().includes(q) || p.slug.toLowerCase().includes(q) || nameNorm.includes(qNorm) || slugNorm.includes(qNorm)
+    })
   }, [filteredByMetro, query])
 
   const handleAreaClick = (a: string) => {
