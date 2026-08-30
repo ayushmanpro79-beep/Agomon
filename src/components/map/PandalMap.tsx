@@ -149,23 +149,27 @@ export default function PandalMap({ pandals, mode = 'browse', highlightedSlug, u
     console.log('[PandalMap] route effect', { hasRoute: !!routeGeoJson, mapReady, routeCoords: routeGeoJson?.features?.[0]?.geometry?.coordinates?.length })
     const doRoute = () => {
       if (routeGeoJson) {
-        if (map.getSource('route')) {
-          ;(map.getSource('route') as maplibregl.GeoJSONSource).setData(routeGeoJson)
-          console.log('[PandalMap] route updated', routeGeoJson.features[0].geometry.coordinates.length + ' points')
-        } else {
-          map.addSource('route', { type: 'geojson', data: routeGeoJson })
-          // ultra-visible for debug: red core + white casing
-          map.addLayer({ id: 'route-casing', type: 'line', source: 'route', paint: { 'line-color': '#ffffff', 'line-width': 12, 'line-opacity': 1 } as any })
-          map.addLayer({ id: 'route', type: 'line', source: 'route', paint: { 'line-color': '#FF1A1A', 'line-width': 8, 'line-opacity': 1 } as any, layout: { 'line-join': 'round', 'line-cap': 'round' } as any })
-          console.log('[PandalMap] route added, layers:', map.getLayer('route') ? 'ok' : 'fail', 'source:', !!map.getSource('route'), 'coords:', routeGeoJson.features[0].geometry.coordinates.length)
-        }
-        routeAdded.current = true
         try {
+          if (map.getSource('route')) {
+            ;(map.getSource('route') as maplibregl.GeoJSONSource).setData(routeGeoJson)
+            console.log('[PandalMap] route updated', routeGeoJson.features[0].geometry.coordinates.length + ' points')
+          } else {
+            map.addSource('route', { type: 'geojson', data: routeGeoJson })
+            // ultra-visible for debug: red core + white casing, force repaint
+            map.addLayer({ id: 'route-casing', type: 'line', source: 'route', paint: { 'line-color': '#ffffff', 'line-width': 14, 'line-opacity': 1 } as any })
+            map.addLayer({ id: 'route', type: 'line', source: 'route', paint: { 'line-color': '#FF1A1A', 'line-width': 10, 'line-opacity': 1 } as any, layout: { 'line-join': 'round', 'line-cap': 'round' } as any })
+            console.log('[PandalMap] route added, layers:', map.getLayer('route') ? 'ok' : 'fail', 'source:', !!map.getSource('route'), 'coords:', routeGeoJson.features[0].geometry.coordinates.length)
+          }
+          routeAdded.current = true
+          // force repaint and fit
+          map.triggerRepaint()
           const coords = routeGeoJson.features[0].geometry.coordinates as [number, number][]
+          console.log('[PandalMap] first coord', coords[0], 'last', coords[coords.length - 1])
           const bounds = coords.reduce((b: maplibregl.LngLatBounds, c) => b.extend(c), new maplibregl.LngLatBounds(coords[0], coords[0]))
           map.fitBounds(bounds, { padding: 40, duration: 800 })
+          setTimeout(() => map.triggerRepaint(), 500)
         } catch (e) {
-          console.warn('[PandalMap] fitBounds failed', e)
+          console.error('[PandalMap] addSource/layer failed', e)
         }
       } else if (routeAdded.current) {
         if (map.getLayer('route')) map.removeLayer('route')
@@ -175,7 +179,6 @@ export default function PandalMap({ pandals, mode = 'browse', highlightedSlug, u
         console.log('[PandalMap] route removed')
       }
     }
-    // mapReady guarantees load, draw immediately (isStyleLoaded may be false briefly)
     doRoute()
   }, [routeGeoJson, mapReady])
 
