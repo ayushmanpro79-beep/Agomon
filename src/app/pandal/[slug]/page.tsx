@@ -52,7 +52,8 @@ export default function PandalDetail() {
           if (json.routes?.[0]) {
             setRouteGeoJson({ type: 'FeatureCollection', features: [{ type: 'Feature', geometry: json.routes[0].geometry, properties: {} }] })
             const dist = (json.routes[0].distance / 1000).toFixed(1)
-            const dur = Math.round(json.routes[0].duration / 60)
+            // OSRM foot duration is car-speed (bug) -> compute walk time at 1.4 m/s
+            const dur = Math.round(json.routes[0].distance / 1.4 / 60)
             setRouteInfo(`${dist} km • ${dur} min walk`)
           }
         } catch {}
@@ -110,14 +111,14 @@ export default function PandalDetail() {
                 <p className="text-xs font-semibold text-[#FFD60A]/80 mb-2">Pandal Map — in-website (OSM light) {routeInfo && <span className="text-white/40 font-normal">• {routeInfo}</span>}</p>
                 <PandalMap pandals={[pandal]} mode="detail" highlightedSlug={pandal.slug} userLocation={userLoc} routeGeoJson={routeGeoJson} metrosToShow={metrosToShow} />
                 <div className="mt-3"><Legend metros={metros} /></div>
-                {routeGeoJson && <p className="text-xs text-[#FF7A00]/70 mt-2">Orange route uses small gully + footpaths if shorter (OSRM foot profile, not just main roads)</p>}
+                {routeGeoJson && <p className="text-xs text-[#3B82F6]/70 mt-2">Route uses small gully + footpaths if shorter (OSRM foot profile, not just main roads)</p>}
                 <div className="mt-3 grid grid-cols-2 gap-2">
                   <Link href="/map" className="bg-[#0B1220] border border-[#FFD60A]/20 text-[#FFD60A] rounded-xl py-2.5 text-sm font-medium text-center">View in Browse Map</Link>
                   <PressButton className="bg-[#FFD60A] text-[#020617] rounded-xl py-2.5 text-sm font-semibold" onClick={() => window.open(`https://www.google.com/maps/dir/?api=1&destination=${pandal.latitude},${pandal.longitude}&travelmode=walking`, '_blank')}>
                     Start in Google Maps
                   </PressButton>
                 </div>
-                <p className="text-[11px] text-white/20 mt-2 text-center">Click card → map recentres + zooms out + yellow walking route from your location • OSM in-website • Start opens Google Maps</p>
+                <p className="text-[11px] text-white/20 mt-2 text-center">Click card → map recentres + zooms out + OSRM walking route from your location • OSM in-website • Start opens Google Maps</p>
               </div>
             )}
           </div>

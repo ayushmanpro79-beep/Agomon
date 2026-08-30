@@ -142,7 +142,7 @@ export default function PandalMap({ pandals, mode = 'browse', highlightedSlug, u
     map.flyTo({ center: [p.longitude!, p.latitude!], zoom: 14, duration: 900 })
   }, [highlightedSlug, pandals, mode])
 
-  // route polyline (orange - highly visible)
+  // route polyline - OSRM default style (hardwired)
   useEffect(() => {
     const map = mapInstance.current
     if (!map || !mapReady) return
@@ -152,9 +152,7 @@ export default function PandalMap({ pandals, mode = 'browse', highlightedSlug, u
           ;(map.getSource('route') as maplibregl.GeoJSONSource).setData(routeGeoJson)
         } else {
           map.addSource('route', { type: 'geojson', data: routeGeoJson })
-          // casing for contrast
-          map.addLayer({ id: 'route-casing', type: 'line', source: 'route', paint: { 'line-color': '#020617', 'line-width': 9, 'line-opacity': 0.9 } })
-          map.addLayer({ id: 'route', type: 'line', source: 'route', paint: { 'line-color': '#FF7A00', 'line-width': 6, 'line-opacity': 1 } })
+          map.addLayer({ id: 'route', type: 'line', source: 'route', paint: { 'line-color': '#3B82F6', 'line-width': 5, 'line-opacity': 0.9 } as any, layout: { 'line-join': 'round', 'line-cap': 'round' } as any })
         }
         routeAdded.current = true
         // fit bounds to route
@@ -165,7 +163,6 @@ export default function PandalMap({ pandals, mode = 'browse', highlightedSlug, u
         } catch {}
       } else if (routeAdded.current) {
         if (map.getLayer('route')) map.removeLayer('route')
-        if (map.getLayer('route-casing')) map.removeLayer('route-casing')
         if (map.getSource('route')) map.removeSource('route')
         routeAdded.current = false
       }
