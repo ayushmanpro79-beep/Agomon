@@ -154,10 +154,10 @@ export default function PandalMap({ pandals, mode = 'browse', highlightedSlug, u
           console.log('[PandalMap] route updated', routeGeoJson.features[0].geometry.coordinates.length + ' points')
         } else {
           map.addSource('route', { type: 'geojson', data: routeGeoJson })
-          // high-contrast: white casing + blue core (visible on light OSM)
-          map.addLayer({ id: 'route-casing', type: 'line', source: 'route', paint: { 'line-color': '#ffffff', 'line-width': 9, 'line-opacity': 0.9 } as any })
-          map.addLayer({ id: 'route', type: 'line', source: 'route', paint: { 'line-color': '#3B82F6', 'line-width': 6, 'line-opacity': 1 } as any, layout: { 'line-join': 'round', 'line-cap': 'round' } as any })
-          console.log('[PandalMap] route added, layers:', map.getLayer('route') ? 'ok' : 'fail', 'source:', !!map.getSource('route'))
+          // ultra-visible for debug: red core + white casing
+          map.addLayer({ id: 'route-casing', type: 'line', source: 'route', paint: { 'line-color': '#ffffff', 'line-width': 12, 'line-opacity': 1 } as any })
+          map.addLayer({ id: 'route', type: 'line', source: 'route', paint: { 'line-color': '#FF1A1A', 'line-width': 8, 'line-opacity': 1 } as any, layout: { 'line-join': 'round', 'line-cap': 'round' } as any })
+          console.log('[PandalMap] route added, layers:', map.getLayer('route') ? 'ok' : 'fail', 'source:', !!map.getSource('route'), 'coords:', routeGeoJson.features[0].geometry.coordinates.length)
         }
         routeAdded.current = true
         try {
