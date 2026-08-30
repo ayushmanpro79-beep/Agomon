@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import * as maplibregl from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import { KOLKATA_METROS, haversineKm } from '@/lib/geo'
@@ -32,6 +32,7 @@ export default function PandalMap({ pandals, mode = 'browse', highlightedSlug, u
   const mapRef = useRef<HTMLDivElement>(null)
   const mapInstance = useRef<maplibregl.Map | null>(null)
   const routeAdded = useRef(false)
+  const [mapReady, setMapReady] = useState(false)
 
   useEffect(() => {
     if (!mapRef.current || mapInstance.current) return
@@ -53,17 +54,21 @@ export default function PandalMap({ pandals, mode = 'browse', highlightedSlug, u
       zoom: 11,
     })
     map.addControl(new maplibregl.NavigationControl(), 'bottom-right')
+    map.on('load', () => setMapReady(true))
+    // fallback if load already fired
+    if (map.isStyleLoaded()) setMapReady(true)
     mapInstance.current = map
     return () => {
       map.remove()
       mapInstance.current = null
+      setMapReady(false)
     }
   }, [])
 
   // markers
   useEffect(() => {
     const map = mapInstance.current
-    if (!map) return
+    if (!map || !mapReady) return
     document.querySelectorAll('.agomon-marker,.agomon-metro,.agomon-user').forEach((el) => el.remove())
 
     // pandals → Deepak logo (yellow)
@@ -126,7 +131,7 @@ export default function PandalMap({ pandals, mode = 'browse', highlightedSlug, u
       el.style.boxShadow = '0 0 8px rgba(59,130,246,0.8)'
       new maplibregl.Marker({ element: el }).setLngLat([userLocation.lon, userLocation.lat]).addTo(map)
     }
-  }, [pandals, highlightedSlug, userLocation, metrosToShow, onPandalClick, onMetroClick])
+  }, [pandals, highlightedSlug, userLocation, metrosToShow, onPandalClick, onMetroClick, mapReady])
 
   // recentre on highlighted pandal (pandal page: click card → zoom out + centre)
   useEffect(() => {
@@ -137,34 +142,36 @@ export default function PandalMap({ pandals, mode = 'browse', highlightedSlug, u
     map.flyTo({ center: [p.longitude!, p.latitude!], zoom: 14, duration: 900 })
   }, [highlightedSlug, pandals, mode])
 
-  // route polyline (yellow)
+  // route polyline (orange - highly visible)
   useEffect(() => {
     const map = mapInstance.current
-    if (!map) return
+    if (!map || !mapReady) return
     const doRoute = () => {
       if (routeGeoJson) {
         if (map.getSource('route')) {
           ;(map.getSource('route') as maplibregl.GeoJSONSource).setData(routeGeoJson)
         } else {
           map.addSource('route', { type: 'geojson', data: routeGeoJson })
-          map.addLayer({ id: 'route', type: 'line', source: 'route', paint: { 'line-color': '#FF7A00', 'line-width': 5, 'line-opacity': 0.9, 'line-blur': 0.5 } })
+          // casing for contrast
+          map.addLayer({ id: 'route-casing', type: 'line', source: 'route', paint: { 'line-color': '#020617', 'line-width': 9, 'line-opacity': 0.9 } })
+          map.addLayer({ id: 'route', type: 'line', source: 'route', paint: { 'line-color': '#FF7A00', 'line-width': 6, 'line-opacity': 1 } })
         }
         routeAdded.current = true
         // fit bounds to route
         try {
           const coords = routeGeoJson.features[0].geometry.coordinates as [number, number][]
           const bounds = coords.reduce((b: maplibregl.LngLatBounds, c) => b.extend(c), new maplibregl.LngLatBounds(coords[0], coords[0]))
-          map.fitBounds(bounds, { padding: 60, duration: 800 })
+          map.fitBounds(bounds, { padding: 50, duration: 800 })
         } catch {}
-      } else if (routeAdded.current && map.getLayer('route')) {
-        map.removeLayer('route')
-        map.removeSource('route')
+      } else if (routeAdded.current) {
+        if (map.getLayer('route')) map.removeLayer('route')
+        if (map.getLayer('route-casing')) map.removeLayer('route-casing')
+        if (map.getSource('route')) map.removeSource('route')
         routeAdded.current = false
       }
     }
-    if (map.isStyleLoaded()) doRoute()
-    else map.once('load', doRoute)
-  }, [routeGeoJson])
+    doRoute()
+  }, [routeGeoJson, mapReady])
 
   return <div ref={mapRef} className="w-full h-[60vh] rounded-xl overflow-hidden border border-[#FFD60A]/10 bg-[#0B1220]" />
 }
