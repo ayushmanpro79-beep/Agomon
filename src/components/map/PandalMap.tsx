@@ -133,41 +133,51 @@ export default function PandalMap({ pandals, mode = 'browse', highlightedSlug, u
     }
   }, [pandals, highlightedSlug, userLocation, metrosToShow, onPandalClick, onMetroClick, mapReady])
 
-  // recentre on highlighted pandal (pandal page: click card → zoom out + centre)
+  // recentre on highlighted pandal (pandal page: click card → zoom out + centre) - skip if route shown (fitBounds will handle)
   useEffect(() => {
     const map = mapInstance.current
-    if (!map || !highlightedSlug || mode !== 'detail') return
+    if (!map || !highlightedSlug || mode !== 'detail' || routeGeoJson) return
     const p = pandals.find((x) => x.slug === highlightedSlug)
     if (!p?.latitude || !p?.longitude) return
     map.flyTo({ center: [p.longitude!, p.latitude!], zoom: 14, duration: 900 })
-  }, [highlightedSlug, pandals, mode])
+  }, [highlightedSlug, pandals, mode, routeGeoJson])
 
-  // route polyline - OSRM default style (hardwired)
+  // route polyline - OSRM default style (hardwired) + debug
   useEffect(() => {
     const map = mapInstance.current
     if (!map || !mapReady) return
+    console.log('[PandalMap] route effect', { hasRoute: !!routeGeoJson, mapReady, routeCoords: routeGeoJson?.features?.[0]?.geometry?.coordinates?.length })
     const doRoute = () => {
       if (routeGeoJson) {
         if (map.getSource('route')) {
           ;(map.getSource('route') as maplibregl.GeoJSONSource).setData(routeGeoJson)
+          console.log('[PandalMap] route updated', routeGeoJson.features[0].geometry.coordinates.length + ' points')
         } else {
           map.addSource('route', { type: 'geojson', data: routeGeoJson })
-          map.addLayer({ id: 'route', type: 'line', source: 'route', paint: { 'line-color': '#3B82F6', 'line-width': 5, 'line-opacity': 0.9 } as any, layout: { 'line-join': 'round', 'line-cap': 'round' } as any })
+          // high-contrast: white casing + blue core (visible on light OSM)
+          map.addLayer({ id: 'route-casing', type: 'line', source: 'route', paint: { 'line-color': '#ffffff', 'line-width': 9, 'line-opacity': 0.9 } as any })
+          map.addLayer({ id: 'route', type: 'line', source: 'route', paint: { 'line-color': '#3B82F6', 'line-width': 6, 'line-opacity': 1 } as any, layout: { 'line-join': 'round', 'line-cap': 'round' } as any })
+          console.log('[PandalMap] route added, layers:', map.getLayer('route') ? 'ok' : 'fail', 'source:', !!map.getSource('route'))
         }
         routeAdded.current = true
-        // fit bounds to route
         try {
           const coords = routeGeoJson.features[0].geometry.coordinates as [number, number][]
           const bounds = coords.reduce((b: maplibregl.LngLatBounds, c) => b.extend(c), new maplibregl.LngLatBounds(coords[0], coords[0]))
-          map.fitBounds(bounds, { padding: 50, duration: 800 })
-        } catch {}
+          map.fitBounds(bounds, { padding: 40, duration: 800 })
+        } catch (e) {
+          console.warn('[PandalMap] fitBounds failed', e)
+        }
       } else if (routeAdded.current) {
         if (map.getLayer('route')) map.removeLayer('route')
+        if (map.getLayer('route-casing')) map.removeLayer('route-casing')
         if (map.getSource('route')) map.removeSource('route')
         routeAdded.current = false
+        console.log('[PandalMap] route removed')
       }
     }
-    doRoute()
+    // ensure style loaded
+    if (map.isStyleLoaded()) doRoute()
+    else map.once('load', doRoute)
   }, [routeGeoJson, mapReady])
 
   return <div ref={mapRef} className="w-full h-[60vh] rounded-xl overflow-hidden border border-[#FFD60A]/10 bg-[#0B1220]" />
