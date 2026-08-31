@@ -8,6 +8,7 @@ import PandalMap from '@/components/map/PandalMap'
 import Legend from '@/components/map/Legend'
 import { metrosWithinKm, haversineKm } from '@/lib/geo'
 import ReviewSection from '@/components/pandal/ReviewSection'
+import CrowdMeter from '@/components/pandal/CrowdMeter'
 
 type Pandal = {
   id: string
@@ -115,6 +116,7 @@ export default function PandalDetail() {
                 <PandalMap pandals={[pandal]} mode="detail" highlightedSlug={pandal.slug} userLocation={userLoc} routeGeoJson={routeGeoJson} metrosToShow={metrosToShow} />
                 <div className="mt-3"><Legend metros={metros} showRoute={!!routeGeoJson} showUser={!!userLoc} /></div>
                 {routeGeoJson && <p className="text-xs text-[#FF1A1A]/70 mt-2">Red line is your in-site route (OSRM {routeInfo?.includes('walk') ? 'foot' : 'driving'} profile)</p>}
+                <CrowdMeter pandal={pandal} />
                 <ReviewSection pandalId={pandal.id} />
                 <div className="mt-3 grid grid-cols-2 gap-2">
                   <Link href="/browse" className="bg-[#0B1220] border border-[#FFD60A]/20 text-[#FFD60A] rounded-xl py-2.5 text-sm font-medium text-center">View in Browse Map</Link>
