@@ -37,14 +37,14 @@ export async function searchEngine(query: string, allPandals: Pandal[]): Promise
     return { pandals: allPandals.filter(p=>p.area.toLowerCase()===area), meta: `Area: ${area}` }
   }
 
-  // 2. Station 4-5km (metro + local) — North stations like Sovabazar/Shyambazar with typos
+  // 2. Station 2.3km (metro + local) — North stations like Sovabazar/Shyambazar with typos
   const stationHits = stationFuse.search(q)
   if (stationHits.length && stationHits[0].score! < 0.6) {
     const st = stationHits[0].item
-    const filtered = allPandals.filter(p=>p.latitude&&p.longitude&& haversineKm({lat:st.lat,lon:st.lon},{lat:p.latitude!,lon:p.longitude!}) <= 4.5)
+    const filtered = allPandals.filter(p=>p.latitude&&p.longitude&& haversineKm({lat:st.lat,lon:st.lon},{lat:p.latitude!,lon:p.longitude!}) <= 2.3)
     if (filtered.length) {
       const acc = Math.round((1 - (stationHits[0].score||0))*100)
-      return { pandals: filtered, meta: `Near ${st.name} (${st.type}) • 4.5km`, accuracy: acc }
+      return { pandals: filtered, meta: `Near ${st.name} (${st.type}) • 2.3km`, accuracy: acc }
     }
   }
 
@@ -58,7 +58,7 @@ export async function searchEngine(query: string, allPandals: Pandal[]): Promise
     return { pandals: res, meta: `Fuzzy: ${pandalHits[0].item.name}`, accuracy: acc }
   }
 
-  // 4. Random area 3.5km via Nominatim (tollygunge, golf club etc)
+  // 4. Random area 2km via Nominatim (tollygunge, golf club etc)
   try {
     let geo = geocodeCache.get(q)
     if (!geo) {
@@ -71,8 +71,8 @@ export async function searchEngine(query: string, allPandals: Pandal[]): Promise
       }
     }
     if (geo) {
-      const filtered = allPandals.filter(p=>p.latitude&&p.longitude&& haversineKm({lat:geo.lat,lon:geo.lon},{lat:p.latitude!,lon:p.longitude!}) <= 3.5)
-      if (filtered.length) return { pandals: filtered, meta: `Near ${query} • 3.5km`, isRandomArea: true }
+      const filtered = allPandals.filter(p=>p.latitude&&p.longitude&& haversineKm({lat:geo.lat,lon:geo.lon},{lat:p.latitude!,lon:p.longitude!}) <= 2)
+      if (filtered.length) return { pandals: filtered, meta: `Near ${query} • 2km`, isRandomArea: true }
     }
   } catch {}
 
