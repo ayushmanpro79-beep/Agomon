@@ -21,7 +21,7 @@ type Pandal = {
   rating_count?: number | null
 }
 
-// src/app/pandal/[slug]/page.tsx:16 - pandal-specific map: Deepak, metro 1km, legends, recentre + OSRM route
+// src/app/pandal/[slug]/page.tsx:16 - clean: no routing, just map + markers
 export default function PandalDetail() {
   const { slug } = useParams<{ slug: string }>()
   const [pandal, setPandal] = useState<Pandal | null>(null)
@@ -37,7 +37,7 @@ export default function PandalDetail() {
     })
   }, [slug])
 
-  // get user location + fetch OSRM route when pandal loads
+  // Step 1: raster PNG routing via OSRM (free) — foot <8km, driving >8km
   useEffect(() => {
     if (!pandal?.latitude || !pandal?.longitude) return
     if (!navigator.geolocation) return
@@ -112,15 +112,15 @@ export default function PandalDetail() {
               <div className="mt-4">
                 <p className="text-xs font-semibold text-[#FFD60A]/80 mb-2">Pandal Map — in-website (OSM light) {routeInfo && <span className="text-white/40 font-normal">• {routeInfo}</span>}</p>
                 <PandalMap pandals={[pandal]} mode="detail" highlightedSlug={pandal.slug} userLocation={userLoc} routeGeoJson={routeGeoJson} metrosToShow={metrosToShow} />
-                <div className="mt-3"><Legend metros={metros} /></div>
-                {routeGeoJson && <p className="text-xs text-[#3B82F6]/70 mt-2">Route uses small gully + footpaths if shorter (OSRM foot profile, not just main roads)</p>}
+                <div className="mt-3"><Legend metros={metros} showRoute={!!routeGeoJson} showUser={!!userLoc} /></div>
+                {routeGeoJson && <p className="text-xs text-[#FF1A1A]/70 mt-2">Red line is your in-site route (OSRM {routeInfo?.includes('walk') ? 'foot' : 'driving'} profile)</p>}
                 <div className="mt-3 grid grid-cols-2 gap-2">
-                  <Link href="/map" className="bg-[#0B1220] border border-[#FFD60A]/20 text-[#FFD60A] rounded-xl py-2.5 text-sm font-medium text-center">View in Browse Map</Link>
-                  <PressButton className="bg-[#FFD60A] text-[#020617] rounded-xl py-2.5 text-sm font-semibold" onClick={() => window.open(`https://www.google.com/maps/dir/?api=1&destination=${pandal.latitude},${pandal.longitude}&travelmode=${haversineKm({lat: userLoc?.lat ?? 0, lon: userLoc?.lon ?? 0},{lat:pandal.latitude!, lon:pandal.longitude!}) > 8 ? 'driving' : 'walking'}`, '_blank')}>
+                  <Link href="/browse" className="bg-[#0B1220] border border-[#FFD60A]/20 text-[#FFD60A] rounded-xl py-2.5 text-sm font-medium text-center">View in Browse Map</Link>
+                  <PressButton className="bg-[#FFD60A] text-[#020617] rounded-xl py-2.5 text-sm font-semibold" onClick={() => window.open(`https://www.google.com/maps/dir/?api=1&destination=${pandal.latitude},${pandal.longitude}&travelmode=${routeInfo?.includes('drive') ? 'driving' : 'walking'}`, '_blank')}>
                     Start in Google Maps
                   </PressButton>
                 </div>
-                <p className="text-[11px] text-white/20 mt-2 text-center">Click card → map recentres + zooms out + OSRM walking route from your location • OSM in-website • Start opens Google Maps</p>
+                <p className="text-[11px] text-white/20 mt-2 text-center">In-site red route • OSM in-website • Start opens Google Maps</p>
               </div>
             )}
           </div>
