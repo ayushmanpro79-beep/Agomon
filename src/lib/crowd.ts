@@ -60,24 +60,39 @@ export function clusterScore(target: PandalLite, all: PandalLite[]): { score: nu
   return { score, nearby, density: Math.min(1, density / 3) }
 }
 
-// Landmark / POI score: malls, eateries, transit, parks
-export function landmarkScore(target: PandalLite): { score: number; nearest: string; mallDist: number; eateryDist: number; transitDist: number } {
+// Landmark / POI score: malls, eateries, transit, parks — with open-hours factor (8-10am open, 9-11pm close)
+function openFactor(hour: number, type: string): number {
+  if (type === 'mall' || type === 'market') {
+    if (hour < 8) return 0.1
+    if (hour < 10) return 0.6 + (hour - 8) * 0.2 // 8-10 ramp
+    if (hour < 21) return 1.0
+    if (hour < 23) return 0.6 - (hour - 21) * 0.2 // 9-11 wind down
+    return 0.05
+  }
+  if (type === 'eatery') {
+    if (hour < 8) return 0.15
+    if (hour < 10) return 0.7
+    if (hour < 23) return 1.0 // eateries open late
+    return 0.2
+  }
+  return 1 // transit/park always
+}
+
+export function landmarkScore(target: PandalLite, hour = 12): { score: number; nearest: string; mallDist: number; eateryDist: number; transitDist: number } {
   if (!target.latitude || !target.longitude) return { score: AREA_POI_BASE[target.area] ?? 0.5, nearest: '—', mallDist: 999, eateryDist: 999, transitDist: 999 }
   let mallScore = 0, eateryScore = 0, transitScore = 0, nearest = '—', nearestDist = 999
   for (const lm of LANDMARKS) {
     const d = haversineKm({ lat: target.latitude, lon: target.longitude }, { lat: lm.lat, lon: lm.lon })
     if (d < nearestDist) { nearestDist = d; nearest = lm.name }
-    const proximity = Math.max(0, 1 - d / 3) // 0-3km falloff
-    if (lm.type === 'mall' || lm.type === 'market') mallScore = Math.max(mallScore, proximity * lm.weight)
-    if (lm.type === 'eatery' || lm.type === 'market') eateryScore = Math.max(eateryScore, proximity * lm.weight)
-    if (lm.type === 'transit' || lm.type === 'park') transitScore = Math.max(transitScore, proximity * 0.5)
+    const proximity = Math.max(0, 1 - d / 3)
+    const open = openFactor(hour, lm.type)
+    if (lm.type === 'mall' || lm.type === 'market') mallScore = Math.max(mallScore, proximity * lm.weight * open)
+    if (lm.type === 'eatery' || lm.type === 'market') eateryScore = Math.max(eateryScore, proximity * lm.weight * open)
+    if (lm.type === 'transit' || lm.type === 'park') transitScore = Math.max(transitScore, proximity * 0.5 * open)
   }
-  // metro proximity
   const metros = KOLKATA_METROS.filter(m => haversineKm({ lat: target.latitude!, lon: target.longitude! }, { lat: m.lat, lon: m.lon }) <= 1)
   const metroScore = Math.min(1, metros.length * 0.4)
-  // area base
   const base = AREA_POI_BASE[target.area] ?? 0.5
-  // weighted POI 0-1
   const score = Math.min(1, base * 0.3 + mallScore * 0.3 + eateryScore * 0.25 + metroScore * 0.15)
   const mallDist = Math.min(...LANDMARKS.filter(l=>l.type==='mall').map(l=>haversineKm({lat:target.latitude!,lon:target.longitude!},{lat:l.lat,lon:l.lon})))
   const eateryDist = Math.min(...LANDMARKS.filter(l=>l.type==='eatery'||l.type==='market').map(l=>haversineKm({lat:target.latitude!,lon:target.longitude!},{lat:l.lat,lon:l.lon})))
@@ -93,17 +108,38 @@ export function urbanDensityScore(target: PandalLite, clusterDensity: number): n
   return Math.min(1, (areaUrban[target.area] ?? 0.6) * 0.5 + clusterDensity * 0.5)
 }
 
+// MapChecking-style area capacity: estimate pandal ground area from cluster + area
+function mapCheckingArea(target: PandalLite): number {
+  // heuristic: pandal ground ~ 30x40m = 1200m2, larger if in market/mall cluster
+  const { score: poi } = landmarkScore(target, 18) // peak hour poi
+  const base = 1200
+  const extra = poi * 800 // malls add space
+  return base + extra // 1200-2000 m2
+}
+
 export function predictCrowd(target: PandalLite, all: PandalLite[], hour: number): number {
-  const timeSlot = TIME_SLOTS.find(s => s.hours.includes(hour)) || TIME_SLOTS[3]
-  const timeFactor = timeSlot.factor
+  // hour can be 0-23.99 float for 100-slot precision
+  const hi = Math.floor(hour) % 24
+  const timeSlot = TIME_SLOTS.find(s => s.hours.includes(hi)) || TIME_SLOTS[3]
+  let timeFactor = timeSlot.factor
+  // lunch dip 12-2pm: Indians prefer lunch over pandal
+  if (hour >= 12 && hour <= 14) timeFactor *= 0.85 // 15% drop
   const { score: cluster, density } = clusterScore(target, all)
-  const { score: poi } = landmarkScore(target)
+  const { score: poi } = landmarkScore(target, hi)
   const urban = urbanDensityScore(target, density)
-  const ratingNorm = Math.min(1, ((target.avg_rating ?? 4.2) - 3.5) / 1.5) // 3.5-5 -> 0-1
-  // weighted 0-100
-  const raw = cluster * 25 + poi * 25 + urban * 15 + timeFactor * 35 + ratingNorm * 5
-  // add slight randomness for realism (deterministic via id char)
-  const jitter = ((target.id.charCodeAt(0) % 10) - 5) * 0.5
+  const ratingNorm = Math.min(1, ((target.avg_rating ?? 4.2) - 3.5) / 1.5)
+  const area = mapCheckingArea(target)
+  const maxCap = area * 2.5
+  // near malls: irregular pattern (rest/visit mall) - add wavy noise if poi high and near mall
+  const isNearMall = poi > 0.6
+  let irregular = 0
+  if (isNearMall) {
+    const hash = target.id.charCodeAt(0) + target.id.charCodeAt(1)
+    irregular = Math.sin(hour * 1.8 + hash) * 4 + Math.cos(hour * 3.1) * 2 // -6 to +6, jagged
+  }
+  const crowdFactor = cluster * 0.3 + poi * 0.35 + urban * 0.15 + timeFactor * 0.2
+  const raw = crowdFactor * 85 + ratingNorm * 10 + (maxCap / 2000) * 5 + irregular
+  const jitter = ((target.id.charCodeAt(0) % 10) - 5) * 0.3
   return Math.max(5, Math.min(98, Math.round(raw + jitter)))
 }
 
@@ -112,4 +148,14 @@ export function predictAllSlots(target: PandalLite, all: PandalLite[]): { label:
     const midHour = slot.hours[Math.floor(slot.hours.length / 2)]
     return { label: slot.label, score: predictCrowd(target, all, midHour), desc: slot.desc }
   })
+}
+
+// 100-slot high-precision (14.4min each) - for bar graph only, no numbers
+export function predict100Slots(target: PandalLite, all: PandalLite[]): number[] {
+  const scores: number[] = []
+  for (let i = 0; i < 100; i++) {
+    const hour = (i * 24) / 100 // 0 .. 23.76
+    scores.push(predictCrowd(target, all, hour))
+  }
+  return scores
 }

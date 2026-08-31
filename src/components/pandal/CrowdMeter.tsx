@@ -1,10 +1,10 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { PandalLite, predictAllSlots, clusterScore, landmarkScore } from '@/lib/crowd'
+import { PandalLite, predict100Slots, clusterScore, landmarkScore } from '@/lib/crowd'
 import { supabase } from '@/lib/supabase/client'
 
 export default function CrowdMeter({ pandal }: { pandal: PandalLite }) {
-  const [slots, setSlots] = useState<{ label: string; score: number; desc: string }[]>([])
+  const [scores, setScores] = useState<number[]>([])
   const [details, setDetails] = useState<{ nearby: number; nearest: string; mallDist: number } | null>(null)
   const [animated, setAnimated] = useState(false)
 
@@ -13,13 +13,12 @@ export default function CrowdMeter({ pandal }: { pandal: PandalLite }) {
     const load = async () => {
       const { data: all } = await supabase.from('pandals').select('id,latitude,longitude,area,avg_rating')
       const allLite = (all as PandalLite[]) || [pandal]
-      const s = predictAllSlots(pandal, allLite)
+      const s = predict100Slots(pandal, allLite)
       const { nearby } = clusterScore(pandal, allLite)
-      const { nearest, mallDist } = landmarkScore(pandal)
+      const { nearest, mallDist } = landmarkScore(pandal, 18)
       if (!cancelled) {
-        setSlots(s)
+        setScores(s)
         setDetails({ nearby, nearest, mallDist })
-        // trigger animation next frame
         requestAnimationFrame(() => requestAnimationFrame(() => setAnimated(true)))
       }
     }
@@ -27,9 +26,9 @@ export default function CrowdMeter({ pandal }: { pandal: PandalLite }) {
     return () => { cancelled = true }
   }, [pandal])
 
-  if (slots.length === 0) return <div className="mt-4 p-4 rounded-2xl bg-[#020617] border border-[#FFD60A]/10 text-xs text-white/30">Calculating crowd…</div>
+  if (scores.length === 0) return <div className="mt-4 p-4 rounded-2xl bg-[#020617] border border-[#FFD60A]/10 text-xs text-white/30">Calculating crowd…</div>
 
-  const maxScore = Math.max(...slots.map(s => s.score))
+  const maxScore = Math.max(...scores)
 
   return (
     <div className="mt-4 bg-[#0B1220] border border-[#FFD60A]/10 rounded-2xl p-4">
@@ -43,34 +42,30 @@ export default function CrowdMeter({ pandal }: { pandal: PandalLite }) {
         </p>
       )}
 
-      <div className="flex items-end gap-1.5 h-28 px-1">
-        {slots.map((s, i) => {
-          const h = animated ? `${(s.score / 100) * 100}%` : '0%'
-          // gradient green (120deg) to red (0deg)
-          const hue = 120 - (s.score / 100) * 120 // 120 green -> 0 red
+      <div className="flex items-end gap-[1px] h-28 px-1">
+        {scores.map((score, i) => {
+          const h = animated ? `${(score / 100) * 100}%` : '0%'
+          const hue = 120 - (score / 100) * 120
           const bg = `hsl(${hue} 90% 50%)`
-          const isPeak = s.score === maxScore
+          const isPeak = score === maxScore
           return (
-            <div key={s.label} className="flex-1 flex flex-col items-center gap-1 h-full justify-end">
-              <div className="relative w-full flex justify-center" style={{ height: '100%' }}>
-                <div
-                  className={`absolute bottom-0 w-full rounded-t-lg transition-all duration-700 ease-out ${isPeak ? 'ring-1 ring-white/30' : ''}`}
-                  style={{
-                    height: h,
-                    background: bg,
-                    transitionDelay: `${i * 120}ms`,
-                    boxShadow: isPeak ? `0 0 10px ${bg}` : undefined,
-                  }}
-                  title={`${s.label}: ${s.score}% • ${s.desc}`}
-                >
-                  <span className="absolute -top-4 left-1/2 -translate-x-1/2 text-[10px] font-bold text-white/80">{animated ? s.score : ''}</span>
-                </div>
-              </div>
-              <span className="text-[9px] leading-none text-white/50 text-center whitespace-nowrap">{s.label}</span>
-              <span className="text-[8px] leading-none text-white/20">{s.desc}</span>
+            <div key={i} className="flex-1 h-full flex items-end">
+              <div
+                className={`w-full rounded-[1px] transition-all duration-500 ease-out ${isPeak ? 'ring-1 ring-white/20' : ''}`}
+                style={{
+                  height: h,
+                  background: bg,
+                  transitionDelay: `${i * 12}ms`,
+                  boxShadow: isPeak ? `0 0 6px ${bg}` : undefined,
+                }}
+                title={`${(i * 24 / 100).toFixed(1)}h: ${score}%`}
+              />
             </div>
           )
         })}
+      </div>
+      <div className="flex justify-between text-[9px] text-white/30 mt-1 px-1">
+        <span>12 AM</span><span>6 AM</span><span>12 PM</span><span>6 PM</span><span>12 AM</span>
       </div>
 
       <div className="mt-3 flex items-center gap-2 text-[10px] text-white/30">
