@@ -69,6 +69,8 @@ export default function BrowsePage() {
   }, [metrosForArea, selectedMetro, filter])
 
   const [query, setQuery] = useState('')
+  const [searchMeta, setSearchMeta] = useState('')
+  const [accuracy, setAccuracy] = useState<number | null>(null)
 
   const filteredByMetro = useMemo(() => {
     if (selectedMetro === 'All') return pandals
@@ -77,25 +79,33 @@ export default function BrowsePage() {
     return pandals.filter((p) => p.latitude && p.longitude && haversineKm({ lat: p.latitude, lon: p.longitude }, { lat: m.lat, lon: m.lon }) <= 1)
   }, [pandals, selectedMetro])
 
-  // normalize for spelling variants: sreebhumi = shree bhumi = shribhumi = sribhumi
-  const normalize = (s: string) =>
-    s
-      .toLowerCase()
-      .replace(/[^a-z0-9]/g, '')
-      .replace(/shree/g, 'sree')
-      .replace(/shri/g, 'sree')
-      .replace(/sri/g, 'sree')
+  const [filteredBySearch, setFilteredBySearch] = useState<Pandal[]>([])
 
-  const filteredBySearch = useMemo(() => {
-    if (!query.trim()) return filteredByMetro
-    const q = query.toLowerCase()
-    const qNorm = normalize(query)
-    return filteredByMetro.filter((p) => {
-      const nameNorm = normalize(p.name)
-      const slugNorm = normalize(p.slug)
-      // direct match OR normalized match (handles sree/shree/shri/sri variants)
-      return p.name.toLowerCase().includes(q) || p.area.toLowerCase().includes(q) || p.slug.toLowerCase().includes(q) || nameNorm.includes(qNorm) || slugNorm.includes(qNorm)
-    })
+  // debounce searchEngine 300ms
+  useEffect(() => {
+    let cancelled = false
+    const run = async () => {
+      if (!query.trim()) {
+        setFilteredBySearch(filteredByMetro)
+        setSearchMeta('')
+        setAccuracy(null)
+        return
+      }
+      const { searchEngine } = await import('@/lib/searchEngine')
+      const res = await searchEngine(query, filteredByMetro)
+      if (!cancelled) {
+        setFilteredBySearch(res.pandals)
+        setSearchMeta(res.meta)
+        setAccuracy(res.accuracy ?? null)
+      }
+    }
+    const t = setTimeout(run, 300)
+    return () => { cancelled = true; clearTimeout(t) }
+  }, [query, filteredByMetro])
+
+  // sync when filteredByMetro changes and query empty
+  useEffect(() => {
+    if (!query.trim()) setFilteredBySearch(filteredByMetro)
   }, [filteredByMetro, query])
 
   const handleAreaClick = (a: string) => {
@@ -133,13 +143,19 @@ export default function BrowsePage() {
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search pandals, areas..."
+              placeholder="Search: golpark, chtla, Sealdah, south kolkata, tollygunge..."
               className="w-full pl-9 pr-9 py-2.5 rounded-xl bg-[#020617] border border-[#FFD60A]/10 outline-none text-sm text-white placeholder:text-white/30 focus:border-[#FFD60A]/30 transition"
             />
             {query && (
               <button onClick={() => setQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-[#FFD60A] text-sm">✕</button>
             )}
           </div>
+          {searchMeta && <p className="text-[11px] text-[#FFD60A]/70 mt-2">{searchMeta} {accuracy && <span className="text-white/40">• {accuracy}% match</span>}</p>}
+          {accuracy && (
+            <div className="mt-1.5 h-1 w-full bg-[#020617] rounded-full overflow-hidden">
+              <div className="h-full bg-gradient-to-r from-[#FF1A1A] via-[#FFD60A] to-[#22c55e]" style={{ width: `${accuracy}%` }} />
+            </div>
+          )}
         </div>
       </FadeUp>
 
@@ -178,7 +194,7 @@ export default function BrowsePage() {
       <div className="mt-4">
         <div className="flex items-center justify-between mb-2">
           <h2 className="font-semibold text-sm text-[#FFD60A]">
-            {query ? `Search: "${query}"` : selectedMetro !== 'All' ? `Near ${KOLKATA_METROS.find((m) => m.id === selectedMetro)?.name} (1km)` : `All Pandals • ${filter}`} <span className="text-white/30 font-normal">• {filteredBySearch.length}</span>
+            {query ? (searchMeta || `Search: "${query}"`) : selectedMetro !== 'All' ? `Near ${KOLKATA_METROS.find((m) => m.id === selectedMetro)?.name} (1km)` : `All Pandals • ${filter}`} <span className="text-white/30 font-normal">• {filteredBySearch.length}</span>
           </h2>
           {(selectedMetro !== 'All' || query) && <button onClick={() => { setSelectedMetro('All'); setQuery('') }} className="text-xs text-[#FFD60A] underline">Clear</button>}
         </div>

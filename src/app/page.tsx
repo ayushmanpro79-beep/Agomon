@@ -15,7 +15,7 @@ export default function Home() {
           <div>
             <p className="text-[#FFD60A]/60 tracking-[0.3em] text-[10px]">শুভ শারদীয়া</p>
             <h1 className="text-2xl md:text-4xl font-bold text-white mt-1 tracking-tight">আগমন — AGOMON</h1>
-            <p className="text-[#FFD60A]/50 text-xs mt-1">45 Popular Pujas of Kolkata-A SOUL Productions Project By Ayushman Gouda</p>
+            <p className="text-[#FFD60A]/50 text-xs mt-1">45 Popular Pujas of Kolkata</p>
           </div>
           <div className="py-6">
             <DurgaEyes />

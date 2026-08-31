@@ -1,0 +1,41 @@
+// src/lib/trainStations.ts:1 - Kolkata local + metro stations for 4-5km vicinity search
+export type Station = { name: string; lat: number; lon: number; type: 'metro' | 'local' }
+
+export const STATIONS: Station[] = [
+  // Metro Line 1 (existing KOLKATA_METROS expanded)
+  { name: 'Dum Dum Metro', lat: 22.6219, lon: 88.3947, type: 'metro' },
+  { name: 'Belgachia', lat: 22.6062, lon: 88.3837, type: 'metro' },
+  { name: 'Shyambazar', lat: 22.6005, lon: 88.3715, type: 'metro' },
+  { name: 'Sovabazar Sutanuti', lat: 22.5961, lon: 88.3636, type: 'metro' },
+  { name: 'Girish Park', lat: 22.5863, lon: 88.3594, type: 'metro' },
+  { name: 'MG Road', lat: 22.5793, lon: 88.3595, type: 'metro' },
+  { name: 'Central', lat: 22.5732, lon: 88.3591, type: 'metro' },
+  { name: 'Chandni Chowk', lat: 22.5656, lon: 88.3569, type: 'metro' },
+  { name: 'Esplanade', lat: 22.5628, lon: 88.3526, type: 'metro' },
+  { name: 'Park Street', lat: 22.5555, lon: 88.3523, type: 'metro' },
+  { name: 'Rabindra Sadan', lat: 22.5367, lon: 88.3452, type: 'metro' },
+  { name: 'Netaji Bhavan', lat: 22.5291, lon: 88.3451, type: 'metro' },
+  { name: 'Jatin Das Park', lat: 22.5208, lon: 88.3429, type: 'metro' },
+  { name: 'Kalighat', lat: 22.5196, lon: 88.3427, type: 'metro' },
+  { name: 'Rabindra Sarobar', lat: 22.5074, lon: 88.3456, type: 'metro' },
+  { name: 'Mahanayak Uttam Kumar', lat: 22.495, lon: 88.3453, type: 'metro' },
+  { name: 'Kavi Nazrul', lat: 22.4831, lon: 88.38, type: 'metro' },
+  { name: 'Salt Lake Sector V', lat: 22.579, lon: 88.428, type: 'metro' },
+  // Local train (Sealdah South, Eastern, Circular)
+  { name: 'Sealdah', lat: 22.565, lon: 88.371, type: 'local' },
+  { name: 'Howrah', lat: 22.585, lon: 88.342, type: 'local' },
+  { name: 'Dum Dum Junction', lat: 22.62, lon: 88.391, type: 'local' },
+  { name: 'Tollygunge', lat: 22.498, lon: 88.345, type: 'local' },
+  { name: 'Garia', lat: 22.46, lon: 88.39, type: 'local' },
+  { name: 'Jadavpur', lat: 22.495, lon: 88.37, type: 'local' },
+  { name: 'Ballygunge', lat: 22.524, lon: 88.363, type: 'local' },
+  { name: 'Park Circus', lat: 22.54, lon: 88.365, type: 'local' },
+  { name: 'Bidhannagar Road', lat: 22.595, lon: 88.395, type: 'local' },
+  { name: 'Sonarpur', lat: 22.435, lon: 88.43, type: 'local' },
+  { name: 'Barasat', lat: 22.233, lon: 88.457, type: 'local' },
+  { name: 'Golf Green', lat: 22.505, lon: 88.355, type: 'local' },
+  { name: 'Golpark', lat: 22.52, lon: 88.37, type: 'local' },
+  { name: 'Garia Bazaar', lat: 22.465, lon: 88.385, type: 'local' },
+  { name: 'Baghajatin', lat: 22.48, lon: 88.38, type: 'local' },
+  { name: 'New Garia', lat: 22.472, lon: 88.397, type: 'local' },
+]

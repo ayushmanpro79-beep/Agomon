@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { getMapMode } from '@/lib/mapConfig'
+import BulkImageManager from '@/components/admin/BulkImageManager'
 
 export default function AdminPage() {
   const [pw, setPw] = useState('')
@@ -107,6 +108,8 @@ export default function AdminPage() {
       </div>
 
       <p className="text-[11px] text-white/20 mt-4 text-center">In-site red route works on both raster and vector (MapLibre overlay). OSRM `foot &lt;8km / driving &gt;8km` free.</p>
+
+      <BulkImageManager />
     </div>
   )
 }
