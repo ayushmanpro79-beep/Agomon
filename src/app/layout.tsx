@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
 import Image from "next/image";
+import HeaderAuth from "@/components/auth/HeaderAuth";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
@@ -25,10 +26,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <p className="text-[10px] tracking-[0.2em] text-[#FFD60A]/50 -mt-0.5">AGOMON</p>
               </div>
             </Link>
-            <nav className="flex gap-1 text-sm">
-              <Link href="/" className="px-3 py-1.5 rounded-full bg-[#FFD60A] text-[#020617] font-semibold text-xs">Welcome</Link>
-              <Link href="/browse" className="px-3 py-1.5 rounded-full border border-[#FFD60A]/20 text-[#FFD60A] text-xs">Browse</Link>
-            </nav>
+            <HeaderAuth />
           </div>
         </header>
         <main className="flex-1 max-w-5xl mx-auto w-full px-4 py-4">{children}</main>

@@ -7,6 +7,7 @@ import { FadeUp, PageTransition, PressButton } from '@/components/ui/Animated'
 import PandalMap from '@/components/map/PandalMap'
 import Legend from '@/components/map/Legend'
 import { metrosWithinKm, haversineKm } from '@/lib/geo'
+import ReviewSection from '@/components/pandal/ReviewSection'
 
 type Pandal = {
   id: string
@@ -114,6 +115,7 @@ export default function PandalDetail() {
                 <PandalMap pandals={[pandal]} mode="detail" highlightedSlug={pandal.slug} userLocation={userLoc} routeGeoJson={routeGeoJson} metrosToShow={metrosToShow} />
                 <div className="mt-3"><Legend metros={metros} showRoute={!!routeGeoJson} showUser={!!userLoc} /></div>
                 {routeGeoJson && <p className="text-xs text-[#FF1A1A]/70 mt-2">Red line is your in-site route (OSRM {routeInfo?.includes('walk') ? 'foot' : 'driving'} profile)</p>}
+                <ReviewSection pandalId={pandal.id} />
                 <div className="mt-3 grid grid-cols-2 gap-2">
                   <Link href="/browse" className="bg-[#0B1220] border border-[#FFD60A]/20 text-[#FFD60A] rounded-xl py-2.5 text-sm font-medium text-center">View in Browse Map</Link>
                   <PressButton className="bg-[#FFD60A] text-[#020617] rounded-xl py-2.5 text-sm font-semibold" onClick={() => window.open(`https://www.google.com/maps/dir/?api=1&destination=${pandal.latitude},${pandal.longitude}&travelmode=${routeInfo?.includes('drive') ? 'driving' : 'walking'}`, '_blank')}>
