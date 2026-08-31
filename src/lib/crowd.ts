@@ -161,3 +161,13 @@ export function predict100Slots(target: PandalLite, all: PandalLite[]): number[]
   }
   return scores
 }
+
+// 48 slots × 30 min (00:00, 00:30 … 23:30) — no scroll
+export function predict48Slots(target: PandalLite, all: PandalLite[]): number[] {
+  const scores: number[] = []
+  for (let i = 0; i < 48; i++) {
+    const hour = i * 0.5 // 0, 0.5, 1.0 … 23.5
+    scores.push(predictCrowd(target, all, hour))
+  }
+  return scores
+}
