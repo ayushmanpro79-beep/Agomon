@@ -21,26 +21,39 @@ type Pandal = {
   rating_count?: number | null
 }
 
-const AREAS = ['All', 'North Kolkata', 'Dumdum', 'South Kolkata', 'West Kolkata & Behala', 'Central Kolkata', 'Salt Lake & Rajarhat']
+const AREAS = ['All', 'Nearby me', 'North Kolkata', 'Dumdum', 'South Kolkata', 'West Kolkata & Behala', 'Central Kolkata', 'Salt Lake & Rajarhat']
 
 // src/app/browse/page.tsx:25 - Browse page (renamed from Map): full map + pandal list + area→metro dropdown
 export default function BrowsePage() {
   const router = useRouter()
-  const [pandals, setPandals] = useState<Pandal[]>([])
+  const [allPandals, setAllPandals] = useState<Pandal[]>([])
   const [filter, setFilter] = useState('All')
   const [selectedMetro, setSelectedMetro] = useState<string>('All')
   const [showMetroDropdown, setShowMetroDropdown] = useState(false)
 
   useEffect(() => {
     const load = async () => {
-      let q = supabase.from('pandals').select('*').order('name')
-      if (filter !== 'All') q = q.eq('area', filter)
-      const { data } = await q
-      setPandals((data as Pandal[]) || [])
-      setSelectedMetro('All')
-      setShowMetroDropdown(false)
+      const { data } = await supabase.from('pandals').select('*').order('name')
+      setAllPandals((data as Pandal[]) || [])
     }
     load()
+  }, [])
+
+  const [nearbyLoc, setNearbyLoc] = useState<{ lat: number; lon: number } | null>(null)
+  const [nearbyErr, setNearbyErr] = useState('')
+
+  const pandals = useMemo(() => {
+    if (filter === 'All') return allPandals
+    if (filter === 'Nearby me') {
+      if (!nearbyLoc) return []
+      return allPandals.filter(p => p.latitude && p.longitude && haversineKm({ lat: nearbyLoc.lat, lon: nearbyLoc.lon }, { lat: p.latitude!, lon: p.longitude! }) <= 3)
+    }
+    return allPandals.filter(p => p.area === filter)
+  }, [allPandals, filter, nearbyLoc])
+
+  useEffect(() => {
+    setSelectedMetro('All')
+    setShowMetroDropdown(false)
   }, [filter])
 
   // metros relevant to current area (within 1km of any pandal in filtered list)
@@ -81,7 +94,7 @@ export default function BrowsePage() {
 
   const [filteredBySearch, setFilteredBySearch] = useState<Pandal[]>([])
 
-  // debounce searchEngine 300ms
+  // debounce searchEngine 300ms — search is global (ignores area/metro filter) so "sovabazar" finds North even if filter is South
   useEffect(() => {
     let cancelled = false
     const run = async () => {
@@ -92,7 +105,7 @@ export default function BrowsePage() {
         return
       }
       const { searchEngine } = await import('@/lib/searchEngine')
-      const res = await searchEngine(query, filteredByMetro)
+      const res = await searchEngine(query, allPandals) // global search
       if (!cancelled) {
         setFilteredBySearch(res.pandals)
         setSearchMeta(res.meta)
@@ -101,7 +114,7 @@ export default function BrowsePage() {
     }
     const t = setTimeout(run, 300)
     return () => { cancelled = true; clearTimeout(t) }
-  }, [query, filteredByMetro])
+  }, [query, filteredByMetro, allPandals])
 
   // sync when filteredByMetro changes and query empty
   useEffect(() => {
@@ -109,6 +122,20 @@ export default function BrowsePage() {
   }, [filteredByMetro, query])
 
   const handleAreaClick = (a: string) => {
+    if (a === 'Nearby me') {
+      setNearbyErr('')
+      if (!navigator.geolocation) { setNearbyErr('Geolocation not supported'); return }
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          setNearbyLoc({ lat: pos.coords.latitude, lon: pos.coords.longitude })
+          setFilter(a)
+          setShowMetroDropdown(false)
+        },
+        () => setNearbyErr('Allow location to see nearby pandals'),
+        { enableHighAccuracy: true, timeout: 8000 }
+      )
+      return
+    }
     setFilter(a)
     if (a !== 'All') setShowMetroDropdown(true)
     else setShowMetroDropdown(false)
@@ -167,11 +194,14 @@ export default function BrowsePage() {
               onClick={() => handleAreaClick(a)}
               className={`whitespace-nowrap px-3 py-1 rounded-full text-xs border flex items-center gap-1 transition-all ${filter === a ? 'bg-[#FFD60A] text-[#020617] border-[#FFD60A] pc-selected' : 'bg-[#0B1220] text-[#FFD60A]/60 border-[#FFD60A]/10 pc-btn'}`}
             >
-              {a} {a !== 'All' && filter === a && metrosForArea.length > 0 && <span className="text-[10px]">{showMetroDropdown ? '▴' : '▾'}</span>}
+              {a === 'Nearby me' ? '📍 Nearby me' : a} {a !== 'All' && a !== 'Nearby me' && filter === a && metrosForArea.length > 0 && <span className="text-[10px]">{showMetroDropdown ? '▴' : '▾'}</span>}
             </button>
           ))}
         </div>
-        {showMetroDropdown && filter !== 'All' && (
+        {nearbyErr && filter === 'Nearby me' && <p className="text-[11px] text-red-400 mt-2">{nearbyErr}</p>}
+        {filter === 'Nearby me' && !nearbyLoc && !nearbyErr && <p className="text-[11px] text-white/30 mt-2">Getting your location…</p>}
+        {filter === 'Nearby me' && nearbyLoc && <p className="text-[11px] text-[#FFD60A]/60 mt-2">{pandals.length} pandals within 3 km of you</p>}
+        {showMetroDropdown && filter !== 'All' && filter !== 'Nearby me' && (
           <div className="mt-2 bg-[#0B1220] border border-[#FFD60A]/20 rounded-xl shadow-xl overflow-hidden">
             <button onClick={() => { setSelectedMetro('All'); setShowMetroDropdown(false) }} className={`w-full text-left px-3 py-2.5 text-xs hover:bg-[#FFD60A]/10 flex justify-between pc-btn ${selectedMetro === 'All' ? 'bg-[#FFD60A]/15 text-[#FFD60A] font-semibold pc-selected' : 'text-white/80'}`}>
               <span>* All — {pandals.length} pandals</span><span className="text-white/30">▸</span>
@@ -194,7 +224,7 @@ export default function BrowsePage() {
       <div className="mt-4">
         <div className="flex items-center justify-between mb-2">
           <h2 className="font-semibold text-sm text-[#FFD60A]">
-            {query ? (searchMeta || `Search: "${query}"`) : selectedMetro !== 'All' ? `Near ${KOLKATA_METROS.find((m) => m.id === selectedMetro)?.name} (1km)` : `All Pandals • ${filter}`} <span className="text-white/30 font-normal">• {filteredBySearch.length}</span>
+            {query ? (searchMeta || `Search: "${query}"`) : selectedMetro !== 'All' ? `Near ${KOLKATA_METROS.find((m) => m.id === selectedMetro)?.name} (1km)` : filter === 'Nearby me' ? `Nearby me • 3 km` : `All Pandals • ${filter}`} <span className="text-white/30 font-normal">• {filteredBySearch.length}</span>
           </h2>
           {(selectedMetro !== 'All' || query) && <button onClick={() => { setSelectedMetro('All'); setQuery('') }} className="text-xs text-[#FFD60A] underline">Clear</button>}
         </div>
