@@ -41,7 +41,7 @@ export async function searchEngine(query: string, allPandals: Pandal[]): Promise
   const stationHits = stationFuse.search(q)
   if (stationHits.length && stationHits[0].score! < 0.6) {
     const st = stationHits[0].item
-    const filtered = allPandals.filter(p=>p.latitude&&p.longitude&& haversineKm({lat:st.lat,lon:st.lon},{lat:p.latitude!,lon:p.longitude!}) <= 2.3)
+    const filtered = allPandals.filter(p=>p.latitude&&p.longitude&& haversineKm({lat:st.lat,lon:st.lon},{lat:p.latitude!,lon:p.longitude!}) <= 2.7)
     if (filtered.length) {
       const acc = Math.round((1 - (stationHits[0].score||0))*100)
       return { pandals: filtered, meta: `Near ${st.name} (${st.type}) • 2.3km`, accuracy: acc }
@@ -71,7 +71,7 @@ export async function searchEngine(query: string, allPandals: Pandal[]): Promise
       }
     }
     if (geo) {
-      const filtered = allPandals.filter(p=>p.latitude&&p.longitude&& haversineKm({lat:geo.lat,lon:geo.lon},{lat:p.latitude!,lon:p.longitude!}) <= 2)
+      const filtered = allPandals.filter(p=>p.latitude&&p.longitude&& haversineKm({lat:geo.lat,lon:geo.lon},{lat:p.latitude!,lon:p.longitude!}) <= 3)
       if (filtered.length) return { pandals: filtered, meta: `Near ${query} • 2km`, isRandomArea: true }
     }
   } catch {}
