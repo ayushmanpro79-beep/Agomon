@@ -122,8 +122,10 @@ export function predictCrowd(target: PandalLite, all: PandalLite[], hour: number
   const hi = Math.floor(hour) % 24
   const timeSlot = TIME_SLOTS.find(s => s.hours.includes(hi)) || TIME_SLOTS[3]
   let timeFactor = timeSlot.factor
-  // lunch dip 12-2pm: Indians prefer lunch over pandal
-  if (hour >= 12 && hour <= 14) timeFactor *= 0.85 // 15% drop
+  // lunch dip 12-2pm: acute 30% drop, Indians prefer lunch
+  if (hour >= 12 && hour < 13) timeFactor *= 0.72
+  else if (hour >= 13 && hour < 14) timeFactor *= 0.68
+  else if (hour >= 14 && hour < 14.5) timeFactor *= 0.78 // sharp recovery
   const { score: cluster, density } = clusterScore(target, all)
   const { score: poi } = landmarkScore(target, hi)
   const urban = urbanDensityScore(target, density)

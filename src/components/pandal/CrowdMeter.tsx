@@ -57,6 +57,16 @@ export default function CrowdMeter({ pandal }: { pandal: PandalLite }) {
     setActiveIdx(idx)
   }
 
+  const scrollBy = (dx: number) => scrollRef.current?.scrollBy({ left: dx, behavior: 'smooth' })
+
+  // wheel -> horizontal, drag to scroll for PC
+  const onWheel = (e: React.WheelEvent) => {
+    if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+      e.preventDefault()
+      if (scrollRef.current) scrollRef.current.scrollLeft += e.deltaY
+    }
+  }
+
   if (scores.length === 0) return <div className="mt-4 p-4 rounded-2xl bg-[#020617] border border-[#FFD60A]/10 text-xs text-white/30">Calculating crowd…</div>
 
   const minScore = Math.min(...scores)
@@ -87,32 +97,38 @@ export default function CrowdMeter({ pandal }: { pandal: PandalLite }) {
       </div>
 
       <div className="relative">
+        {/* PC arrow buttons */}
+        <button onClick={() => scrollBy(-120)} className="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 z-20 w-7 h-7 rounded-full bg-[#020617]/80 border border-[#FFD60A]/20 items-center justify-center text-[#FFD60A] hover:bg-[#FFD60A] hover:text-[#020617]">‹</button>
+        <button onClick={() => scrollBy(120)} className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 z-20 w-7 h-7 rounded-full bg-[#020617]/80 border border-[#FFD60A]/20 items-center justify-center text-[#FFD60A] hover:bg-[#FFD60A] hover:text-[#020617]">›</button>
         <div
           ref={scrollRef}
           onScroll={onScroll}
-          className="flex items-end gap-[1px] h-32 px-1 overflow-x-auto scrollbar-hide scroll-smooth"
+          onWheel={onWheel}
+          className="flex items-end gap-0 h-32 px-1 overflow-x-auto scrollbar-hide scroll-smooth cursor-grab active:cursor-grabbing"
           style={{ scrollbarWidth: 'none' }}
         >
           {scores.map((score, i) => {
-            // sensitive height: normalize to min-max so small differences amplified
-            const norm = (score - minScore) / range // 0-1 sensitive
-            const h = animated ? `${12 + norm * 88}%` : '0%' // 12% min so low bars still visible, 100% max
+            // ultra-sensitive: amplify small differences, lunch dip acute
+            const norm = (score - minScore) / range
+            const sensitive = Math.pow(norm, 0.65) // 0.65 makes mid-low differences pop
+            const h = animated ? `${4 + sensitive * 96}%` : '0%'
             const hue = 120 - (score / 100) * 120
-            const topColor = `hsl(${hue} 90% 50%)`
-            // per-bar gradient: green bottom -> topColor peak
-            const bg = `linear-gradient(to top, #22c55e 0%, ${topColor} 100%)`
+            const topColor = `hsl(${hue} 92% 52%)`
+            const bg = `linear-gradient(to top, #16a34a 0%, #22c55e 25%, ${topColor} 100%)`
             const isActive = i === activeIdx
             return (
-              <div key={i} className="flex-shrink-0 h-full flex items-end" style={{ width: '8px' }}>
+              <div key={i} className="flex-shrink-0 h-full flex items-end" style={{ width: '5px' }}>
                 <div
-                  className={`w-full rounded-t-[2px] transition-all duration-500 ease-out ${isActive ? 'ring-1 ring-white/40 z-10' : ''}`}
+                  className={`w-full transition-all duration-500 ease-out ${isActive ? 'ring-1 ring-white/50 z-10' : ''}`}
                   style={{
                     height: h,
                     background: bg,
-                    transitionDelay: `${i * 8}ms`,
+                    transitionDelay: `${i * 6}ms`,
                     boxShadow: isActive ? `0 0 8px ${topColor}` : undefined,
+                    borderTopLeftRadius: '1px',
+                    borderTopRightRadius: '1px',
                   }}
-                  title={`${formatTime(i)}: ${score}%`}
+                  title={`${formatTime(i)}`}
                 />
               </div>
             )
@@ -126,9 +142,12 @@ export default function CrowdMeter({ pandal }: { pandal: PandalLite }) {
         </div>
       </div>
 
-      <div className="flex justify-between text-[9px] text-white/20 mt-1 px-1">
-        <span>12 AM</span><span>6 AM</span><span>12 PM</span><span>6 PM</span><span>12 AM</span>
+      <div className="flex justify-between text-[9px] text-white/20 mt-1 px-1 items-center">
+        <span>12 AM</span><span>6 AM</span>
+        <span className="text-white font-bold bg-[#FFD60A] text-[#020617] px-2 py-0.5 rounded-full">{activeTime}</span>
+        <span>6 PM</span><span>12 AM</span>
       </div>
+      <p className="text-[10px] text-center text-white/30 mt-1">Scroll (Shift+wheel, drag or arrows) — pointer at middle shows time above</p>
 
       <div className="mt-2 flex items-center gap-2 text-[10px] text-white/30">
         <span className="flex items-center gap-1"><span className="w-3 h-1 rounded bg-[#22c55e] inline-block" /> Low</span>
