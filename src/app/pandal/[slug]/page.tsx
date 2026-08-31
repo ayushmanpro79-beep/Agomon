@@ -9,6 +9,7 @@ import Legend from '@/components/map/Legend'
 import { metrosWithinKm, haversineKm } from '@/lib/geo'
 import ReviewSection from '@/components/pandal/ReviewSection'
 import CrowdMeter from '@/components/pandal/CrowdMeter'
+import LandmarkList from '@/components/pandal/LandmarkList'
 
 type Pandal = {
   id: string
@@ -68,7 +69,7 @@ export default function PandalDetail() {
   }, [pandal])
 
   if (loading) return <div className="py-20 text-center text-white/30 text-sm">Loading...</div>
-  if (!pandal) return <div className="py-20 text-center"><p className="text-white/50">Not found</p><Link href="/" className="text-[#FFD60A] underline text-sm">Back</Link></div>
+  if (!pandal) return <div className="py-20 text-center"><p className="text-white/50">Not found</p><Link href="/browse" className="text-[#FFD60A] underline text-sm">Back to Browse</Link></div>
 
   const rating = pandal.avg_rating ?? 4.5
   const hasImage = !!pandal.image_url
@@ -77,7 +78,7 @@ export default function PandalDetail() {
 
   return (
     <PageTransition>
-      <Link href="/" className="inline-flex items-center gap-1 text-sm text-white/40 mb-3">← Back</Link>
+      <Link href="/browse" className="inline-flex items-center gap-1 text-sm text-white/40 mb-3">← Back to Browse</Link>
 
       <FadeUp>
         <div className="bg-[#0B1220] rounded-2xl overflow-hidden border border-[#FFD60A]/10">
@@ -117,6 +118,7 @@ export default function PandalDetail() {
                 <div className="mt-3"><Legend metros={metros} showRoute={!!routeGeoJson} showUser={!!userLoc} /></div>
                 {routeGeoJson && <p className="text-xs text-[#FF1A1A]/70 mt-2">Red line is your in-site route (OSRM {routeInfo?.includes('walk') ? 'foot' : 'driving'} profile)</p>}
                 <CrowdMeter pandal={pandal} />
+                <LandmarkList pandal={pandal} />
                 <ReviewSection pandalId={pandal.id} />
                 <div className="mt-3 grid grid-cols-2 gap-2">
                   <Link href="/browse" className="bg-[#0B1220] border border-[#FFD60A]/20 text-[#FFD60A] rounded-xl py-2.5 text-sm font-medium text-center">View in Browse Map</Link>
