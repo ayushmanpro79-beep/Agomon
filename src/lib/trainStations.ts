@@ -2,11 +2,17 @@
 export type Station = { name: string; lat: number; lon: number; type: 'metro' | 'local' }
 
 export const STATIONS: Station[] = [
-  // Metro Line 1 (existing KOLKATA_METROS expanded)
+  // Metro Line 1 North (properly registered)
+  { name: 'Noapara', lat: 22.639, lon: 88.391, type: 'metro' },
+  { name: 'Dakshineswar', lat: 22.653, lon: 88.365, type: 'metro' },
+  { name: 'Baranagar', lat: 22.643, lon: 88.374, type: 'metro' },
   { name: 'Dum Dum Metro', lat: 22.6219, lon: 88.3947, type: 'metro' },
   { name: 'Belgachia', lat: 22.6062, lon: 88.3837, type: 'metro' },
   { name: 'Shyambazar', lat: 22.6005, lon: 88.3715, type: 'metro' },
   { name: 'Sovabazar Sutanuti', lat: 22.5961, lon: 88.3636, type: 'metro' },
+  { name: 'Sovabazar', lat: 22.5961, lon: 88.3636, type: 'metro' },
+  { name: 'Shobhabazar', lat: 22.5961, lon: 88.3636, type: 'metro' },
+  { name: 'Sovabazar Ahiritola', lat: 22.5975, lon: 88.3549, type: 'metro' },
   { name: 'Girish Park', lat: 22.5863, lon: 88.3594, type: 'metro' },
   { name: 'MG Road', lat: 22.5793, lon: 88.3595, type: 'metro' },
   { name: 'Central', lat: 22.5732, lon: 88.3591, type: 'metro' },

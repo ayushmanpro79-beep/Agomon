@@ -8,7 +8,7 @@ type Pandal = { id: string; name: string; slug: string; area: string; address: s
 const AREAS = ['North Kolkata','Dumdum','South Kolkata','West Kolkata & Behala','Central Kolkata','Salt Lake & Rajarhat'].map(a=>a.toLowerCase())
 
 const areaFuse = new Fuse(AREAS, { threshold: 0.4 })
-const stationFuse = new Fuse(STATIONS, { keys: ['name'], threshold: 0.4 })
+const stationFuse = new Fuse(STATIONS, { keys: ['name'], threshold: 0.6, includeScore: true })
 
 let geocodeCache = new Map<string, { lat:number; lon:number; display:string }>()
 let pandalFuse: Fuse<Pandal> | null = null
@@ -37,9 +37,9 @@ export async function searchEngine(query: string, allPandals: Pandal[]): Promise
     return { pandals: allPandals.filter(p=>p.area.toLowerCase()===area), meta: `Area: ${area}` }
   }
 
-  // 2. Station 4-5km (metro + local)
+  // 2. Station 4-5km (metro + local) — North stations like Sovabazar/Shyambazar with typos
   const stationHits = stationFuse.search(q)
-  if (stationHits.length && stationHits[0].score! < 0.4) {
+  if (stationHits.length && stationHits[0].score! < 0.6) {
     const st = stationHits[0].item
     const filtered = allPandals.filter(p=>p.latitude&&p.longitude&& haversineKm({lat:st.lat,lon:st.lon},{lat:p.latitude!,lon:p.longitude!}) <= 4.5)
     if (filtered.length) {
