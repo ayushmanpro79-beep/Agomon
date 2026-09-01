@@ -7,7 +7,7 @@ import { FadeUp, PageTransition, PressButton } from '@/components/ui/Animated'
 import PandalMap from '@/components/map/PandalMap'
 import Legend from '@/components/map/Legend'
 import { metrosWithinKm, haversineKm } from '@/lib/geo'
-import AlponaBorder from '@/components/ui/AlponaBorder'
+import SectionBorder from '@/components/ui/SectionBorder'
 import ReviewSection from '@/components/pandal/ReviewSection'
 import CrowdMeter from '@/components/pandal/CrowdMeter'
 import LandmarkList from '@/components/pandal/LandmarkList'
@@ -82,8 +82,8 @@ export default function PandalDetail() {
       <Link href="/browse" className="inline-flex items-center gap-1 text-sm text-white/40 mb-3">← Back to Browse</Link>
 
       <FadeUp>
-        <div className="relative glass rounded-2xl overflow-hidden">
-          <AlponaBorder inset="inset-[6px]" opacity={0.82} />
+        <SectionBorder />
+        <div className="glass rounded-2xl overflow-hidden">
           <div className="h-56 md:h-64 bg-[#020617]/60 flex items-center justify-center relative border-b border-[#FFD60A]/10">
             {hasImage ? (
               <img src={pandal.image_url!} alt={pandal.name} className="w-full h-full object-cover" />
@@ -133,6 +133,7 @@ export default function PandalDetail() {
             )}
           </div>
         </div>
+        <SectionBorder className="mt-3 rotate-180" />
       </FadeUp>
     </PageTransition>
   )

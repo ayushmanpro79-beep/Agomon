@@ -4,7 +4,7 @@ import { supabase } from '@/lib/supabase/client'
 import PandalMap from '@/components/map/PandalMap'
 import PandalCard from '@/components/pandal/PandalCard'
 import { FadeUp, PageTransition } from '@/components/ui/Animated'
-import AlponaBorder from '@/components/ui/AlponaBorder'
+import SectionBorder from '@/components/ui/SectionBorder'
 import { haversineKm, KOLKATA_METROS } from '@/lib/geo'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -152,9 +152,8 @@ export default function BrowsePage() {
       </FadeUp>
 
       <FadeUp delay={80}>
-        <div className="relative glass rounded-2xl overflow-hidden p-1">
-          <AlponaBorder inset="inset-[5px]" opacity={0.82} />
-          <div className="relative z-[2] rounded-xl overflow-hidden">
+        <SectionBorder />
+        <div className="glass rounded-2xl overflow-hidden p-1">
             <PandalMap
               pandals={filteredBySearch}
               mode="browse"
@@ -163,14 +162,14 @@ export default function BrowsePage() {
               onMetroClick={(id) => setSelectedMetro(id)}
             />
           </div>
-        </div>
+        <SectionBorder className="mt-2 rotate-180" />
         <p className="text-xs text-white/30 mt-2 text-center">Map shows Kolkata + {filteredBySearch.length} pandals • {metrosToShow.length} metros • OSM in-website</p>
       </FadeUp>
 
       <FadeUp delay={100}>
-        <div className="relative glass rounded-2xl p-2.5 mt-4">
-          <AlponaBorder inset="inset-[5px]" opacity={0.78} />
-          <div className="relative z-[2]">
+        <SectionBorder />
+        <div className="glass rounded-2xl p-2.5 mt-4">
+          <div className="relative">
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#FFD60A]/40 text-sm">⌕</span>
             <input
               value={query}
@@ -189,6 +188,7 @@ export default function BrowsePage() {
             </div>
           )}
         </div>
+        <SectionBorder className="mt-2 rotate-180" />
       </FadeUp>
 
       <FadeUp delay={120}>

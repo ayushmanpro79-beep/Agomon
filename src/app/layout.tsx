@@ -4,7 +4,6 @@ import "./globals.css";
 import Link from "next/link";
 import Image from "next/image";
 import HeaderAuth from "@/components/auth/HeaderAuth";
-import DiyaBackground from "@/components/ui/DiyaBackground";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
@@ -17,8 +16,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full`}>
-      <body className="min-h-full flex flex-col bg-[#020617] text-[#FFF8E1] relative">
-        <DiyaBackground />
+      <body className="min-h-full flex flex-col bg-[#020617] text-[#FFF8E1]">
         <header className="sticky top-0 z-50 glass-strong !rounded-none !border-x-0 !border-t-0 border-b border-[#FFD60A]/10">
           <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
             <Link href="/" className="flex items-center gap-2">
