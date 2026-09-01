@@ -13,9 +13,13 @@ export default function Home() {
       <FadeUp>
         <SectionBorder />
         <div className="relative rounded-3xl overflow-hidden glass-strong p-6 md:p-10 text-center min-h-[420px] flex flex-col justify-between">
-          {/* Dhak - solid yellow above glass, fade in - larger, left rotated inwards */}
-          <img src="/illustrations/dhak.svg" alt="" aria-hidden draggable={false} className="pointer-events-none absolute bottom-4 left-4 w-16 h-16 md:w-20 md:h-20 z-[3] dhak-fade select-none" style={{ opacity: 0, animationDelay: '0.4s', shapeRendering: 'geometricPrecision' as any, filter: 'drop-shadow(0 0 10px rgba(255,214,10,0.32))', transform: 'scaleX(-1)' } as any} />
-          <img src="/illustrations/dhak.svg" alt="" aria-hidden draggable={false} className="pointer-events-none absolute bottom-4 right-4 w-16 h-16 md:w-20 md:h-20 z-[3] dhak-fade select-none" style={{ opacity: 0, animationDelay: '0.65s', shapeRendering: 'geometricPrecision' as any, filter: 'drop-shadow(0 0 10px rgba(255,214,10,0.32))' } as any} />
+          {/* Dhak - solid yellow above glass, fade in - larger, left rotated inwards (wrapper handles flip so fade not overridden) */}
+          <div className="pointer-events-none absolute bottom-4 left-4 w-16 h-16 md:w-20 md:h-20 z-[3] dhak-fade select-none" style={{ opacity: 0, animationDelay: '0.4s' } as any}>
+            <img src="/illustrations/dhak.svg" alt="" aria-hidden draggable={false} className="w-full h-full" style={{ transform: 'scaleX(-1)', shapeRendering: 'geometricPrecision' as any, filter: 'drop-shadow(0 0 10px rgba(255,214,10,0.32))' } as any} />
+          </div>
+          <div className="pointer-events-none absolute bottom-4 right-4 w-16 h-16 md:w-20 md:h-20 z-[3] dhak-fade select-none" style={{ opacity: 0, animationDelay: '0.65s' } as any}>
+            <img src="/illustrations/dhak.svg" alt="" aria-hidden draggable={false} className="w-full h-full" style={{ shapeRendering: 'geometricPrecision' as any, filter: 'drop-shadow(0 0 10px rgba(255,214,10,0.32))' } as any} />
+          </div>
           <CornerDeepaks />
           <div>
             <p className="text-[#FFD60A]/60 tracking-[0.3em] text-[10px]">শুভ শারদীয়া</p>

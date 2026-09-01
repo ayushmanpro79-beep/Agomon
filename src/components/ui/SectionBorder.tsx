@@ -4,7 +4,7 @@ export default function SectionBorder({ className = '' }: { className?: string }
   return (
     <div
       aria-hidden
-      className={`pointer-events-none w-full h-[14px] my-2 opacity-85 select-none ${className}`}
+      className={`pointer-events-none w-full h-[84px] my-3 opacity-90 select-none ${className}`}
       style={{
         backgroundImage: 'url(/illustrations/scandi-border.svg)',
         backgroundRepeat: 'repeat-x',
