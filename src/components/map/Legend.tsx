@@ -1,7 +1,7 @@
 // src/components/map/Legend.tsx:1 - legends + nearest metro names
 export default function Legend({ metros, showRoute, showUser }: { metros?: { name: string }[]; showRoute?: boolean; showUser?: boolean }) {
   return (
-    <div className="bg-[#020617] border border-[#FFD60A]/10 rounded-xl p-3">
+    <div className="glass rounded-xl p-3">
       <div className="flex flex-wrap gap-3 text-xs">
         <span className="flex items-center gap-1.5"><span className="w-5 h-5 rounded-full bg-[#FFD60A] border-2 border-[#020617] flex items-center justify-center text-[10px]">🪔</span> Pandal (Deepak)</span>
         <span className="flex items-center gap-1.5"><span className="w-5 h-5 rounded bg-[#0B1220] border border-[#FFD60A] flex items-center justify-center text-[10px] font-bold text-[#FFD60A]">M</span> Metro (1km)</span>

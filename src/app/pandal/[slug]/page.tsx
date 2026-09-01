@@ -81,8 +81,8 @@ export default function PandalDetail() {
       <Link href="/browse" className="inline-flex items-center gap-1 text-sm text-white/40 mb-3">← Back to Browse</Link>
 
       <FadeUp>
-        <div className="bg-[#0B1220] rounded-2xl overflow-hidden border border-[#FFD60A]/10">
-          <div className="h-56 md:h-64 bg-[#020617] flex items-center justify-center relative border-b border-[#FFD60A]/5">
+        <div className="glass glass-pop rounded-2xl overflow-hidden">
+          <div className="h-56 md:h-64 bg-[#020617]/60 flex items-center justify-center relative border-b border-[#FFD60A]/10">
             {hasImage ? (
               <img src={pandal.image_url!} alt={pandal.name} className="w-full h-full object-cover" />
             ) : (
@@ -100,7 +100,7 @@ export default function PandalDetail() {
             <h1 className="text-xl font-bold text-white">{pandal.name}</h1>
             <p className="text-sm text-white/40 mt-1">{pandal.address || pandal.area + ', Kolkata'}</p>
 
-            <div className="flex items-center gap-3 mt-3 p-3 bg-[#020617] rounded-xl border border-[#FFD60A]/10">
+            <div className="flex items-center gap-3 mt-3 p-3 glass rounded-xl">
               <div className="text-center">
                 <p className="text-2xl font-bold text-[#FFD60A]">{rating.toFixed(1)}</p>
                 <p className="text-[10px] text-white/30">Rating</p>

@@ -59,11 +59,11 @@ export default function ReviewSection({ pandalId }: { pandalId: string }) {
   }
 
   return (
-    <div className="mt-6 bg-[#0B1220] border border-[#FFD60A]/10 rounded-2xl p-4">
+    <div className="mt-6 glass rounded-2xl p-4">
       <h3 className="font-semibold text-sm text-[#FFD60A] mb-3">Reviews • {reviews.length}</h3>
 
       {user ? (
-        <div className="mb-4 p-3 rounded-xl bg-[#020617] border border-[#FFD60A]/10">
+        <div className="mb-4 p-3 rounded-xl glass border border-[#FFD60A]/10">
           <p className="text-xs text-white/50 mb-2">Posting as <span className="text-[#FFD60A]">{username || user.email}</span></p>
           <div className="flex items-center gap-1 mb-2">
             {[1,2,3,4,5].map((s) => (
@@ -76,7 +76,7 @@ export default function ReviewSection({ pandalId }: { pandalId: string }) {
             onChange={(e) => setComment(e.target.value)}
             placeholder="Write your experience for this pandal..."
             rows={3}
-            className="w-full px-3 py-2 rounded-xl bg-[#0B1220] border border-[#FFD60A]/10 outline-none text-sm text-white placeholder:text-white/30 focus:border-[#FFD60A]/30"
+            className="w-full px-3 py-2 rounded-xl bg-[#020617]/60 backdrop-blur border border-[#FFD60A]/10 outline-none text-sm text-white placeholder:text-white/30 focus:border-[#FFD60A]/30"
           />
           {err && <p className="text-xs text-red-400 mt-2">{err}</p>}
           {msg && <p className="text-xs text-emerald-400 mt-2">{msg}</p>}
@@ -85,14 +85,14 @@ export default function ReviewSection({ pandalId }: { pandalId: string }) {
           </button>
         </div>
       ) : (
-        <div className="mb-4 p-3 rounded-xl bg-[#020617] border border-[#FFD60A]/10 text-center">
+        <div className="mb-4 p-3 rounded-xl glass border border-[#FFD60A]/10 text-center">
           <p className="text-xs text-white/50"><Link href="/login" className="text-[#FFD60A] underline">Login</Link> with Gmail to post a review</p>
         </div>
       )}
 
       <div className="space-y-3 max-h-96 overflow-y-auto">
         {reviews.map((r) => (
-          <div key={r.id} className="p-3 rounded-xl bg-[#020617] border border-[#FFD60A]/5">
+          <div key={r.id} className="p-3 rounded-xl glass border border-[#FFD60A]/5">
             <div className="flex items-center justify-between">
               <span className="text-xs font-semibold text-[#FFD60A]">{r.username}</span>
               <span className="text-xs text-[#FFD60A]">{'★'.repeat(r.rating)}<span className="text-white/20">{'★'.repeat(5 - r.rating)}</span></span>

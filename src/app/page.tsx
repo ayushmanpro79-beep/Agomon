@@ -10,7 +10,7 @@ export default function Home() {
   return (
     <PageTransition>
       <FadeUp>
-        <div className="relative rounded-3xl overflow-hidden border border-[#FFD60A]/10 bg-[#0B1220] p-6 md:p-10 text-center min-h-[420px] flex flex-col justify-between">
+        <div className="relative rounded-3xl overflow-hidden glass-strong glass-pop p-6 md:p-10 text-center min-h-[420px] flex flex-col justify-between">
           <CornerDeepaks />
           <div>
             <p className="text-[#FFD60A]/60 tracking-[0.3em] text-[10px]">শুভ শারদীয়া</p>
@@ -36,7 +36,7 @@ export default function Home() {
         <div className="mt-6 text-center">
           <p className="text-xs text-white/40">Welcome to Agomon. Tap Browse to explore all pandals on the map.</p>
           <div className="mt-4 flex justify-center gap-2">
-            <Link href="/browse" className="text-xs bg-[#0B1220] border border-[#FFD60A]/20 text-[#FFD60A] px-4 py-2 rounded-full pc-btn">Go to Browse Map</Link>
+            <Link href="/browse" className="text-xs glass glass-pop border border-[#FFD60A]/20 text-[#FFD60A] px-4 py-2 rounded-full">Go to Browse Map</Link>
           </div>
         </div>
       </FadeUp>

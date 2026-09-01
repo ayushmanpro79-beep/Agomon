@@ -47,14 +47,15 @@ export function PressButton({ children, className, onClick }: { children: React.
   const ref = useRef<HTMLButtonElement>(null)
   const handlePress = () => {
     if (!ref.current) return
+    // liquid pop: quick squash then bloom
     animate(ref.current, {
-      scale: [1, 0.96, 1],
-      duration: 250,
-      easing: 'easeOutCubic',
+      scale: [1, 0.94, 1.03, 1],
+      duration: 380,
+      easing: 'easeOutElastic(1, 0.52)',
     })
     onClick?.()
   }
-  return <button ref={ref} onClick={handlePress} className={className}>{children}</button>
+  return <button ref={ref} onClick={handlePress} className={`${className} active:scale-[0.97] transition-transform`}>{children}</button>
 }
 
 export function PageTransition({ children }: { children: React.ReactNode }) {

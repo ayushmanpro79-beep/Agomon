@@ -27,7 +27,7 @@ export default function BlogSection() {
   }, [])
 
   return (
-    <div className="mt-6 rounded-3xl border border-[#FFD60A]/10 bg-[#0B1220] overflow-hidden">
+    <div className="mt-6 rounded-3xl overflow-hidden glass glass-pop">
       <div className="grid md:grid-cols-2 gap-0">
         {/* Blog text */}
         <div className="p-6 md:p-8 overflow-y-auto max-h-[520px] md:max-h-[560px] scrollbar-thin">
@@ -68,7 +68,7 @@ export default function BlogSection() {
 
         {/* Framed photos with fade */}
         <div className="relative bg-[#020617] p-4 md:p-6 flex flex-col items-center justify-center min-h-[380px] border-t md:border-t-0 md:border-l border-[#FFD60A]/10">
-          <div className="relative w-full max-w-[320px] aspect-[4/5] rounded-2xl overflow-hidden border border-[#FFD60A]/20 shadow-[0_0_30px_rgba(255,214,10,0.15)] bg-[#0B1220]">
+          <div className="relative w-full max-w-[320px] aspect-[4/5] rounded-2xl overflow-hidden glass border border-[#FFD60A]/20 shadow-[0_0_30px_rgba(255,214,10,0.15)]">
             {images.map((img, i) => (
               <img
                 key={img.src}

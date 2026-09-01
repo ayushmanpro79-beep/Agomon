@@ -26,14 +26,14 @@ export default function CrowdMeter({ pandal }: { pandal: PandalLite }) {
     return () => { cancelled = true }
   }, [pandal])
 
-  if (scores.length === 0) return <div className="mt-4 p-4 rounded-2xl bg-[#020617] border border-[#FFD60A]/10 text-xs text-white/30">Calculating crowd…</div>
+  if (scores.length === 0) return <div className="mt-4 p-4 rounded-2xl glass text-xs text-white/30">Calculating crowd…</div>
 
   const minScore = Math.min(...scores)
   const maxScore = Math.max(...scores)
   const range = Math.max(1, maxScore - minScore)
 
   return (
-    <div className="mt-4 bg-[#0B1220] border border-[#FFD60A]/10 rounded-2xl p-4">
+    <div className="mt-4 glass glass-pop rounded-2xl p-4">
       <div className="flex items-center justify-between mb-1">
         <h3 className="text-sm font-semibold text-[#FFD60A]">Crowd Meter — predicted</h3>
         <span className="text-[11px] text-white/30">48 slots • 30 min</span>

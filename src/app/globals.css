@@ -1,12 +1,93 @@
 @import "tailwindcss";
-:root { --agomon-bg: #020617; --agomon-navy: #020617; --agomon-card: #0B1220; --agomon-yellow: #FFD60A; --agomon-yellow-soft: #FFF8E1; --agomon-border: rgba(255,214,10,0.12); }
+:root {
+  --agomon-bg: #020617;
+  --agomon-navy: #020617;
+  --agomon-card: #0B1220;
+  --agomon-yellow: #FFD60A;
+  --agomon-yellow-soft: #FFF8E1;
+  --agomon-border: rgba(255,214,10,0.12);
+  --glass-bg: rgba(11, 18, 32, 0.52);
+  --glass-bg-strong: rgba(11, 18, 32, 0.68);
+  --glass-border: rgba(255, 214, 10, 0.14);
+  --glass-border-strong: rgba(255, 214, 10, 0.22);
+  --glass-highlight: rgba(255, 255, 255, 0.07);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255,255,255,0.02) inset;
+  --pop-shadow: 0 12px 40px rgba(0,0,0,0.65), 0 0 28px rgba(255,214,10,0.18);
+}
 body { background: var(--agomon-bg); color: var(--agomon-yellow-soft); }
 * { scrollbar-width: thin; scrollbar-color: var(--agomon-border) transparent; }
 .scrollbar-hide::-webkit-scrollbar { display: none; }
 .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
-/* PC only hover - glow + pop out, not on touch */
-@media (hover: hover) and (pointer: fine) {
-  .pc-hover:hover { box-shadow: 0 0 20px rgba(255,214,10,0.35); transform: translateY(-2px) scale(1.02); border-color: rgba(255,214,10,0.3) !important; }
-  .pc-btn:hover { box-shadow: 0 0 16px rgba(255,214,10,0.5); transform: scale(1.03); }
+
+/* Liquid glass base */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(18px) saturate(1.35);
+  -webkit-backdrop-filter: blur(18px) saturate(1.35);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  position: relative;
 }
-.pc-selected { box-shadow: 0 0 16px rgba(255,214,10,0.28); transform: scale(1.01); }
+.glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(600px circle at 28% 18%, rgba(255,214,10,0.07), transparent 55%),
+              linear-gradient(180deg, rgba(255,255,255,0.06), transparent 42%);
+  pointer-events: none;
+}
+.glass-strong {
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(22px) saturate(1.4);
+  -webkit-backdrop-filter: blur(22px) saturate(1.4);
+  border: 1px solid var(--glass-border-strong);
+  box-shadow: 0 10px 36px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.03) inset;
+  position: relative;
+}
+.glass-strong::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(500px circle at 32% 16%, rgba(255,214,10,0.09), transparent 58%),
+              linear-gradient(180deg, rgba(255,255,255,0.07), transparent 44%);
+  pointer-events: none;
+}
+/* Inner highlight edge */
+.glass::after, .glass-strong::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 1px 0 var(--glass-highlight);
+  pointer-events: none;
+}
+
+/* Pop interactions - hover lightly lifts, tap pops */
+.glass-pop {
+  transition: transform 0.38s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.38s ease, border-color 0.38s ease, background 0.3s ease;
+  will-change: transform;
+}
+@media (hover: hover) and (pointer: fine) {
+  .glass-pop:hover {
+    transform: translateY(-5px) scale(1.015);
+    box-shadow: var(--pop-shadow);
+    border-color: rgba(255,214,10,0.24) !important;
+    background: rgba(11, 18, 32, 0.62);
+  }
+  .pc-hover:hover { box-shadow: var(--pop-shadow); transform: translateY(-4px) scale(1.02); border-color: rgba(255,214,10,0.28) !important; }
+  .pc-btn:hover { box-shadow: 0 0 18px rgba(255,214,10,0.45); transform: scale(1.04); }
+}
+.glass-pop:active {
+  transform: scale(0.97) translateY(0);
+  transition-duration: 0.12s;
+}
+.pc-selected { box-shadow: 0 0 18px rgba(255,214,10,0.3); transform: scale(1.01); }
+.glass-pop:focus-visible { outline: 2px solid rgba(255,214,10,0.5); outline-offset: 2px; }
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .glass-pop, .pc-hover, .pc-btn { transition: none; }
+  .glass-pop:hover { transform: none; }
+}

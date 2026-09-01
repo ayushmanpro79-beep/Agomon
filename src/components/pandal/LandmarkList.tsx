@@ -30,12 +30,12 @@ export default function LandmarkList({ pandal }: { pandal: PandalLite }) {
     .slice(0, 5)
 
   return (
-    <div className="mt-4 bg-[#0B1220] border border-[#FFD60A]/10 rounded-2xl p-4">
+    <div className="mt-4 glass glass-pop rounded-2xl p-4">
       <h3 className="text-sm font-semibold text-[#FFD60A] mb-1">Top 5 places to visit nearby</h3>
       <p className="text-[11px] text-white/30 mb-3">Scanned malls, markets, eateries & hubs around this pandal</p>
       <div className="space-y-2">
         {sorted.map((l, i) => (
-          <div key={l.name} className="flex items-center gap-3 p-2.5 rounded-xl bg-[#020617] border border-[#FFD60A]/5">
+          <div key={l.name} className="flex items-center gap-3 p-2.5 rounded-xl glass border border-[#FFD60A]/5">
             <span className="w-6 h-6 rounded-full bg-[#FFD60A]/10 border border-[#FFD60A]/20 flex items-center justify-center text-[11px] font-bold text-[#FFD60A]">{i + 1}</span>
             <div className="flex-1">
               <p className="text-sm font-medium text-white leading-none">{l.name}</p>

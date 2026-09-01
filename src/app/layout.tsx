@@ -17,7 +17,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full`}>
       <body className="min-h-full flex flex-col bg-[#020617] text-[#FFF8E1]">
-        <header className="sticky top-0 z-50 bg-[#020617]/80 backdrop-blur border-b border-[#FFD60A]/10">
+        <header className="sticky top-0 z-50 glass-strong !rounded-none !border-x-0 !border-t-0 border-b border-[#FFD60A]/10">
           <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
             <Link href="/" className="flex items-center gap-2">
               <span className="text-[#FFD60A] text-xl">◆</span>

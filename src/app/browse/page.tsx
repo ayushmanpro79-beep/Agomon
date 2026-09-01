@@ -151,27 +151,29 @@ export default function BrowsePage() {
       </FadeUp>
 
       <FadeUp delay={80}>
-        <div className="rounded-2xl overflow-hidden border border-[#FFD60A]/10">
-          <PandalMap
-            pandals={filteredBySearch}
-            mode="browse"
-            metrosToShow={metrosToShow}
-            onPandalClick={(slug) => router.push(`/pandal/${slug}`)}
-            onMetroClick={(id) => setSelectedMetro(id)}
-          />
+        <div className="glass glass-pop rounded-2xl overflow-hidden p-1">
+          <div className="rounded-xl overflow-hidden">
+            <PandalMap
+              pandals={filteredBySearch}
+              mode="browse"
+              metrosToShow={metrosToShow}
+              onPandalClick={(slug) => router.push(`/pandal/${slug}`)}
+              onMetroClick={(id) => setSelectedMetro(id)}
+            />
+          </div>
         </div>
         <p className="text-xs text-white/30 mt-2 text-center">Map shows Kolkata + {filteredBySearch.length} pandals • {metrosToShow.length} metros • OSM in-website</p>
       </FadeUp>
 
       <FadeUp delay={100}>
-        <div className="bg-[#0B1220] rounded-2xl p-2.5 border border-[#FFD60A]/10 mt-4">
+        <div className="glass rounded-2xl p-2.5 mt-4">
           <div className="relative">
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#FFD60A]/40 text-sm">⌕</span>
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search: golpark, chtla, Sealdah, south kolkata, tollygunge..."
-              className="w-full pl-9 pr-9 py-2.5 rounded-xl bg-[#020617] border border-[#FFD60A]/10 outline-none text-sm text-white placeholder:text-white/30 focus:border-[#FFD60A]/30 transition"
+              className="w-full pl-9 pr-9 py-2.5 rounded-xl bg-[#020617]/60 backdrop-blur border border-[#FFD60A]/10 outline-none text-sm text-white placeholder:text-white/30 focus:border-[#FFD60A]/30 focus:bg-[#020617]/80 transition"
             />
             {query && (
               <button onClick={() => setQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-[#FFD60A] text-sm">✕</button>
@@ -192,7 +194,7 @@ export default function BrowsePage() {
             <button
               key={a}
               onClick={() => handleAreaClick(a)}
-              className={`whitespace-nowrap px-3 py-1 rounded-full text-xs border flex items-center gap-1 transition-all ${filter === a ? 'bg-[#FFD60A] text-[#020617] border-[#FFD60A] pc-selected' : 'bg-[#0B1220] text-[#FFD60A]/60 border-[#FFD60A]/10 pc-btn'}`}
+              className={`whitespace-nowrap px-3 py-1 rounded-full text-xs border flex items-center gap-1 transition-all glass-pop ${filter === a ? 'bg-[#FFD60A] text-[#020617] border-[#FFD60A] pc-selected' : 'glass text-[#FFD60A]/70 border-[#FFD60A]/10'}`}
             >
               {a === 'Nearby me' ? '📍 Nearby me' : a} {a !== 'All' && a !== 'Nearby me' && filter === a && metrosForArea.length > 0 && <span className="text-[10px]">{showMetroDropdown ? '▴' : '▾'}</span>}
             </button>
@@ -202,7 +204,7 @@ export default function BrowsePage() {
         {filter === 'Nearby me' && !nearbyLoc && !nearbyErr && <p className="text-[11px] text-white/30 mt-2">Getting your location…</p>}
         {filter === 'Nearby me' && nearbyLoc && <p className="text-[11px] text-[#FFD60A]/60 mt-2">{pandals.length} pandals within 3 km of you</p>}
         {showMetroDropdown && filter !== 'All' && filter !== 'Nearby me' && (
-          <div className="mt-2 bg-[#0B1220] border border-[#FFD60A]/20 rounded-xl shadow-xl overflow-hidden">
+          <div className="mt-2 glass-strong rounded-xl overflow-hidden">
             <button onClick={() => { setSelectedMetro('All'); setShowMetroDropdown(false) }} className={`w-full text-left px-3 py-2.5 text-xs hover:bg-[#FFD60A]/10 flex justify-between pc-btn ${selectedMetro === 'All' ? 'bg-[#FFD60A]/15 text-[#FFD60A] font-semibold pc-selected' : 'text-white/80'}`}>
               <span>* All — {pandals.length} pandals</span><span className="text-white/30">▸</span>
             </button>
