@@ -30,7 +30,7 @@ export default function LandmarkList({ pandal }: { pandal: PandalLite }) {
     .slice(0, 5)
 
   return (
-    <div className="mt-4 glass glass-pop rounded-2xl p-4">
+    <div className="mt-4 glass rounded-2xl p-4">
       <h3 className="text-sm font-semibold text-[#FFD60A] mb-1">Top 5 places to visit nearby</h3>
       <p className="text-[11px] text-white/30 mb-3">Scanned malls, markets, eateries & hubs around this pandal</p>
       <div className="space-y-2">

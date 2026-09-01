@@ -86,8 +86,23 @@ body { background: var(--agomon-bg); color: var(--agomon-yellow-soft); }
 .pc-selected { box-shadow: 0 0 18px rgba(255,214,10,0.3); transform: scale(1.01); }
 .glass-pop:focus-visible { outline: 2px solid rgba(255,214,10,0.5); outline-offset: 2px; }
 
+/* Diya festive flicker - subtle flame glow */
+@keyframes diya-flicker {
+  0%, 100% { transform: scale(1) translateY(0); filter: drop-shadow(0 2px 8px rgba(249,193,27,0.32)) brightness(1); }
+  50% { transform: scale(1.02) translateY(-0.5px); filter: drop-shadow(0 3px 10px rgba(249,193,27,0.42)) brightness(1.06); }
+}
+.diya-flicker { animation: diya-flicker 2.8s ease-in-out infinite; transform-origin: center bottom; }
+
+/* Dhak fade-in above glass - solid yellow, crisp */
+@keyframes dhak-fade {
+  0% { opacity: 0; transform: translateY(8px) scale(0.96); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+.dhak-fade { animation: dhak-fade 700ms cubic-bezier(0.16,1,0.3,1) forwards; }
+
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .glass-pop, .pc-hover, .pc-btn { transition: none; }
   .glass-pop:hover { transform: none; }
+  .diya-flicker { animation: none; }
 }

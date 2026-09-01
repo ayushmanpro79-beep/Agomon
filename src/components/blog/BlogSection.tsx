@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
 import { animate } from 'animejs'
+import AlponaBorder from '@/components/ui/AlponaBorder'
 
 // src/components/blog/BlogSection.tsx:8 - The Goddess Who Came Home blog + fading photos beside
 export default function BlogSection() {
@@ -27,7 +28,8 @@ export default function BlogSection() {
   }, [])
 
   return (
-    <div className="mt-6 rounded-3xl overflow-hidden glass glass-pop">
+    <div className="relative mt-6 rounded-3xl overflow-hidden glass">
+      <AlponaBorder inset="inset-[7px]" opacity={0.88} />
       <div className="grid md:grid-cols-2 gap-0">
         {/* Blog text */}
         <div className="p-6 md:p-8 overflow-y-auto max-h-[520px] md:max-h-[560px] scrollbar-thin">

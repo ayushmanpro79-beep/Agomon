@@ -4,6 +4,7 @@ import { supabase } from '@/lib/supabase/client'
 import PandalMap from '@/components/map/PandalMap'
 import PandalCard from '@/components/pandal/PandalCard'
 import { FadeUp, PageTransition } from '@/components/ui/Animated'
+import AlponaBorder from '@/components/ui/AlponaBorder'
 import { haversineKm, KOLKATA_METROS } from '@/lib/geo'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -151,8 +152,9 @@ export default function BrowsePage() {
       </FadeUp>
 
       <FadeUp delay={80}>
-        <div className="glass glass-pop rounded-2xl overflow-hidden p-1">
-          <div className="rounded-xl overflow-hidden">
+        <div className="relative glass rounded-2xl overflow-hidden p-1">
+          <AlponaBorder inset="inset-[5px]" opacity={0.82} />
+          <div className="relative z-[2] rounded-xl overflow-hidden">
             <PandalMap
               pandals={filteredBySearch}
               mode="browse"
@@ -166,8 +168,9 @@ export default function BrowsePage() {
       </FadeUp>
 
       <FadeUp delay={100}>
-        <div className="glass rounded-2xl p-2.5 mt-4">
-          <div className="relative">
+        <div className="relative glass rounded-2xl p-2.5 mt-4">
+          <AlponaBorder inset="inset-[5px]" opacity={0.78} />
+          <div className="relative z-[2]">
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#FFD60A]/40 text-sm">⌕</span>
             <input
               value={query}
@@ -194,7 +197,7 @@ export default function BrowsePage() {
             <button
               key={a}
               onClick={() => handleAreaClick(a)}
-              className={`whitespace-nowrap px-3 py-1 rounded-full text-xs border flex items-center gap-1 transition-all glass-pop ${filter === a ? 'bg-[#FFD60A] text-[#020617] border-[#FFD60A] pc-selected' : 'glass text-[#FFD60A]/70 border-[#FFD60A]/10'}`}
+              className={`whitespace-nowrap px-3 py-1 rounded-full text-xs border flex items-center gap-1 transition-all ${filter === a ? 'bg-[#FFD60A] text-[#020617] border-[#FFD60A] pc-selected' : 'glass text-[#FFD60A]/70 border-[#FFD60A]/10'}`}
             >
               {a === 'Nearby me' ? '📍 Nearby me' : a} {a !== 'All' && a !== 'Nearby me' && filter === a && metrosForArea.length > 0 && <span className="text-[10px]">{showMetroDropdown ? '▴' : '▾'}</span>}
             </button>

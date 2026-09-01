@@ -2,6 +2,7 @@
 import { FadeUp, PageTransition } from '@/components/ui/Animated'
 import DurgaEyes from '@/components/animations/DurgaEyes'
 import { CornerDeepaks } from '@/components/animations/Deepak'
+import AlponaBorder from '@/components/ui/AlponaBorder'
 import BlogSection from '@/components/blog/BlogSection'
 import Link from 'next/link'
 
@@ -10,7 +11,11 @@ export default function Home() {
   return (
     <PageTransition>
       <FadeUp>
-        <div className="relative rounded-3xl overflow-hidden glass-strong glass-pop p-6 md:p-10 text-center min-h-[420px] flex flex-col justify-between">
+        <div className="relative rounded-3xl overflow-hidden glass-strong p-6 md:p-10 text-center min-h-[420px] flex flex-col justify-between">
+          <AlponaBorder inset="inset-[8px]" opacity={0.95} />
+          {/* Dhak - solid yellow above glass, fade in */}
+          <img src="/illustrations/dhak.svg" alt="" aria-hidden draggable={false} className="pointer-events-none absolute bottom-3 left-3 w-10 h-10 md:w-14 md:h-14 z-[3] dhak-fade select-none" style={{ opacity: 0, animationDelay: '0.4s', shapeRendering: 'geometricPrecision' as any, filter: 'drop-shadow(0 0 8px rgba(255,214,10,0.28))' } as any} />
+          <img src="/illustrations/dhak.svg" alt="" aria-hidden draggable={false} className="pointer-events-none absolute bottom-3 right-3 w-10 h-10 md:w-14 md:h-14 z-[3] dhak-fade select-none" style={{ opacity: 0, animationDelay: '0.65s', shapeRendering: 'geometricPrecision' as any, filter: 'drop-shadow(0 0 8px rgba(255,214,10,0.28))' } as any} />
           <CornerDeepaks />
           <div>
             <p className="text-[#FFD60A]/60 tracking-[0.3em] text-[10px]">শুভ শারদীয়া</p>
@@ -36,7 +41,7 @@ export default function Home() {
         <div className="mt-6 text-center">
           <p className="text-xs text-white/40">Welcome to Agomon. Tap Browse to explore all pandals on the map.</p>
           <div className="mt-4 flex justify-center gap-2">
-            <Link href="/browse" className="text-xs glass glass-pop border border-[#FFD60A]/20 text-[#FFD60A] px-4 py-2 rounded-full">Go to Browse Map</Link>
+            <Link href="/browse" className="text-xs glass border border-[#FFD60A]/20 text-[#FFD60A] px-4 py-2 rounded-full">Go to Browse Map</Link>
           </div>
         </div>
       </FadeUp>
