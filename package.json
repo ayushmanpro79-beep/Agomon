@@ -9,7 +9,7 @@
     "lint": "eslint",
     "android": "expo run:android",
     "expo:doctor": "expo-doctor",
-    "prebuild": "expo prebuild --platform android --clean"
+    "prebuild:android": "expo prebuild --platform android --clean"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.112.4",
