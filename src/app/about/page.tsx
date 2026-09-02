@@ -46,12 +46,12 @@ export default function AboutPage() {
 
       <div className="max-w-3xl mx-auto">
         <SectionBorder />
-        <div className="glass-strong rounded-3xl overflow-hidden p-6 md:p-8">
+        <div className="glass-strong rounded-3xl overflow-hidden p-4 md:p-8">
           <p className="text-[#FFD60A]/60 tracking-[0.25em] text-[10px]">ABOUT • আমাদের কথা</p>
-          <h1 className="text-2xl md:text-3xl font-bold text-white mt-1">Agomon — আগমন</h1>
-          <p className="text-[#FFD60A]/70 text-sm mt-1">A humble guide, made with love for Kolkata in Sharodiya.</p>
+          <h1 className="text-xl md:text-3xl font-bold text-white mt-1 leading-tight">Agomon — আগমন</h1>
+          <p className="text-xs md:text-sm text-[#FFD60A]/70 mt-1 leading-snug">A humble guide, made with love for Kolkata in Sharodiya.</p>
 
-          <div className="prose prose-invert prose-sm max-w-none mt-6 text-white/80 leading-relaxed space-y-6 text-[13.5px]">
+          <div className="prose prose-invert prose-sm max-w-none mt-6 text-white/80 leading-relaxed md:leading-relaxed space-y-5 md:space-y-6 text-[13px] md:text-[13.5px]">
             <div>
               <h2 className="text-[#FFD60A] font-semibold text-base">Why we built this</h2>
               <p>
@@ -95,7 +95,7 @@ export default function AboutPage() {
               </ol>
 
               <p className="mt-3">
-                <strong className="text-white">Final:</strong> <code className="bg-[#0B1220] border border-[#FFD60A]/10 px-1.5 py-0.5 rounded text-xs">crowd = cluster×0.3 + POI×0.35 + streets×0.15 + time×0.2 → 5–98% + tiny rating jitter</code>
+                <strong className="text-white">Final:</strong> <code className="bg-[#0B1220] border border-[#FFD60A]/10 px-1.5 py-0.5 rounded text-xs break-all md:break-normal overflow-x-auto inline-block max-w-full">crowd = cluster×0.3 + POI×0.35 + streets×0.15 + time×0.2 → 5–98% + tiny rating jitter</code>
               </p>
               <p className="text-xs text-white/50">
                 Near a mall adds a small wavy twist (people pop in/out for a break) — that is why two pandals at same hour can differ slightly. 48 bars you see in <Link href="/browse" className="text-[#FFD60A] underline">Browse → Pandal → Crowd Meter</Link> are those 48 scores; below it the <strong className="text-[#FFD60A]">Crowd Summary</strong> says &ldquo;Best window 4:30 AM Low, Peak 7:30 PM Very High&rdquo; — same math, plain words.

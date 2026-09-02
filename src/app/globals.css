@@ -100,6 +100,27 @@ body { background: var(--agomon-bg); color: var(--agomon-yellow-soft); }
 }
 .dhak-fade { animation: dhak-fade 700ms cubic-bezier(0.16,1,0.3,1) forwards; }
 
+/* Mobile tap pop — slight scale + glow on phone, no hover needed */
+@media (hover: none) and (pointer: coarse) {
+  .pc-btn:active { transform: scale(0.96); box-shadow: 0 0 12px rgba(255,214,10,0.35); transition-duration: 0.12s; }
+  .glass-pop:active { transform: scale(0.985); transition-duration: 0.14s; }
+  .tap-active { transform: scale(0.96); }
+}
+/* Ultra-responsive mobile infrastructure — lightweight */
+html { -webkit-tap-highlight-color: transparent; }
+* { -webkit-tap-highlight-color: transparent; }
+button, a { touch-action: manipulation; }
+@media (max-width: 768px) {
+  /* Reduce blur cost on mobile GPU */
+  .glass { backdrop-filter: blur(12px) saturate(1.2); -webkit-backdrop-filter: blur(12px) saturate(1.2); }
+  .glass-strong { backdrop-filter: blur(14px) saturate(1.25); -webkit-backdrop-filter: blur(14px) saturate(1.25); }
+  /* Faster, cheaper transitions on touch */
+  .glass-pop, .pc-btn, .pc-hover { transition-duration: 0.18s; will-change: transform; transform: translateZ(0); }
+  /* Shorter fade for snappy feel */
+  .dhak-fade { animation-duration: 450ms; }
+  /* Prevent layout jank on tap */
+  body { overscroll-behavior-y: contain; -webkit-font-smoothing: antialiased; }
+}
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .glass-pop, .pc-hover, .pc-btn { transition: none; }

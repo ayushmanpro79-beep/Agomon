@@ -47,15 +47,16 @@ export function PressButton({ children, className, onClick }: { children: React.
   const ref = useRef<HTMLButtonElement>(null)
   const handlePress = () => {
     if (!ref.current) return
-    // liquid pop: quick squash then bloom
+    // mobile-optimized pop: lighter elastic on touch for instant feedback
+    const isTouch = typeof window !== 'undefined' && window.matchMedia('(hover: none)').matches
     animate(ref.current, {
-      scale: [1, 0.94, 1.03, 1],
-      duration: 380,
-      easing: 'easeOutElastic(1, 0.52)',
+      scale: isTouch ? [1, 0.96, 1.02, 1] : [1, 0.94, 1.03, 1],
+      duration: isTouch ? 280 : 380,
+      easing: isTouch ? 'easeOutCubic' : 'easeOutElastic(1, 0.52)',
     })
     onClick?.()
   }
-  return <button ref={ref} onClick={handlePress} className={`${className} active:scale-[0.97] transition-transform`}>{children}</button>
+  return <button ref={ref} onTouchStart={() => ref.current?.classList.add('tap-active')} onTouchEnd={() => setTimeout(() => ref.current?.classList.remove('tap-active'), 120)} onClick={handlePress} className={`${className} touch-manipulation select-none will-change-transform active:scale-[0.96] transition-transform duration-150`}>{children}</button>
 }
 
 export function PageTransition({ children }: { children: React.ReactNode }) {

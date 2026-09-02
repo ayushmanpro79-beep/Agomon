@@ -141,9 +141,9 @@ export default function BrowseClient({ initialPandals }: { initialPandals?: Pand
   return (
     <PageTransition>
       <FadeUp>
-        <div className="flex items-center justify-between mb-3">
-          <h1 className="font-bold text-[#FFD60A]">Browse — Explore Various Pandals in Kolkata</h1>
-          <Link href="/" className="text-xs bg-[#FFD60A] text-[#020617] px-3 py-1.5 rounded-full font-semibold">Welcome</Link>
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-3">
+          <h1 className="font-bold text-[#FFD60A] text-sm md:text-base leading-tight">Browse — Explore Various Pandals in Kolkata</h1>
+          <Link href="/" className="self-start md:self-auto text-xs bg-[#FFD60A] text-[#020617] px-3 py-1.5 rounded-full font-semibold">Welcome</Link>
         </div>
       </FadeUp>
 
@@ -223,14 +223,14 @@ export default function BrowseClient({ initialPandals }: { initialPandals?: Pand
       </FadeUp>
 
       <div className="mt-4">
-        <div className="flex items-center justify-between mb-2">
-          <h2 className="font-semibold text-sm text-[#FFD60A]">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-1 mb-2">
+          <h2 className="font-semibold text-sm text-[#FFD60A] leading-tight break-words">
             {query ? (searchMeta || `Search: "${query}"`) : selectedMetro !== 'All' ? `Near ${KOLKATA_METROS.find((m) => m.id === selectedMetro)?.name} (2.2km)` : filter === 'Nearby me' ? `Nearby me • 3 km` : `All Pandals • ${filter}`} <span className="text-white/30 font-normal">• {filteredBySearch.length}</span>
           </h2>
-          {(selectedMetro !== 'All' || query) && <button onClick={() => { setSelectedMetro('All'); setQuery('') }} className="text-xs text-[#FFD60A] underline">Clear</button>}
+          {(selectedMetro !== 'All' || query) && <button onClick={() => { setSelectedMetro('All'); setQuery('') }} className="text-xs text-[#FFD60A] underline self-start md:self-auto">Clear</button>}
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-3">
           {filteredBySearch.map((p) => (
             <PandalCard key={p.id} pandal={p} />
           ))}

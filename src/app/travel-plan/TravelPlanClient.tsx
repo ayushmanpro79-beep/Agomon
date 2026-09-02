@@ -206,21 +206,23 @@ export default function TravelPlanClient() {
         <div className="mt-6 space-y-3">
           {result?.error && <p className="text-sm text-red-400">Unknown stop — tried {result.resolvedFrom ? `${result.resolvedFrom.start} → ${result.resolvedFrom.dest}` : ''} (from {result.origin} → {result.dest}). Try bus stop names like Esplanade, Sealdah, Tollygunge, Sovabazar or pandal names auto-mapped.</p>}
           {plans.map((pl: any, i: number) => (
-            <div key={i} className="p-4 rounded-2xl glass border border-[#FFD60A]/10">
-              <div className="flex items-center justify-between">
+            <div key={i} className="p-3 md:p-4 rounded-2xl glass border border-[#FFD60A]/10">
+              <div className="flex items-center justify-between gap-2">
                 <span className="text-xs font-semibold text-[#FFD60A]">{pl.kind === 'mixed' ? 'Bus + Train' : pl.kind === 'metro' ? 'Train/Metro only' : 'Bus only'} • {pl.legs.length} leg{pl.legs.length>1?'s':''}</span>
-                <span className="text-xs text-white/40">⏱ {pl.timeMin} min • ₹{pl.fare}</span>
+                <span className="text-xs text-white/40 whitespace-nowrap">⏱ {pl.timeMin} min • ₹{pl.fare}</span>
               </div>
-              <div className="mt-2 space-y-2">
+              <div className="mt-2 space-y-2.5">
                 {pl.legs.map((leg: any, j: number) => (
-                  <div key={j} className="flex gap-2 text-sm">
-                    <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${leg.kind==='metro'?'bg-[#FFD60A] text-[#020617]':'bg-[#0B1220] border border-[#FFD60A]/20 text-[#FFD60A]'}`}>{leg.route}</span>
-                    <span className="text-white/80">{leg.from} → {leg.to}</span>
-                    <span className="text-white/30 text-xs self-center">({leg.stops.length-1} stops{leg.towards ? ` towards ${leg.towards}`:''})</span>
+                  <div key={j} className="flex flex-col md:flex-row md:items-center gap-1 md:gap-2 text-sm bg-[#020617]/30 md:bg-transparent rounded-xl md:rounded-none p-2.5 md:p-0 border border-[#FFD60A]/5 md:border-0">
+                    <span className={`self-start md:self-auto shrink-0 px-2.5 py-1 rounded-full text-xs font-bold leading-none text-center min-w-[72px] ${leg.kind==='metro'?'bg-[#FFD60A] text-[#020617]':'bg-[#0B1220] border border-[#FFD60A]/20 text-[#FFD60A]'}`}>{leg.route}</span>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm text-white font-medium leading-tight truncate">{leg.from} <span className="text-[#FFD60A]/60">→</span> {leg.to}</p>
+                      <p className="text-[11px] text-white/35 leading-tight mt-0.5 md:mt-0">{leg.stops.length-1} stops{leg.towards ? ` • towards ${leg.towards}`:''}</p>
+                    </div>
                   </div>
                 ))}
               </div>
-              <p className="text-[11px] text-white/20 mt-2">Route engine picks best of bus-only vs train-only vs bus+train for this toggle.</p>
+              <p className="text-[10px] md:text-[11px] text-white/20 mt-2 leading-tight">Route engine picks best of bus-only vs train-only vs bus+train for this toggle.</p>
             </div>
           ))}
           {result && !result.error && plans.length===0 && <p className="text-xs text-white/30 text-center py-6">No direct/one/two-change route found — try nearer stops like Esplanade, Sealdah, Tollygunge.</p>}

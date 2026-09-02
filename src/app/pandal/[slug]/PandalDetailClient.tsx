@@ -80,9 +80,9 @@ export default function PandalDetailClient({ pandal }: { pandal: Pandal }) {
             )}
             <span className="absolute top-3 left-3 text-xs bg-[#020617] border border-[#FFD60A]/20 px-2.5 py-1 rounded-full text-[#FFD60A]/80">{pandal.area}</span>
           </div>
-          <div className="p-4">
-            <h1 className="text-xl font-bold text-white">{pandal.name}</h1>
-            <p className="text-sm text-white/40 mt-1">{pandal.address || pandal.area + ', Kolkata'}</p>
+          <div className="p-3 md:p-4">
+            <h1 className="text-lg md:text-xl font-bold text-white leading-tight break-words">{pandal.name}</h1>
+            <p className="text-xs md:text-sm text-white/40 mt-1 leading-snug break-words">{pandal.address || pandal.area + ', Kolkata'}</p>
             <div className="flex items-center gap-3 mt-3 p-3 glass rounded-xl">
               <div className="text-center">
                 <p className="text-2xl font-bold text-[#FFD60A]">{rating.toFixed(1)}</p>
@@ -95,7 +95,7 @@ export default function PandalDetailClient({ pandal }: { pandal: Pandal }) {
             </div>
             {pandal.latitude && (
               <div className="mt-4">
-                <p className="text-xs font-semibold text-[#FFD60A]/80 mb-2">Pandal Map — in-website (OSM light) {routeInfo && <span className="text-white/40 font-normal">• {routeInfo}</span>}</p>
+                <p className="text-[11px] md:text-xs font-semibold text-[#FFD60A]/80 mb-2 leading-tight">Pandal Map — in-website (OSM light) {routeInfo && <span className="text-white/40 font-normal">• {routeInfo}</span>}</p>
                 <PandalMap pandals={[pandal]} mode="detail" highlightedSlug={pandal.slug} userLocation={userLoc} routeGeoJson={routeGeoJson} metrosToShow={metrosToShow} />
                 <div className="mt-3"><Legend metros={metros} showRoute={!!routeGeoJson} showUser={!!userLoc} /></div>
                 {routeGeoJson && <p className="text-xs text-[#FF1A1A]/70 mt-2">Red line is your in-site route (OSRM {routeInfo?.includes('walk') ? 'foot' : 'driving'} profile)</p>}
@@ -104,8 +104,8 @@ export default function PandalDetailClient({ pandal }: { pandal: Pandal }) {
                 <LandmarkList pandal={pandal} />
                 <ReviewSection pandalId={pandal.id} />
                 <div className="mt-3 grid grid-cols-2 gap-2">
-                  <Link href="/browse" className="bg-[#0B1220] border border-[#FFD60A]/20 text-[#FFD60A] rounded-xl py-2.5 text-sm font-medium text-center">View in Browse Map</Link>
-                  <PressButton className="bg-[#FFD60A] text-[#020617] rounded-xl py-2.5 text-sm font-semibold" onClick={() => window.open(`https://www.google.com/maps/dir/?api=1&destination=${pandal.latitude},${pandal.longitude}&travelmode=${routeInfo?.includes('drive') ? 'driving' : 'walking'}`, '_blank')}>
+                  <Link href="/browse" className="bg-[#0B1220] border border-[#FFD60A]/20 text-[#FFD60A] rounded-xl py-2.5 text-xs md:text-sm font-medium text-center leading-tight">View in Browse Map</Link>
+                  <PressButton className="bg-[#FFD60A] text-[#020617] rounded-xl py-2.5 text-xs md:text-sm font-semibold leading-tight" onClick={() => window.open(`https://www.google.com/maps/dir/?api=1&destination=${pandal.latitude},${pandal.longitude}&travelmode=${routeInfo?.includes('drive') ? 'driving' : 'walking'}`, '_blank')}>
                     Start in Google Maps
                   </PressButton>
                 </div>

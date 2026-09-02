@@ -40,9 +40,9 @@ export default function PandalCard({ pandal }: { pandal: Pandal }) {
             </span>
             <span className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition bg-gradient-to-t from-[#FFD60A]/5 to-transparent" />
           </div>
-          <div className="p-3 relative">
-            <h3 className="font-semibold text-sm text-white leading-tight line-clamp-1">{pandal.name}</h3>
-            <p className="text-xs text-white/40 mt-0.5 line-clamp-1">{pandal.address || pandal.area + ', Kolkata'}</p>
+          <div className="p-2.5 md:p-3 relative">
+            <h3 className="font-semibold text-[13px] md:text-sm text-white leading-tight line-clamp-2 md:line-clamp-1 break-words">{pandal.name}</h3>
+            <p className="text-[11px] md:text-xs text-white/40 mt-0.5 line-clamp-1 break-words">{pandal.address || pandal.area + ', Kolkata'}</p>
             <div className="flex items-center gap-1.5 mt-2">
               <span className="flex text-[#FFD60A] text-xs">
                 {'★'.repeat(Math.round(rating))}<span className="text-white/15">{'★'.repeat(5 - Math.round(rating))}</span>
