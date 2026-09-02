@@ -26,21 +26,34 @@ export default function TravelPlanClient() {
 
   const suggestions = useMemo(() => {
     const stops = availableStops()
-    const names = [...new Set([...pandals.map(p => p.name), ...stops])]
-    return names
+    // include all pandals + bus stops + metro/local stations + metro connections depots
+    const metroStations = (() => { try { const g=require('@/lib/geo'); return (g.KOLKATA_METROS||[]).map((m:any)=>m.name) } catch { return [] } })()
+    const depots = (() => {
+      // nearest bus stops from Kolkata_Metro_Bus_Connections.txt Section 2 (parsed manually as fallback list)
+      const raw = ['Dakshineswar','Baranagar Bazar','Noapara (Tobin Road)','Dum Dum Station','Belgachia Metro','Shyambazar','Sovabazar Metro','Girish Park','M.G. Road Metro','Central Metro','Chandni Market','Esplanade','Park Street','Maidan Metro','Rabindra Sadan','Bhowanipore','Hazra More','Kalighat','Tollygunge Metro','Kudghat','Bansdroni','Naktala','Garia Bazar','Garia','Garia Metro','45 Bus Stand','Garia Bus Stand','Howrah Maidan','Howrah Station','BBD Bag','Dalhousie','Sealdah Station','Phoolbagan','Saltlake Stadium','Bengal Chemical','City Centre','Central Park','Karunamoyee','Sector V','SDF More','College More','Hiland Park','Kalikapur','Mukundapur','Ruby Crossing','VIP Bazar','Uttar Panchannagram','Science City','Beleghata','Dum Dum Cantonment','Airport Gate No. 1','Airport Domestic Terminus','Joka','Thakurpukur 3A','Sakher Bazar','Behala Chowrasta','Behala 14 No.','Taratala','Majherhat']
+      return raw.map(s => s.replace(/\s*\(.*?\)\s*/g,'').trim())
+    })()
+    try {
+      const st = require('@/lib/trainStations'); 
+      const trainNames = (st.STATIONS||[]).map((s:any)=>s.name);
+      const names = [...new Set([...pandals.map(p => p.name), ... pandals.map(p=>p.area), ...trainNames, ...metroStations, ...depots, ...stops])]
+      return names
+    } catch {
+      return [...new Set([...pandals.map(p => p.name), ...stops])]
+    }
   }, [pandals])
 
   const [showStart, setShowStart] = useState(false)
   const [showDest, setShowDest] = useState(false)
   const filteredStart = useMemo(() => {
-    if (!start) return suggestions.slice(0, 8)
+    if (!start) return suggestions.slice(0, 30)
     const q = start.toLowerCase()
-    return suggestions.filter(s => s.toLowerCase().includes(q)).slice(0, 8)
+    return suggestions.filter(s => s.toLowerCase().includes(q)).slice(0, 30)
   }, [start, suggestions])
   const filteredDest = useMemo(() => {
-    if (!dest) return suggestions.slice(0, 8)
+    if (!dest) return suggestions.slice(0, 30)
     const q = dest.toLowerCase()
-    return suggestions.filter(s => s.toLowerCase().includes(q)).slice(0, 8)
+    return suggestions.filter(s => s.toLowerCase().includes(q)).slice(0, 30)
   }, [dest, suggestions])
 
   const locate = () => {
@@ -126,8 +139,27 @@ export default function TravelPlanClient() {
         <p className="text-[11px] text-white/30 mt-2">Bus graph & metro connections by <a href="https://github.com/Akash190104/kolkata-travel-router" target="_blank" rel="noopener" className="text-[#FFD60A]/70 hover:text-[#FFD60A] underline">Akash190104 / kolkata-travel-router</a> — thank you for open data.</p>
 
         {/* Location */}
-        <div className="mt-4 flex gap-2">
+        <div className="mt-4 flex flex-wrap gap-2 items-center">
           <button onClick={locate} disabled={locating} className="text-xs bg-[#FFD60A]/10 border border-[#FFD60A]/20 text-[#FFD60A] px-3 py-2 rounded-full">{locating ? 'Locating…' : '📍 Use my location'}</button>
+          <button
+            onClick={() => {
+              if (!userLoc) { locate(); return }
+              let best: any = null, bestDist = 1e9
+              for (const s of (busdata as any).stops) if ((s as any).lat != null && (s as any).lng != null) {
+                const d = haversineKm(userLoc, { lat: (s as any).lat, lon: (s as any).lng })
+                if (d < bestDist) { bestDist = d; best = s }
+              }
+              if (best) {
+                const url = `https://www.google.com/maps/search/bus+stop/@${(best as any).lat},${(best as any).lng},17z`
+                window.open(url, '_blank')
+              } else {
+                window.open(`https://www.google.com/maps/search/bus+stop/@${userLoc.lat},${userLoc.lon},16z`, '_blank')
+              }
+            }}
+            className="text-xs bg-[#0B1220] border border-[#FFD60A]/20 text-[#FFD60A]/80 hover:text-[#FFD60A] px-3 py-2 rounded-full"
+          >
+            🚌 Nearby Bus Stop in Google Maps
+          </button>
           {nearestInfo && <span className="text-xs text-white/40 self-center">Nearest: {nearestInfo}</span>}
         </div>
 
