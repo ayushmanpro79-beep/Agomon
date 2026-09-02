@@ -82,7 +82,25 @@ const VIEWBOX = '88.18,22.80,88.55,22.40'
 
 const AREA_TYPES = new Set(['suburb','neighbourhood','quarter','city_district','borough','subdivision','residential','city','town','village','hamlet'])
 const PLACE_RADIUS_KM = 2.5
+const PLACE_FALLBACK_RADIUS_KM = 3 // user spec: if not railway=station then place=suburb/town/neighbourhood etc → 3km
 const AREA_RADIUS_KM = 6
+const PLACE_TYPES_3KM = new Set(['suburb','town','neighbourhood','quarter','city_district','borough','village','hamlet','residential','city'])
+
+function isRailwayStation(entry: any): boolean {
+  const cls = (entry.cls || entry.class || '').toLowerCase()
+  const type = (entry.type || '').toLowerCase()
+  return cls === 'railway' && ['station','halt'].includes(type)
+}
+
+function isPlaceFallbackType(entry: any): boolean {
+  const addresstype = (entry.addresstype || entry.type || '').toLowerCase()
+  const cls = (entry.cls || entry.class || '').toLowerCase()
+  const type = (entry.type || '').toLowerCase()
+  if (PLACE_TYPES_3KM.has(addresstype)) return true
+  if (PLACE_TYPES_3KM.has(type)) return true
+  if (cls === 'place' && PLACE_TYPES_3KM.has(type)) return true
+  return false
+}
 
 function isAreaLike(entry: any): boolean {
   const addresstype = (entry.addresstype || entry.type || '').toLowerCase()
@@ -198,10 +216,29 @@ export async function searchEngine(query: string, allPandals: Pandal[]): Promise
     if (filtered.length) return { pandals: filtered, meta: `Near ${exactStation.name} (${exactStation.type}) • 2.3km`, accuracy: 100 }
   }
 
-  // 4. OSM geocode - Kolkata-bounded, area vs place radius
-  // Before fuzzy station/pandal to avoid "rajarhat" -> "kalighat" false fuzzy
+  // 4. OSM geocode - Kolkata-bounded, railway=station check → place fallback 3km
   const geo = await geocodeOSM(query)
   if (geo) {
+    // User spec: if not railway=station then check place=suburb/town/neighbourhood etc → 3km
+    const isRailway = isRailwayStation(geo as any)
+    if (isRailway) {
+      // railway station already handled via exact/fuzzy STATIONS above, but OSM railway still valid
+      const radius = 2.2
+      const filtered = allPandals.filter(p=> p.latitude!=null && p.longitude!=null && haversineKm({lat:geo.lat,lon:geo.lon},{lat:p.latitude!,lon:p.longitude!}) <= radius)
+      if (filtered.length) {
+        const label = geo.display.split(',')[0] || query
+        return { pandals: filtered, meta: `Near ${label} • station • ${radius}km` }
+      }
+    }
+    const isPlaceFallback = !isRailway && isPlaceFallbackType(geo as any)
+    if (isPlaceFallback) {
+      const radius = PLACE_FALLBACK_RADIUS_KM
+      const filtered = allPandals.filter(p=> p.latitude!=null && p.longitude!=null && haversineKm({lat:geo.lat,lon:geo.lon},{lat:p.latitude!,lon:p.longitude!}) <= radius)
+      if (filtered.length) {
+        const label = geo.display.split(',')[0] || query
+        return { pandals: filtered, meta: `Near ${label} • place • ${radius}km` }
+      }
+    }
     const areaLike = isAreaLike(geo as any)
     const radius = areaLike ? AREA_RADIUS_KM : PLACE_RADIUS_KM
     const filtered = allPandals.filter(p=> p.latitude!=null && p.longitude!=null && haversineKm({lat:geo.lat,lon:geo.lon},{lat:p.latitude!,lon:p.longitude!}) <= radius)

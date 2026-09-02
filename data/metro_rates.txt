@@ -1,0 +1,7 @@
+Stations_Crossed	Fare_INR
+1 to 2 stations	5
+3 to 5 stations	10
+6 to 10 stations	15
+11 to 15 stations	20
+16 to 20 stations	25
+21 or more stations	30

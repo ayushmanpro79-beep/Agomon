@@ -63,7 +63,7 @@ export default function BrowseClient({ initialPandals }: { initialPandals?: Pand
     if (withCoords.length === 0) return []
     const scored = KOLKATA_METROS.map((m) => ({
       metro: m,
-      count: withCoords.filter((p) => haversineKm({ lat: p.latitude, lon: p.longitude }, { lat: m.lat, lon: m.lon }) <= 1).length,
+      count: withCoords.filter((p) => haversineKm({ lat: p.latitude, lon: p.longitude }, { lat: m.lat, lon: m.lon }) <= 2.2).length,
     }))
       .filter((s) => s.count > 0)
       .sort((a, b) => b.count - a.count)
@@ -88,7 +88,7 @@ export default function BrowseClient({ initialPandals }: { initialPandals?: Pand
     if (selectedMetro === 'All') return pandals
     const m = KOLKATA_METROS.find((x) => x.id === selectedMetro)
     if (!m) return pandals
-    return pandals.filter((p) => p.latitude && p.longitude && haversineKm({ lat: p.latitude, lon: p.longitude }, { lat: m.lat, lon: m.lon }) <= 1)
+    return pandals.filter((p) => p.latitude && p.longitude && haversineKm({ lat: p.latitude, lon: p.longitude }, { lat: m.lat, lon: m.lon }) <= 2.2)
   }, [pandals, selectedMetro])
 
   const [filteredBySearch, setFilteredBySearch] = useState<Pandal[]>([])
@@ -209,7 +209,7 @@ export default function BrowseClient({ initialPandals }: { initialPandals?: Pand
             </button>
             <div className="grid grid-cols-2 gap-0 border-t border-[#FFD60A]/10">
               {metrosForArea.map((m) => {
-                const cnt = pandals.filter((p) => p.latitude && p.longitude && haversineKm({ lat: p.latitude, lon: p.longitude }, { lat: m.lat, lon: m.lon }) <= 1).length
+                const cnt = pandals.filter((p) => p.latitude && p.longitude && haversineKm({ lat: p.latitude, lon: p.longitude }, { lat: m.lat, lon: m.lon }) <= 2.2).length
                 return (
                   <button key={m.id} onClick={() => { setSelectedMetro(m.id); setShowMetroDropdown(false) }} className={`text-left px-3 py-2.5 text-xs hover:bg-[#FFD60A]/10 flex justify-between border-b border-[#FFD60A]/5 pc-btn ${selectedMetro === m.id ? 'bg-[#FFD60A]/15 text-[#FFD60A] font-semibold pc-selected' : 'text-white/80'}`}>
                     <span>* {m.name}</span><span className="text-white/30 text-[11px]">{cnt}</span>
@@ -217,7 +217,7 @@ export default function BrowseClient({ initialPandals }: { initialPandals?: Pand
                 )
               })}
             </div>
-            {metrosForArea.length === 0 && <p className="px-3 py-3 text-xs text-white/30">No metro within 1km of this area</p>}
+            {metrosForArea.length === 0 && <p className="px-3 py-3 text-xs text-white/30">No metro within 2.2km of this area</p>}
           </div>
         )}
       </FadeUp>
@@ -225,7 +225,7 @@ export default function BrowseClient({ initialPandals }: { initialPandals?: Pand
       <div className="mt-4">
         <div className="flex items-center justify-between mb-2">
           <h2 className="font-semibold text-sm text-[#FFD60A]">
-            {query ? (searchMeta || `Search: "${query}"`) : selectedMetro !== 'All' ? `Near ${KOLKATA_METROS.find((m) => m.id === selectedMetro)?.name} (1km)` : filter === 'Nearby me' ? `Nearby me • 3 km` : `All Pandals • ${filter}`} <span className="text-white/30 font-normal">• {filteredBySearch.length}</span>
+            {query ? (searchMeta || `Search: "${query}"`) : selectedMetro !== 'All' ? `Near ${KOLKATA_METROS.find((m) => m.id === selectedMetro)?.name} (2.2km)` : filter === 'Nearby me' ? `Nearby me • 3 km` : `All Pandals • ${filter}`} <span className="text-white/30 font-normal">• {filteredBySearch.length}</span>
           </h2>
           {(selectedMetro !== 'All' || query) && <button onClick={() => { setSelectedMetro('All'); setQuery('') }} className="text-xs text-[#FFD60A] underline">Clear</button>}
         </div>

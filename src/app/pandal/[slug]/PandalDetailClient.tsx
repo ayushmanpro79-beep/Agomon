@@ -58,7 +58,7 @@ export default function PandalDetailClient({ pandal }: { pandal: Pandal }) {
 
   const rating = pandal.avg_rating ?? 4.5
   const hasImage = !!pandal.image_url
-  const metros = pandal.latitude && pandal.longitude ? metrosWithinKm({ latitude: pandal.latitude, longitude: pandal.longitude }, 1) : []
+  const metros = pandal.latitude && pandal.longitude ? metrosWithinKm({ latitude: pandal.latitude, longitude: pandal.longitude }, 2.2) : []
   const metrosToShow = metros.map((m) => ({ id: m.id, name: m.name, lat: m.lat, lon: m.lon }))
 
   return (

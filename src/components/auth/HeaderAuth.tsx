@@ -22,6 +22,7 @@ export default function HeaderAuth() {
       <div className="flex items-center gap-2 text-xs">
         <Link href="/" className="px-3 py-1.5 rounded-full border border-[#FFD60A]/20 text-[#FFD60A]/80 hover:text-[#FFD60A] hover:border-[#FFD60A]/30 text-xs">Welcome</Link>
         <Link href="/browse" className="px-3 py-1.5 rounded-full border border-[#FFD60A]/20 text-[#FFD60A]/80 hover:text-[#FFD60A] hover:border-[#FFD60A]/30 text-xs">Browse</Link>
+        <Link href="/travel-plan" className="px-3 py-1.5 rounded-full border border-[#FFD60A]/20 text-[#FFD60A]/80 hover:text-[#FFD60A] hover:border-[#FFD60A]/30 text-xs">Travel Plan</Link>
         <Link href="/about" className="px-3 py-1.5 rounded-full border border-[#FFD60A]/20 text-[#FFD60A]/80 hover:text-[#FFD60A] hover:border-[#FFD60A]/30 text-xs">About</Link>
         <span className="text-[#FFD60A]/60 hidden sm:inline">{user.user_metadata?.username || user.email?.split('@')[0]}</span>
         <button onClick={logout} className="px-3 py-1.5 rounded-full border border-[#FFD60A]/20 text-[#FFD60A] text-xs">Logout</button>
@@ -32,6 +33,7 @@ export default function HeaderAuth() {
     <nav className="flex gap-1 text-sm items-center">
       <Link href="/" className="px-3 py-1.5 rounded-full bg-[#FFD60A] text-[#020617] font-semibold text-xs">Welcome</Link>
       <Link href="/browse" className="px-3 py-1.5 rounded-full border border-[#FFD60A]/20 text-[#FFD60A] text-xs">Browse</Link>
+      <Link href="/travel-plan" className="px-3 py-1.5 rounded-full border border-[#FFD60A]/20 text-[#FFD60A]/80 hover:text-[#FFD60A] hover:border-[#FFD60A]/30 text-xs">Travel Plan</Link>
       <Link href="/about" className="px-3 py-1.5 rounded-full border border-[#FFD60A]/20 text-[#FFD60A]/80 hover:text-[#FFD60A] hover:border-[#FFD60A]/30 text-xs">About</Link>
       <Link href="/login" className="px-3 py-1.5 rounded-full border border-[#FFD60A]/20 text-[#FFD60A] text-xs">Login</Link>
     </nav>

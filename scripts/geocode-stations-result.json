@@ -1,0 +1,641 @@
+[
+  {
+    "id": "kavi-subhash",
+    "name": "Kavi Subhash",
+    "aliases": [
+      "Kavi Subhas",
+      "New Garia"
+    ],
+    "type": "metro",
+    "result": {
+      "lat": 22.4720556,
+      "lon": 88.3979434,
+      "display": "Kavi Subhash, Panchasayar Main Road, Panchasayar, Baghajatin, Rajpur Sonarpur, Kolkata Metropolitan Area, Sonarpur, South 24 Parganas, West Bengal, 700094, India",
+      "source": "nominatim-railway",
+      "cls": "railway",
+      "type": "station"
+    },
+    "success": true
+  },
+  {
+    "id": "shahid-khudiram",
+    "name": "Shahid Khudiram",
+    "aliases": [
+      "Briji"
+    ],
+    "type": "metro",
+    "result": {
+      "lat": 22.4659847,
+      "lon": 88.3915408,
+      "display": "Shahid Khudiram, Garia Station Road, Garia, Rajpur Sonarpur, Kolkata Metropolitan Area, Sonarpur, South 24 Parganas, West Bengal, 700150, India",
+      "source": "nominatim-railway",
+      "cls": "railway",
+      "type": "station"
+    },
+    "success": true
+  },
+  {
+    "id": "kavi-nazrul",
+    "name": "Kavi Nazrul",
+    "aliases": [
+      "Garia Bazar"
+    ],
+    "type": "metro",
+    "result": {
+      "lat": 22.4642505,
+      "lon": 88.3804604,
+      "display": "Kavi Nazrul, Garia Main Road, Barhans Fartabad, Rajpur Sonarpur, Kolkata Metropolitan Area, Sonarpur, South 24 Parganas, West Bengal, 700150, India",
+      "source": "nominatim-railway",
+      "cls": "railway",
+      "type": "station"
+    },
+    "success": true
+  },
+  {
+    "id": "gitanjali",
+    "name": "Gitanjali",
+    "aliases": [
+      "Naktala"
+    ],
+    "type": "metro",
+    "result": {
+      "lat": 22.4694673,
+      "lon": 88.3700115,
+      "display": "Gitanjali, Sahapara - Fartabad Road, Bansdroni, Shanti Nagar, Kolkata, Kolkata Metropolitan Area, Kolkata, West Bengal, 700047, India",
+      "source": "nominatim-railway",
+      "cls": "railway",
+      "type": "station"
+    },
+    "success": true
+  },
+  {
+    "id": "masterda-surya-sen",
+    "name": "Masterda Surya Sen",
+    "aliases": [
+      "Bansdroni"
+    ],
+    "type": "metro",
+    "result": {
+      "lat": 22.4735865,
+      "lon": 88.3606732,
+      "display": "Masterda Surya Sen, Sahapara - Fartabad Road, Bansdroni, Shanti Nagar, Kolkata, Kolkata Metropolitan Area, Kolkata, West Bengal, 700070, India",
+      "source": "nominatim-railway",
+      "cls": "railway",
+      "type": "station"
+    },
+    "success": true
+  },
+  {
+    "id": "netaji",
+    "name": "Netaji",
+    "aliases": [
+      "Kudghat"
+    ],
+    "type": "metro",
+    "result": {
+      "lat": 22.4809928,
+      "lon": 88.3460002,
+      "display": "Netaji, Chandi Ghosh Road, Purba Putiary, Ashok Nagar, Kolkata, Kolkata Metropolitan Area, Kolkata, West Bengal, 700041, India",
+      "source": "nominatim-railway",
+      "cls": "railway",
+      "type": "station"
+    },
+    "success": true
+  },
+  {
+    "id": "mahanayak-uttam",
+    "name": "Mahanayak Uttam Kumar",
+    "aliases": [
+      "Tollygunge"
+    ],
+    "type": "metro",
+    "result": {
+      "lat": 22.4947692,
+      "lon": 88.3450879,
+      "display": "Mahanayak Uttam Kumar, Deshapran Sashmal Road, Tollygunge, Kolkata, Kolkata Metropolitan Area, Kolkata, West Bengal, 700033, India",
+      "source": "nominatim-railway",
+      "cls": "railway",
+      "type": "station"
+    },
+    "success": true
+  },
+  {
+    "id": "rabindra-sarobar",
+    "name": "Rabindra Sarobar",
+    "aliases": [],
+    "type": "metro",
+    "result": {
+      "lat": 22.5072216,
+      "lon": 88.3454936,
+      "display": "Rabindra Sarobar, Charu Avenue, Charu Market Area, Kolkata, Kolkata Metropolitan Area, Kolkata, West Bengal, 700033, India",
+      "source": "nominatim-railway",
+      "cls": "railway",
+      "type": "station"
+    },
+    "success": true
+  },
+  {
+    "id": "kalighat",
+    "name": "Kalighat",
+    "aliases": [],
+    "type": "metro",
+    "result": {
+      "lat": 22.5168752,
+      "lon": 88.3458448,
+      "display": "Kalighat, Shyama Prasad Mukherjee Road, Kalighat, Kolkata, Kolkata Metropolitan Area, Kolkata, West Bengal, 700033, India",
+      "source": "nominatim-railway",
+      "cls": "railway",
+      "type": "station"
+    },
+    "success": true
+  },
+  {
+    "id": "jatin-das-park",
+    "name": "Jatin Das Park",
+    "aliases": [],
+    "type": "metro",
+    "result": {
+      "lat": 22.5241535,
+      "lon": 88.3464729,
+      "display": "Jatin Das Park, Shyama Prasad Mukherjee Road, Bhowanipore, Kolkata, Kolkata Metropolitan Area, Kolkata, West Bengal, 700025, India",
+      "source": "nominatim-railway",
+      "cls": "railway",
+      "type": "station"
+    },
+    "success": true
+  },
+  {
+    "id": "netaji-bhavan",
+    "name": "Netaji Bhavan",
+    "aliases": [
+      "Bhowanipore"
+    ],
+    "type": "metro",
+    "result": {
+      "lat": 22.5331821,
+      "lon": 88.3459269,
+      "display": "Netaji Bhavan, Ashutosh Mukhejee Road, Bhowanipore, Kolkata, Kolkata Metropolitan Area, Kolkata, West Bengal, 700025, India",
+      "source": "nominatim-railway",
+      "cls": "railway",
+      "type": "station"
+    },
+    "success": true
+  },
+  {
+    "id": "rabindra-sadan",
+    "name": "Rabindra Sadan",
+    "aliases": [],
+    "type": "metro",
+    "result": {
+      "lat": 22.5414899,
+      "lon": 88.3473493,
+      "display": "Rabindra Sadan, Ashutosh Mukhejee Road, Bhowanipore, Kolkata, Kolkata Metropolitan Area, Kolkata, West Bengal, 700020, India",
+      "source": "nominatim-railway",
+      "cls": "railway",
+      "type": "station"
+    },
+    "success": true
+  },
+  {
+    "id": "maidan",
+    "name": "Maidan",
+    "aliases": [
+      "Gostho Pal"
+    ],
+    "type": "metro",
+    "result": {
+      "lat": 22.5494672,
+      "lon": 88.3487883,
+      "display": "Maidan, Chowringhee Road, Ho Chi Minh Sarani, Kolkata, Kolkata Metropolitan Area, Kolkata, West Bengal, 700071, India",
+      "source": "nominatim-railway",
+      "cls": "railway",
+      "type": "station"
+    },
+    "success": true
+  },
+  {
+    "id": "park-street",
+    "name": "Park Street",
+    "aliases": [],
+    "type": "metro",
+    "result": {
+      "lat": 22.5551591,
+      "lon": 88.3501171,
+      "display": "Park Street, Park Street Flyover, Dharmatala, Kolkata, Kolkata Metropolitan Area, Kolkata, West Bengal, 700087, India",
+      "source": "nominatim-railway",
+      "cls": "railway",
+      "type": "station"
+    },
+    "success": true
+  },
+  {
+    "id": "esplanade",
+    "name": "Esplanade",
+    "aliases": [],
+    "type": "metro",
+    "result": {
+      "lat": 22.5641292,
+      "lon": 88.3502752,
+      "display": "Esplanade (Line 2), Rani Rashmoni Avenue, Esplanade, Kolkata, Kolkata Metropolitan Area, Kolkata, West Bengal, 700001, India",
+      "source": "nominatim-railway",
+      "cls": "railway",
+      "type": "station"
+    },
+    "success": true
+  },
+  {
+    "id": "chandni-chowk",
+    "name": "Chandni Chowk",
+    "aliases": [],
+    "type": "metro",
+    "result": {
+      "lat": 22.5670118,
+      "lon": 88.3541581,
+      "display": "Chandni Chowk, Chittaranjan Avenue, Esplanade, Kolkata, Kolkata Metropolitan Area, Kolkata, West Bengal, 700072, India",
+      "source": "nominatim-railway",
+      "cls": "railway",
+      "type": "station"
+    },
+    "success": true
+  },
+  {
+    "id": "central",
+    "name": "Central",
+    "aliases": [],
+    "type": "metro",
+    "result": {
+      "lat": 22.5724857,
+      "lon": 88.3587427,
+      "display": "Central, Chittaranjan Avenue, Tiretta Bazaar, Central Avenue 2, Kolkata, Kolkata Metropolitan Area, Kolkata, West Bengal, 700073, India",
+      "source": "nominatim-railway",
+      "cls": "railway",
+      "type": "station"
+    },
+    "success": true
+  },
+  {
+    "id": "m-g-road",
+    "name": "Mahatma Gandhi Road",
+    "aliases": [
+      "M G Road",
+      "MG Road"
+    ],
+    "type": "metro",
+    "result": {
+      "lat": 22.5809206,
+      "lon": 88.3613271,
+      "display": "Mahatma Gandhi Road, Chittaranjan Avenue, Tiretta Bazaar, Machua Bazar, Kolkata, Kolkata Metropolitan Area, Kolkata, West Bengal, 700007, India",
+      "source": "nominatim-railway",
+      "cls": "railway",
+      "type": "station"
+    },
+    "success": true
+  },
+  {
+    "id": "girish-park",
+    "name": "Girish Park",
+    "aliases": [],
+    "type": "metro",
+    "result": {
+      "lat": 22.5871445,
+      "lon": 88.3629415,
+      "display": "Girish Park, Chittaranjan Avenue, Girish Park, Kolkata, Kolkata Metropolitan Area, Kolkata, West Bengal, 700003, India",
+      "source": "nominatim-railway",
+      "cls": "railway",
+      "type": "station"
+    },
+    "success": true
+  },
+  {
+    "id": "sovabazar",
+    "name": "Sovabazar Sutanuti",
+    "aliases": [
+      "Shobhabazar",
+      "Sovabazar",
+      "Shobhabazar Sutanuti",
+      "Shyambazar"
+    ],
+    "type": "metro",
+    "result": {
+      "lat": 22.595881,
+      "lon": 88.3651996,
+      "display": "Shobhabazar Sutanuti, Jatinda Mohan Avenue, Shobha Bazar, Kolkata, Kolkata Metropolitan Area, Kolkata, West Bengal, 700003, India",
+      "source": "nominatim-railway",
+      "cls": "railway",
+      "type": "station"
+    },
+    "success": true
+  },
+  {
+    "id": "shyambazar",
+    "name": "Shyambazar",
+    "aliases": [],
+    "type": "metro",
+    "result": {
+      "lat": 22.601335,
+      "lon": 88.3724974,
+      "display": "Shyambazar, Bupendra Bose Avenue, Shyam Bazar, Kolkata, Kolkata Metropolitan Area, Kolkata, West Bengal, 700004, India",
+      "source": "nominatim-railway",
+      "cls": "railway",
+      "type": "station"
+    },
+    "success": true
+  },
+  {
+    "id": "belgachia",
+    "name": "Belgachia",
+    "aliases": [
+      "Belgachhia"
+    ],
+    "type": "metro",
+    "result": {
+      "lat": 22.6059241,
+      "lon": 88.3863913,
+      "display": "Belgachia, Radha Gobinda Kar Road, Paikpara, Kolkata, Kolkata Metropolitan Area, Kolkata, West Bengal, 700037, India",
+      "source": "nominatim-railway",
+      "cls": "railway",
+      "type": "station"
+    },
+    "success": true
+  },
+  {
+    "id": "dum-dum",
+    "name": "Dum Dum",
+    "aliases": [
+      "Dum Dum Metro"
+    ],
+    "type": "metro",
+    "result": {
+      "lat": 22.6211141,
+      "lon": 88.3928973,
+      "display": "Dum Dum, Dum Dum Station Road, Paikpara, Kolkata, Kolkata Metropolitan Area, Barrackpur - II, North 24 Parganas, West Bengal, 700030, India",
+      "source": "nominatim-railway",
+      "cls": "railway",
+      "type": "station"
+    },
+    "success": true
+  },
+  {
+    "id": "noapara",
+    "name": "Noapara",
+    "aliases": [
+      "Ma Sarada Devi",
+      "Noapara Metro"
+    ],
+    "type": "metro",
+    "result": {
+      "lat": 22.6398418,
+      "lon": 88.3941343,
+      "display": "Noapara, A K Mukherjee Road, Dunlop, Baranagar, Kolkata Metropolitan Area, Barrackpur - II, North 24 Parganas, West Bengal, 700090, India",
+      "source": "nominatim-railway",
+      "cls": "railway",
+      "type": "station"
+    },
+    "success": true
+  },
+  {
+    "id": "baranagar",
+    "name": "Baranagar",
+    "aliases": [
+      "Swami Vivekananda",
+      "Baranagar Metro"
+    ],
+    "type": "metro",
+    "result": {
+      "lat": 22.6530765,
+      "lon": 88.3805962,
+      "display": "Baranagar, Belghoria Expressway, Dunlop, Baranagar, Kolkata Metropolitan Area, Barrackpur - II, North 24 Parganas, West Bengal, 700108, India",
+      "source": "nominatim-railway",
+      "cls": "railway",
+      "type": "station"
+    },
+    "success": true
+  },
+  {
+    "id": "dakshineswar",
+    "name": "Dakshineswar",
+    "aliases": [],
+    "type": "metro",
+    "result": null,
+    "success": false
+  },
+  {
+    "id": "sealdah",
+    "name": "Sealdah",
+    "aliases": [
+      "Sealdah Railway Station"
+    ],
+    "type": "local",
+    "result": {
+      "lat": 22.5673793,
+      "lon": 88.3710192,
+      "display": "Sealdah, Bepin Behari Ganguly Street, Sealdah, Kolkata, Kolkata Metropolitan Area, Kolkata, West Bengal, 700009, India",
+      "source": "nominatim-railway",
+      "cls": "railway",
+      "type": "station"
+    },
+    "success": true
+  },
+  {
+    "id": "howrah",
+    "name": "Howrah",
+    "aliases": [
+      "Howrah Junction",
+      "Howrah Railway Station"
+    ],
+    "type": "local",
+    "result": {
+      "lat": 22.5833648,
+      "lon": 88.3403452,
+      "display": "Howrah, Old Cab Road, Howrah Maidan, Howrah, Kolkata Metropolitan Area, Howrah, West Bengal, 711106, India",
+      "source": "nominatim-railway",
+      "cls": "railway",
+      "type": "station"
+    },
+    "success": true
+  },
+  {
+    "id": "jadavpur",
+    "name": "Jadavpur",
+    "aliases": [],
+    "type": "local",
+    "result": {
+      "lat": 22.4950517,
+      "lon": 88.374971,
+      "display": "Jadavpur, Jadavpur Station Link Road, Jadavpur, Kolkata, Kolkata Metropolitan Area, Kolkata, West Bengal, 700032, India",
+      "source": "nominatim-railway",
+      "cls": "railway",
+      "type": "station"
+    },
+    "success": true
+  },
+  {
+    "id": "dum-dum-jn",
+    "name": "Dum Dum Junction",
+    "aliases": [
+      "Dum Dum Jn",
+      "Dum Dum"
+    ],
+    "type": "local",
+    "result": {
+      "lat": 22.6206549,
+      "lon": 88.3932794,
+      "display": "Dum Dum Junction, Dum Dum Road Underpass, Paikpara, Kolkata, Kolkata Metropolitan Area, Barrackpur - II, North 24 Parganas, West Bengal, 700030, India",
+      "source": "nominatim-railway",
+      "cls": "railway",
+      "type": "station"
+    },
+    "success": true
+  },
+  {
+    "id": "tollygunge",
+    "name": "Tollygunge",
+    "aliases": [],
+    "type": "local",
+    "result": {
+      "lat": 22.5077549,
+      "lon": 88.3477217,
+      "display": "Tollygunge, Charu Chandra Place East, Charu Market Area, Kolkata, Kolkata Metropolitan Area, Kolkata, West Bengal, 700033, India",
+      "source": "nominatim-railway",
+      "cls": "railway",
+      "type": "station"
+    },
+    "success": true
+  },
+  {
+    "id": "ballygunge",
+    "name": "Ballygunge",
+    "aliases": [
+      "Ballygunge Junction"
+    ],
+    "type": "local",
+    "result": {
+      "lat": 22.5193414,
+      "lon": 88.3719778,
+      "display": "Ballygunge Junction, Ballygunge Station Road, Kushtia, Kolkata, Kolkata Metropolitan Area, Kolkata, West Bengal, 700042, India",
+      "source": "nominatim-railway",
+      "cls": "railway",
+      "type": "station"
+    },
+    "success": true
+  },
+  {
+    "id": "park-circus",
+    "name": "Park Circus",
+    "aliases": [],
+    "type": "local",
+    "result": {
+      "lat": 22.5407799,
+      "lon": 88.3738814,
+      "display": "Park Circus, Maa Flyover, Park Circus, Kolkata, Kolkata Metropolitan Area, Kolkata, West Bengal, 700046, India",
+      "source": "nominatim-railway",
+      "cls": "railway",
+      "type": "station"
+    },
+    "success": true
+  },
+  {
+    "id": "bidhannagar-road",
+    "name": "Bidhannagar Road",
+    "aliases": [
+      "Bidhannagar"
+    ],
+    "type": "local",
+    "result": {
+      "lat": 22.5912601,
+      "lon": 88.3909641,
+      "display": "Bidhannagar Road, CIT Road, Maniktala, Kolkata, Kolkata Metropolitan Area, Kolkata, West Bengal, 700054, India",
+      "source": "nominatim-railway",
+      "cls": "railway",
+      "type": "station"
+    },
+    "success": true
+  },
+  {
+    "id": "garia",
+    "name": "Garia",
+    "aliases": [],
+    "type": "local",
+    "result": {
+      "lat": 22.4726577,
+      "lon": 88.3977506,
+      "display": "New Garia, Panchasayar Main Road, Panchasayar, Baghajatin, Kolkata, Kolkata Metropolitan Area, Sonarpur, Kolkata, West Bengal, 700094, India",
+      "source": "nominatim-railway",
+      "cls": "railway",
+      "type": "station"
+    },
+    "success": true
+  },
+  {
+    "id": "sonarpur",
+    "name": "Sonarpur",
+    "aliases": [
+      "Sonarpur Junction"
+    ],
+    "type": "local",
+    "result": {
+      "lat": 22.443192,
+      "lon": 88.4303414,
+      "display": "Sonarpur Junction, Sonarpur Flyover, Noapara, Rajpur Sonarpur, Kolkata Metropolitan Area, Sonarpur, South 24 Parganas, West Bengal, 700150, India",
+      "source": "nominatim-railway",
+      "cls": "railway",
+      "type": "station"
+    },
+    "success": true
+  },
+  {
+    "id": "barasat",
+    "name": "Barasat",
+    "aliases": [
+      "Barasat Junction"
+    ],
+    "type": "local",
+    "result": {
+      "lat": 22.7241917,
+      "lon": 88.4834422,
+      "display": "Barasat, Old Kalibari Road, Champadali, Barasat, Kolkata Metropolitan Area, Barasat - I, North 24 Parganas, West Bengal, 700125, India",
+      "source": "nominatim-railway",
+      "cls": "railway",
+      "type": "station"
+    },
+    "success": true
+  },
+  {
+    "id": "new-garia",
+    "name": "New Garia",
+    "aliases": [],
+    "type": "local",
+    "result": {
+      "lat": 22.4726577,
+      "lon": 88.3977506,
+      "display": "New Garia, Panchasayar Main Road, Panchasayar, Baghajatin, Kolkata, Kolkata Metropolitan Area, Sonarpur, Kolkata, West Bengal, 700094, India",
+      "source": "nominatim-railway",
+      "cls": "railway",
+      "type": "station"
+    },
+    "success": true
+  },
+  {
+    "id": "baghajatin",
+    "name": "Baghajatin",
+    "aliases": [],
+    "type": "local",
+    "result": {
+      "lat": 22.4827391,
+      "lon": 88.3866708,
+      "display": "Baghajatin, Baghajatin Station Road, Baghajatin, Kolkata, Kolkata Metropolitan Area, Kolkata, West Bengal, 700086, India",
+      "source": "nominatim-railway",
+      "cls": "railway",
+      "type": "station"
+    },
+    "success": true
+  },
+  {
+    "id": "golpark",
+    "name": "Golpark",
+    "aliases": [],
+    "type": "local",
+    "result": null,
+    "success": false
+  }
+]
