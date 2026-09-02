@@ -9,8 +9,23 @@ const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Agomon — আগমন",
-  description: "Kolkata Puja Tracker - 45 Popular Pujas",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://agomon.vercel.app"),
+  title: {
+    default: "Agomon — Explore Various Pandals in Kolkata 2026",
+    template: "%s | Agomon",
+  },
+  description: "Explore Various Pandals in Kolkata — live map, metro & community reviews. Discover Durga Puja pandals across the city with Agomon.",
+  keywords: ["Durga Puja Kolkata", "Kolkata pandals", "Durga Puja 2026", "Agomon", "Kolkata Puja map", "Durga Puja pandal list"],
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    locale: "en_IN",
+    siteName: "Agomon",
+    title: "Agomon — Explore Various Pandals in Kolkata 2026",
+    description: "Explore Various Pandals in Kolkata — live map, metro & community reviews.",
+  },
+  twitter: { card: "summary_large_image", title: "Agomon — Explore Various Pandals in Kolkata 2026", description: "Explore Various Pandals in Kolkata — live map, metro & community reviews." },
+  robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 } },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -31,7 +46,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </header>
         <main className="flex-1 max-w-5xl mx-auto w-full px-4 py-4">{children}</main>
         <footer className="py-6 flex flex-col items-center gap-2 text-center text-xs text-[#FFD60A]/30">
-          <span>Agomon — 45 Popular Pujas • 2026</span>
+          <span>Agomon — Explore Various Pandals in Kolkata • 2026</span>
           <Image
             src="/soul-productions.png"
             alt="SOUL Productions"

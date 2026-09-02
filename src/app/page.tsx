@@ -24,7 +24,7 @@ export default function Home() {
           <div>
             <p className="text-[#FFD60A]/60 tracking-[0.3em] text-[10px]">শুভ শারদীয়া</p>
             <h1 className="text-2xl md:text-4xl font-bold text-white mt-1 tracking-tight">আগমন — AGOMON</h1>
-            <p className="text-[#FFD60A]/50 text-xs mt-1">45 Popular Pujas of Kolkata</p>
+            <p className="text-[#FFD60A]/50 text-xs mt-1">Explore Various Pandals in Kolkata</p>
           </div>
           <div className="py-6">
             <DurgaEyes />
@@ -32,7 +32,7 @@ export default function Home() {
           </div>
           <div>
             <Link href="/browse" className="inline-block bg-[#FFD60A] text-[#020617] px-10 py-3 rounded-full text-sm font-semibold hover:bg-[#FFE566] transition pc-btn">Browse Pandals 🪔</Link>
-            <p className="text-[10px] text-white/20 mt-3">45 pandals • OSM map • Metro nearby</p>
+            <p className="text-[10px] text-white/20 mt-3">Explore Various Pandals in Kolkata • OSM map • Metro nearby</p>
           </div>
         </div>
         <SectionBorder className="mt-3 rotate-180" />
