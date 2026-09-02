@@ -17,14 +17,16 @@ export const metadata: Metadata = {
   description: "Explore Various Pandals in Kolkata — live map, metro & community reviews. Discover Durga Puja pandals across the city with Agomon.",
   keywords: ["Durga Puja Kolkata", "Kolkata pandals", "Durga Puja 2026", "Agomon", "Kolkata Puja map", "Durga Puja pandal list"],
   alternates: { canonical: "/" },
+  icons: { icon: "/agomon-logo.png", apple: "/agomon-logo.png" },
   openGraph: {
     type: "website",
     locale: "en_IN",
     siteName: "Agomon",
     title: "Agomon — Explore Various Pandals in Kolkata 2026",
     description: "Explore Various Pandals in Kolkata — live map, metro & community reviews.",
+    images: [{ url: "/agomon-logo.png", width: 1200, height: 1200, alt: "Agomon — আগমন" }],
   },
-  twitter: { card: "summary_large_image", title: "Agomon — Explore Various Pandals in Kolkata 2026", description: "Explore Various Pandals in Kolkata — live map, metro & community reviews." },
+  twitter: { card: "summary_large_image", title: "Agomon — Explore Various Pandals in Kolkata 2026", description: "Explore Various Pandals in Kolkata — live map, metro & community reviews.", images: ["/agomon-logo.png"] },
   robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 } },
 };
 
