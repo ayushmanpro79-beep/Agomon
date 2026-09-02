@@ -48,7 +48,35 @@ Community platform for Kolkata Durga Puja — live map, crowd prediction and sho
 
 **Data:** `data/busdata.json` (port of Bus Repository), `data/Kolkata_Metro_Bus_Connections.txt` (5 metro lines), `data/busRates.json` / `data/metroRates.json` (stage fare), `src/lib/geo.ts` OSM `railway=station|halt` 38/40 verified.
 
+## Getting Started
 
+```bash
+npm install
+# .env.local
+NEXT_PUBLIC_SUPABASE_URL=https://oqqnskvunpjgkkonnuqh.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+NEXT_PUBLIC_STADIA_KEY=...
+NEXT_PUBLIC_SITE_URL=https://agomon.vercel.app
+
+npm run dev   # http://localhost:3000
+npm run build # 62 pages SSG
+```
+
+Open `http://localhost:3000` — edit `src/app/page.tsx:27`.
+
+## Scripts
+
+- `npm run dev` — Next dev (Turbopack root `next.config.ts:4`)
+- `npm run build` — SSG + `sitemap.xml` / `robots.txt`
+- `node scripts/geocode-stations.mjs` — OSM `railway=station|halt` re-geocode Shahid Khudiram→Noapara
+- `python data/build.py` — rebuild `busdata.json` from `raw_busrepo_routes*.js` (optional)
+
+## Deploy (Vercel — kept on Vercel)
+
+```bash
+vercel deploy --prod
+# env in Vercel dashboard: NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY, NEXT_PUBLIC_SITE_URL=https://agomon.vercel.app
+```
 
 ## License — © Agomon / SOUL Productions
 
