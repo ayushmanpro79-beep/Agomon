@@ -26,9 +26,22 @@ export default function TravelPlanClient() {
 
   const suggestions = useMemo(() => {
     const stops = availableStops()
-    const names = [...new Set([...pandals.map(p => p.name), ...stops.slice(0, 80)])]
+    const names = [...new Set([...pandals.map(p => p.name), ...stops])]
     return names
   }, [pandals])
+
+  const [showStart, setShowStart] = useState(false)
+  const [showDest, setShowDest] = useState(false)
+  const filteredStart = useMemo(() => {
+    if (!start) return suggestions.slice(0, 8)
+    const q = start.toLowerCase()
+    return suggestions.filter(s => s.toLowerCase().includes(q)).slice(0, 8)
+  }, [start, suggestions])
+  const filteredDest = useMemo(() => {
+    if (!dest) return suggestions.slice(0, 8)
+    const q = dest.toLowerCase()
+    return suggestions.filter(s => s.toLowerCase().includes(q)).slice(0, 8)
+  }, [dest, suggestions])
 
   const locate = () => {
     if (!navigator.geolocation) return
@@ -120,18 +133,29 @@ export default function TravelPlanClient() {
 
         {/* Inputs */}
         <div className="grid md:grid-cols-2 gap-3 mt-4">
-          <div>
+          <div className="relative">
             <label className="text-xs text-[#FFD60A]/70">Start</label>
-            <input list="agomon-stops" value={start} onChange={e => setStart(e.target.value)} placeholder="Chetla Agrani Club, Tollygunge, Sealdah, South City Mall…" className="w-full mt-1 px-3 py-2.5 rounded-xl bg-[#020617]/60 border border-[#FFD60A]/10 outline-none text-sm text-white placeholder:text-white/30 focus:border-[#FFD60A]/30" />
+            <input value={start} onChange={e => setStart(e.target.value)} onFocus={() => setShowStart(true)} onBlur={() => setTimeout(() => setShowStart(false), 180)} placeholder="Chetla Agrani Club, Tollygunge, Sealdah, South City Mall…" className="w-full mt-1 px-3 py-2.5 rounded-xl bg-[#020617]/60 border border-[#FFD60A]/10 outline-none text-sm text-white placeholder:text-white/30 focus:border-[#FFD60A]/30" />
+            {showStart && filteredStart.length > 0 && (
+              <ul className="absolute z-20 mt-1 w-full max-h-44 overflow-y-auto rounded-xl bg-[#0B1220] border border-[#FFD60A]/10 shadow-lg">
+                {filteredStart.map(s => (
+                  <li key={s}><button onMouseDown={e => { e.preventDefault(); setStart(s); setShowStart(false) }} className="w-full text-left px-3 py-2 text-sm text-white/80 hover:bg-[#FFD60A]/10 hover:text-[#FFD60A]">{s}</button></li>
+                ))}
+              </ul>
+            )}
           </div>
-          <div>
+          <div className="relative">
             <label className="text-xs text-[#FFD60A]/70">Destination</label>
-            <input list="agomon-stops" value={dest} onChange={e => setDest(e.target.value)} placeholder="Ahiritala Sarbojanin, Shyambazar, Esplanade…" className="w-full mt-1 px-3 py-2.5 rounded-xl bg-[#020617]/60 border border-[#FFD60A]/10 outline-none text-sm text-white placeholder:text-white/30 focus:border-[#FFD60A]/30" />
+            <input value={dest} onChange={e => setDest(e.target.value)} onFocus={() => setShowDest(true)} onBlur={() => setTimeout(() => setShowDest(false), 180)} placeholder="Ahiritala Sarbojanin, Shyambazar, Esplanade…" className="w-full mt-1 px-3 py-2.5 rounded-xl bg-[#020617]/60 border border-[#FFD60A]/10 outline-none text-sm text-white placeholder:text-white/30 focus:border-[#FFD60A]/30" />
+            {showDest && filteredDest.length > 0 && (
+              <ul className="absolute z-20 mt-1 w-full max-h-44 overflow-y-auto rounded-xl bg-[#0B1220] border border-[#FFD60A]/10 shadow-lg">
+                {filteredDest.map(s => (
+                  <li key={s}><button onMouseDown={e => { e.preventDefault(); setDest(s); setShowDest(false) }} className="w-full text-left px-3 py-2 text-sm text-white/80 hover:bg-[#FFD60A]/10 hover:text-[#FFD60A]">{s}</button></li>
+                ))}
+              </ul>
+            )}
           </div>
         </div>
-        <datalist id="agomon-stops">
-          {suggestions.slice(0, 200).map(s => <option key={s} value={s} />)}
-        </datalist>
 
         {/* Toggle Time vs Budget */}
         <div className="mt-4 flex items-center gap-2">
