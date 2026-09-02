@@ -1,6 +1,7 @@
 'use client'
 import { useState, useMemo, useEffect } from 'react'
 import { findRoutes, allPlanList, rankPlans, availableStops, fareBus, fareMetro } from '@/lib/travelRouter'
+import busdata from '@/../data/busdata.json'
 import { supabase } from '@/lib/supabase/client'
 import { haversineKm } from '@/lib/geo'
 import { predictCrowd } from '@/lib/crowd'
@@ -38,10 +39,40 @@ export default function TravelPlanClient() {
     }, () => setLocating(false), { enableHighAccuracy: true, timeout: 8000 })
   }
 
+  // resolve pandal/area/landmark/mall to nearest bus stop via haversine (fixes unknown stop for pandal names)
+  const resolveToStop = (raw: string): string => {
+    const trimmed = raw.trim()
+    if (!trimmed) return raw
+    const key = trimmed.toLowerCase()
+    const stopsSet = new Set(availableStops().map(s => s.toLowerCase()))
+    if (stopsSet.has(key)) return trimmed
+    // check alias mapping directly via busdata (e.g., Chetla -> Chetla Park)
+    const aliasVal = (busdata as any).aliases?.[Object.keys((busdata as any).aliases).find(k => k.toLowerCase()===key) || '']
+    if (aliasVal && stopsSet.has(aliasVal.toLowerCase())) return aliasVal
+    // pandal name → nearest geocoded bus stop (busdata stops with lat/lng)
+    const pandal = pandals.find(p => p.name.toLowerCase() === key || p.slug.toLowerCase() === key.replace(/\s+/g,'-') || p.name.toLowerCase().includes(key) || key.includes(p.name.toLowerCase().split(' ')[0]))
+    if (pandal?.latitude && pandal?.longitude) {
+      let best: string | null = null, bestDist = 1e9
+      for (const s of (busdata as any).stops) if (s.lat != null && s.lng != null) {
+        const d = haversineKm({ lat: pandal.latitude, lon: pandal.longitude }, { lat: s.lat, lon: s.lng })
+        if (d < bestDist) { bestDist = d; best = s.name }
+      }
+      if (best && bestDist < 5) return best
+      const areaHub: Record<string,string> = { 'South Kolkata':'Tollygunge','North Kolkata':'Shyambazar','Central Kolkata':'Esplanade','Dumdum':'Dum Dum','West Kolkata & Behala':'Behala Chowrasta','Salt Lake & Rajarhat':'Karunamoyee' }
+      if (areaHub[pandal.area]) return areaHub[pandal.area]
+      return 'Esplanade'
+    }
+    const areaHints: Record<string,string> = { 'chetla':'Chetla Park','ahiritola':'Ahiritola','ahiritala':'Ahiritola','sovabazar':'Sovabazar','shobhabazar':'Sovabazar','howrah':'Howrah Station','sealdah':'Sealdah','park street':'Park Street','esplanade':'Esplanade','tollygunge':'Tollygunge','jadavpur':'Jadavpur 8B','garia':'Garia','behala':'Behala Chowrasta','salt lake':'Karunamoyee','girish park':'Girish Park','shyambazar':'Shyambazar','belgachia':'Belgachia','dum dum':'Dum Dum' }
+    for (const [k,v] of Object.entries(areaHints)) if (key.includes(k)) return v
+    return trimmed
+  }
+
   const handleSearch = async () => {
     if (!start.trim() || !dest.trim()) return
-    const res = findRoutes(start, dest)
-    if (res.error) { setResult(res); return }
+    const s = resolveToStop(start)
+    const d = resolveToStop(dest)
+    const res = findRoutes(s, d)
+    if (res.error) { setResult({ ...res, resolvedFrom: { start: s, dest: d } }); return }
     // crowd boost for start if it's a pandal
     let boost: number | undefined
     const startPandal = pandals.find(p => p.name.toLowerCase() === start.toLowerCase().trim() || p.slug.toLowerCase() === start.toLowerCase().replace(/\s+/g,'-'))
@@ -117,7 +148,7 @@ export default function TravelPlanClient() {
 
         {/* Results */}
         <div className="mt-6 space-y-3">
-          {result?.error && <p className="text-sm text-red-400">Unknown stop — try alias like Sovabazar → Shobhabazar. Origin: {result.origin}, Dest: {result.dest}</p>}
+          {result?.error && <p className="text-sm text-red-400">Unknown stop — tried {result.resolvedFrom ? `${result.resolvedFrom.start} → ${result.resolvedFrom.dest}` : ''} (from {result.origin} → {result.dest}). Try bus stop names like Esplanade, Sealdah, Tollygunge, Sovabazar or pandal names auto-mapped.</p>}
           {plans.map((pl: any, i: number) => (
             <div key={i} className="p-4 rounded-2xl glass border border-[#FFD60A]/10">
               <div className="flex items-center justify-between">
