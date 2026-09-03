@@ -18,6 +18,9 @@ type Pandal = {
 
 const base = process.env.NEXT_PUBLIC_SITE_URL || "https://agomon.vercel.app";
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function generateStaticParams() {
   try {
     const supabase = createServerClient();

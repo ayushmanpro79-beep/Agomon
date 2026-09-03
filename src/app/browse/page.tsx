@@ -4,6 +4,9 @@ import BrowseClient from "./BrowseClient";
 
 const base = process.env.NEXT_PUBLIC_SITE_URL || "https://agomon.vercel.app";
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export const metadata: Metadata = {
   title: "Browse — Explore Various Pandals in Kolkata 2026",
   description: "Explore Various Pandals in Kolkata — filter by area, search by metro or locality, view on OSM map and discover community reviews.",
