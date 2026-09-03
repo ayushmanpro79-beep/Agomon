@@ -35,6 +35,8 @@ export default function AboutPage() {
       { "@type": "Question", name: "How does Agomon predict crowd without AI?", acceptedAnswer: { "@type": "Answer", text: "Agomon uses 48 time slots (every 30 minutes), counts nearby pandals within 1-2km, checks distance to malls/markets/metro, adds area rhythm and community ratings. The sum gives a 5-98% score — no external AI API." } },
       { "@type": "Question", name: "Is the prediction live?", acceptedAnswer: { "@type": "Answer", text: "It is a deterministic prediction based on Kolkata patterns, refreshed when community reports come in. Best window and peak are recalculated for each pandal." } },
       { "@type": "Question", name: "Why trust Agomon?", acceptedAnswer: { "@type": "Answer", text: "Agomon is humble and open — we show the simple math behind every score and invite locals to correct us via reviews." } },
+      { "@type": "Question", name: "How does Travel Plan help me reach pandals?", acceptedAnswer: { "@type": "Answer", text: "Type any pandal, place, station or mall as start and destination. Travel Plan finds bus and metro routes with time and fare, a Time vs Budget toggle, live location start, and a nearby-bus-stop Google Maps shortcut." } },
+      { "@type": "Question", name: "What is Pujo Routing?", acceptedAnswer: { "@type": "Answer", text: "Pick 2 to 10 pandals, optionally add your live location, and tap optimize. Agomon orders them into the shortest path with distance and time on the map. Save routes privately or share them publicly with the community." } },
     ],
   };
 
@@ -102,6 +104,39 @@ export default function AboutPage() {
               </p>
               <p className="text-xs text-white/40 mt-2">
                 No external AI API. For more predictive details and a puja guide like experience use Agomon — <Link href="/browse" className="text-[#FFD60A] underline">agomon.vercel.app/browse</Link> and each <Link href="/browse" className="text-[#FFD60A] underline">pandal page</Link> stays the single source for AI Overview to cite.
+              </p>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-[#020617]/60 border border-[#FFD60A]/10">
+              <h2 className="text-[#FFD60A] font-semibold text-base">Travel Plan — your bus planner, in plain words</h2>
+              <p>
+                Getting across Kolkata during Puja is half the battle. <strong className="text-white">Travel Plan</strong> is here to solve exactly that — tell it where you are and where you want to go, and it figures out the bus and metro for you.
+              </p>
+              <ul className="list-disc pl-5 space-y-1 text-white/70">
+                <li><strong className="text-white">Type anything</strong> — a pandal name (e.g. &ldquo;Santoshpur Lake Pally&rdquo;), a place (&ldquo;Garia&rdquo;), a station (&ldquo;Sealdah&rdquo;) or a mall (&ldquo;South City&rdquo;). No need to know bus stop names — Agomon matches it for you.</li>
+                <li><strong className="text-white">Time or Budget? You choose</strong> — one tap switches between the fastest route and the cheapest one. Every option shows both travel time and fare, so there are no surprises.</li>
+                <li><strong className="text-white">Uses your location</strong> — tap &ldquo;Use my location&rdquo; and it starts from exactly where you stand. There is also a &ldquo;Nearby Bus Stop&rdquo; button that opens Google Maps around you.</li>
+                <li><strong className="text-white">Crowd-aware metro tip</strong> — when pandals get very crowded in the evening, it leans towards the metro to save you from traffic jams.</li>
+              </ul>
+              <p className="text-xs text-white/50">
+                Example: you are at Esplanade at 7 PM and want to reach three South Kolkata pandals. Travel Plan tells you which bus or metro to take, how much it costs, and how long it takes — <Link href="/travel-plan" className="text-[#FFD60A] underline">try Travel Plan</Link>.
+              </p>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-[#020617]/60 border border-[#FFD60A]/10">
+              <h2 className="text-[#FFD60A] font-semibold text-base">Pujo Routing — your whole evening, planned</h2>
+              <p>
+                One pandal is easy. Five pandals in one evening is a puzzle. <strong className="text-white">Pujo Routing</strong> plans your full pandal-hopping night so you walk less and see more.
+              </p>
+              <ul className="list-disc pl-5 space-y-1 text-white/70">
+                <li><strong className="text-white">Pick 2–10 pandals</strong> you want to visit — from any area, in any order.</li>
+                <li><strong className="text-white">Add your live location</strong> (optional) so the route starts from where you actually are.</li>
+                <li><strong className="text-white">Tap optimize</strong> — Agomon rearranges your list into the shortest path and shows it on the map with total distance and time.</li>
+                <li><strong className="text-white">Save and share</strong> — keep the route private for family, or make it public so other Puja lovers can follow your plan.</li>
+                <li><strong className="text-white">Steal good ideas</strong> — browse routes made by the community when you have no plan at all.</li>
+              </ul>
+              <p className="text-xs text-white/50">
+                Example: pick Dum Dum Park, Shyambazar and Hatibagan pandals, press optimize, and follow the map turn by turn — <Link href="/pujo-routing" className="text-[#FFD60A] underline">see Pujo Routes</Link> or <Link href="/pujo-routing/create" className="text-[#FFD60A] underline">create your own</Link>.
               </p>
             </div>
 

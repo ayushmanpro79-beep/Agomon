@@ -16,18 +16,24 @@ Community platform for Kolkata Durga Puja — live map, crowd prediction and sho
 - `src/components/pandal/CrowdMeter.tsx:31` — 48-bar gradient graph
 - `src/components/pandal/CrowdSummary.tsx:14` — deterministic text `Current High 78% / Best 4:30 AM Low / Peak 7:30 PM` + trend, placed **beneath CrowdMeter, above Top 5** (`PandalDetailClient.tsx:102`)
 
-### 3. Travel Plan — Bus + Train Router
-- Route `src/app/travel-plan/page.tsx:1` (no framed map) — port of `Akash190104/kolkata-travel-router` (`data/busdata.json` 1919 routes, 2233 stops + `Kolkata_Metro_Bus_Connections.txt`) via `src/lib/travelRouter.ts:6` `findRoutes()` (direct/one-change/two-change, `directional`, `scopeCost`)
-- Inputs accept **pandal/suburb/area/station/landmark/mall anywhere** — `resolveToStop()` maps pandal lat/lon to nearest `HUB` bus stop via `haversineKm`; bus timings parsed from `raw_busrepo_routes*.js` (`firstBus/lastBus` where not `Coming Soon`)
-- **Time vs Budget toggle** — both cards show `⏱ time + ₹ fare`; Time sorts by `timeMin` (metro boosted if `predictCrowd>=68`), Budget sorts by `fare` (`data/busRates.json` stage `0-4km 7…>24 +1/4km` + `data/metroRates.json` `1-2 stn 5…21+ 30`)
-- **Nearest bus depot:** `📍 Use my location` + `🚌 Nearby Bus Stop in Google Maps` → `https://www.google.com/maps/search/bus+stop/@<lat>,<lng>,17z`
+### 3. Travel Plan — Bus + Metro Router
+- Route `src/app/travel-plan/page.tsx:1` + `TravelPlanClient.tsx:12` (no framed map) — port of `Akash190104/kolkata-travel-router` (`data/busdata.json` 1919 routes, 2233 stops + `Kolkata_Metro_Bus_Connections.txt`) via `src/lib/travelRouter.ts:6` `findRoutes()` (direct/one-change/two-change, `directional`, `scopeCost`)
+- Free-text resolution: `resolveToStop()` in `TravelPlanClient.tsx:69` maps pandal/suburb/area/station/landmark/mall input to the nearest `HUB` bus stop — exact stop match → `busdata.aliases` → pandal lat/lon to nearest geocoded stop via `haversineKm` (&lt;5km) → area hub fallback (`Tollygunge`/`Shyambazar`/`Esplanade`/`Dum Dum`/`Behala Chowrasta`/`Karunamoyee`) → `areaHints` table
+- **Time vs Budget toggle** — both cards show `⏱ time + ₹ fare`; Time sorts by `timeMin` (metro boosted if `predictCrowd >= 68` from `src/lib/crowd.ts`), Budget sorts by `fare` (`data/busRates.json` stage `0-4km 7…>24 +1/4km` + `data/metroRates.json` `1-2 stn 5…21+ 30`); bus timings parsed from `raw_busrepo_routes*.js` (`firstBus`/`lastBus` where not `Coming Soon`)
+- **Nearest bus depot:** `📍 Use my location` (geolocation → nearest stop resolution) + `🚌 Nearby Bus Stop in Google Maps` → `https://www.google.com/maps/search/bus+stop/@<lat>,<lng>,17z`
+- Suggestion index unions pandal names + areas + `STATIONS` + `KOLKATA_METROS` + depot list + `availableStops()` (`TravelPlanClient.tsx:27`)
 - Credit on page: **Bus graph by [Akash190104/kolkata-travel-router](https://github.com/Akash190104/kolkata-travel-router)** (name + link, no pic)
 
-### 4. Top Places & Community
+### 4. Pujo Routing — Multi-Pandal Optimizer + Community Feed
+- Feed `src/app/pujo-routing/page.tsx:17` (ISR `revalidate = 60`) — public routes from Supabase `puja_routes` (`id,title,description,username,ordered_slugs,distance_m,duration_s,is_public`), empty-state CTA when none; detail `src/app/pujo-routing/[id]/page.tsx:1`, creator `src/app/pujo-routing/create/page.tsx:1`
+- Creator `src/components/pujo-routing/PujoRouteCreator.tsx:12` — pick 2–10 pandals (area + text filter, max-60 list), optional live GPS start (`useLive`), `getOptimizedRoute()` from `src/lib/pujoRouting.ts` (OSRM Trip with `fallbackNearestOrder` on failure), result renders `PandalMap` route GeoJSON + distance/duration; save to `puja_routes` with `is_public` flag (graceful local-only mode when table/migration missing)
+- Blends OSRM Trip routing (PUJO-APP by anujeetverma — MIT) with Agomon MapLibre overlay; floating `+` CTA for creation
+
+### 5. Top Places & Community
 - `src/components/pandal/LandmarkList.tsx:23` — Top 5 malls/markets near pandal (2.2km)
 - `ReviewSection.tsx:27` — Supabase `profiles` + `reviews` with `AggregateRating`
 
-### 5. SEO (Vercel)
+### 6. SEO (Vercel)
 - `src/app/layout.tsx:11` `metadataBase https://agomon.vercel.app`, `title.template`, `openGraph`, `twitter`, `robots`
 - `src/app/sitemap.ts:6` dynamic ( `supabase pandals` → 50× `/pandal/[slug]` + `/` `/browse` `/travel-plan` `/about`), `src/app/robots.ts:4`, `next.config.ts:6` `301 /map→/browse`, `/about` `AboutPage` + `FAQPage` JSON-LD (`src/app/about/page.tsx:6`), 62 pages SSG
 
@@ -48,22 +54,6 @@ Community platform for Kolkata Durga Puja — live map, crowd prediction and sho
 
 **Data:** `data/busdata.json` (port of Bus Repository), `data/Kolkata_Metro_Bus_Connections.txt` (5 metro lines), `data/busRates.json` / `data/metroRates.json` (stage fare), `src/lib/geo.ts` OSM `railway=station|halt` 38/40 verified.
 
-## Getting Started
-
-```bash
-npm install
-# .env.local
-NEXT_PUBLIC_SUPABASE_URL=https://oqqnskvunpjgkkonnuqh.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=...
-NEXT_PUBLIC_STADIA_KEY=...
-NEXT_PUBLIC_SITE_URL=https://agomon.vercel.app
-
-npm run dev   # http://localhost:3000
-npm run build # 62 pages SSG
-```
-
-Open `http://localhost:3000` — edit `src/app/page.tsx:27`.
-
 ## Scripts
 
 - `npm run dev` — Next dev (Turbopack root `next.config.ts:4`)
@@ -78,17 +68,33 @@ vercel deploy --prod
 # env in Vercel dashboard: NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY, NEXT_PUBLIC_SITE_URL=https://agomon.vercel.app
 ```
 
-## License — © Agomon / SOUL Productions
+## License — MIT
 
-**Proprietary — All Rights Reserved.**
+Copyright (c) 2026 Agomon (SOUL Productions)
 
-This repository and its content, design, crowd model (`src/lib/crowd.ts`), map logic and branding (`public/agomon-logo.png`) are the exclusive property of **Agomon (SOUL Productions)**. No part may be copied, reproduced, distributed or used for commercial purposes without prior written permission from the owner.
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+See [LICENSE](./LICENSE) for the full text.
 
 Third-party open data used with credit:
 - **Kolkata Travel Router** by [Akash190104](https://github.com/Akash190104/kolkata-travel-router) — bus graph & metro connections (used in `src/lib/travelRouter.ts` and `src/app/travel-plan/`, credited on page).
 - OpenStreetMap © contributors (ODbL) — Nominatim/Overpass `railway=station` geocoding.
-
-For licensing inquiries contact Agomon.
 
 ## Learn More
 
