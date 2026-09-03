@@ -1,0 +1,166 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 88" fill="none" aria-hidden="true">
+  <defs>
+    <linearGradient id="ag-gold" x1="0" y1="0" x2="1" y2="0" gradientTransform="rotate(0)">
+      <stop offset="0%" stop-color="#FFF7CC" />
+      <stop offset="35%" stop-color="#FFD60A" />
+      <stop offset="100%" stop-color="#C49200" />
+    </linearGradient>
+    <filter id="ag-glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="1.2" result="b"/>
+      <feColorMatrix values="1 1 0 0 0  1 1 0 0 0  0 0.2 0 0 0  0 0 0 0.5 0"/>
+    </filter>
+  </defs>
+  <!-- Alpana is traditionally white on dark - here gold with soft white highlight for dual theme -->
+  <!-- Central spine -->
+  <path d="M0 44 H1200" stroke="#FFD60A" stroke-width="0.7" stroke-opacity="0.35" stroke-dasharray="0.5 8"/>
+
+  <!-- Repeating module: 200px tile -->
+  <!-- === Module 1 at x=100 === -->
+  <g opacity="0.95">
+    <!-- 8-petal lotus -->
+    <g transform="translate(100,44)">
+      <circle cx="0" cy="0" r="3.2" fill="url(#ag-gold)"/>
+      <g fill="none" stroke="#FFD60A" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round">
+        <!-- top/bottom petals -->
+        <path d="M0 -18 C 6 -12, 6 -5, 0 0 C -6 -5, -6 -12, 0 -18 Z"/>
+        <path d="M0 18 C 6 12, 6 5, 0 0 C -6 5, -6 12, 0 18 Z"/>
+        <path d="M-18 0 C -12 -6, -5 -6, 0 0 C -5 6, -12 6, -18 0 Z"/>
+        <path d="M18 0 C 12 -6, 5 -6, 0 0 C 5 6, 12 6, 18 0 Z"/>
+        <!-- diagonal petals -->
+        <path d="M-12.7 -12.7 C -7 -15, -3 -10, 0 0 C -10 -3, -15 -7, -12.7 -12.7 Z"/>
+        <path d="M12.7 -12.7 C 15 -7, 10 -3, 0 0 C 3 -10, 7 -15, 12.7 -12.7 Z"/>
+        <path d="M-12.7 12.7 C -15 7, -10 3, 0 0 C -3 10, -7 15, -12.7 12.7 Z"/>
+        <path d="M12.7 12.7 C 7 15, 3 10, 0 0 C 10 3, 15 7, 12.7 12.7 Z"/>
+      </g>
+      <circle cx="0" cy="0" r="7" fill="none" stroke="#FFD60A" stroke-width="0.5" stroke-opacity="0.5"/>
+      <!-- inner dots in petals -->
+      <circle cx="0" cy="-10" r="1.3" fill="#FFF7CC" opacity="0.9"/>
+      <circle cx="0" cy="10" r="1.3" fill="#FFF7CC" opacity="0.9"/>
+      <circle cx="-10" cy="0" r="1.3" fill="#FFF7CC" opacity="0.9"/>
+      <circle cx="10" cy="0" r="1.3" fill="#FFF7CC" opacity="0.9"/>
+    </g>
+    <!-- flanking kolka (paisley) vines -->
+    <path d="M 58 44 C 68 26, 82 22, 92 34 C 96 39, 93 46, 86 48 C 80 50, 76 44, 78 39" stroke="#FFD60A" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+    <circle cx="88" cy="41" r="1.4" fill="#FFF7CC"/>
+    <path d="M 142 44 C 132 26, 118 22, 108 34 C 104 39, 107 46, 114 48 C 120 50, 124 44, 122 39" stroke="#FFD60A" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+    <circle cx="112" cy="41" r="1.4" fill="#FFF7CC"/>
+    <!-- small dots spine -->
+    <circle cx="76" cy="44" r="1.0" fill="#FFD60A" opacity="0.85"/>
+    <circle cx="124" cy="44" r="1.0" fill="#FFD60A" opacity="0.85"/>
+  </g>
+
+  <!-- === Module 2 at x=300 === same pattern mirrored slightly -->
+  <g transform="translate(300,44)" opacity="0.95">
+    <g fill="none" stroke="#FFD60A" stroke-width="1">
+      <path d="M0 -14 C 5 -10, 5 -4, 0 0 C -5 -4, -5 -10, 0 -14 Z"/>
+      <path d="M0 14 C 5 10, 5 4, 0 0 C -5 4, -5 10, 0 14 Z"/>
+      <path d="M-14 0 C -10 -5, -4 -5, 0 0 C -4 5, -10 5, -14 0 Z"/>
+      <path d="M14 0 C 10 -5, 4 -5, 0 0 C 4 5, 10 5, 14 0 Z"/>
+      <path d="M-10 -10 C -6 -12, -2 -8, 0 0 C -8 -2, -12 -6, -10 -10 Z"/>
+      <path d="M10 -10 C 12 -6, 8 -2, 0 0 C 2 -8, 6 -12, 10 -10 Z"/>
+      <path d="M-10 10 C -12 6, -8 2, 0 0 C -2 8, -6 12, -10 10 Z"/>
+      <path d="M10 10 C 6 12, 2 8, 0 0 C 8 2, 12 6, 10 10 Z"/>
+    </g>
+    <circle cx="0" cy="0" r="2.6" fill="url(#ag-gold)"/>
+    <!-- swirl connectors -->
+    <path d="M -38 0 C -28 -18, -6 -14, 0 -6" stroke="#FFD60A" stroke-width="1.1" fill="none" stroke-opacity="0.65" stroke-linecap="round"/>
+    <path d="M 38 0 C 28 18, 6 14, 0 6" stroke="#FFD60A" stroke-width="1.1" fill="none" stroke-opacity="0.65" stroke-linecap="round"/>
+    <circle cx="-22" cy="-7" r="1.1" fill="#FFD60A" opacity="0.7"/>
+    <circle cx="22" cy="7" r="1.1" fill="#FFD60A" opacity="0.7"/>
+  </g>
+
+  <!-- kolkas between 300-500 -->
+  <path d="M 358 44 C 368 28, 388 24, 398 36" stroke="#FFD60A" stroke-width="1.15" fill="none" stroke-linecap="round" opacity="0.9"/>
+  <path d="M 442 44 C 432 60, 412 64, 402 52" stroke="#FFD60A" stroke-width="1.15" fill="none" stroke-linecap="round" opacity="0.9"/>
+  <circle cx="392" cy="32" r="1.2" fill="#FFF7CC"/>
+  <circle cx="408" cy="56" r="1.2" fill="#FFF7CC"/>
+
+  <!-- === Module 3 at x=500 - larger lotus with dot mandala === -->
+  <g transform="translate(500,44)">
+    <circle cx="0" cy="0" r="22" fill="none" stroke="#FFD60A" stroke-width="0.45" stroke-opacity="0.28"/>
+    <circle cx="0" cy="0" r="15" fill="none" stroke="#FFD60A" stroke-width="0.45" stroke-opacity="0.18"/>
+    <g fill="none" stroke="#FFD60A" stroke-width="1.15" stroke-linecap="round">
+      <path d="M0 -20 C 6 -13, 6 -5, 0 0 C -6 -5, -6 -13, 0 -20 Z"/>
+      <path d="M0 20 C 6 13, 6 5, 0 0 C -6 5, -6 13, 0 20 Z"/>
+      <path d="M-20 0 C -13 -6, -5 -6, 0 0 C -5 6, -13 6, -20 0 Z"/>
+      <path d="M20 0 C 13 -6, 5 -6, 0 0 C 5 6, 13 6, 20 0 Z"/>
+      <path d="M-14.2 -14.2 C -8 -17, -3.5 -11, 0 0 C -11 -3.5, -17 -8, -14.2 -14.2 Z"/>
+      <path d="M14.2 -14.2 C 17 -8, 11 -3.5, 0 0 C 3.5 -11, 8 -17, 14.2 -14.2 Z"/>
+      <path d="M-14.2 14.2 C -17 8, -11 3.5, 0 0 C -3.5 11, -8 17, -14.2 14.2 Z"/>
+      <path d="M14.2 14.2 C 8 17, 3.5 11, 0 0 C 11 3.5, 17 8, 14.2 14.2 Z"/>
+    </g>
+    <circle cx="0" cy="0" r="4.2" fill="url(#ag-gold)" stroke="#FFF7CC" stroke-width="0.6"/>
+    <g fill="#FFF7CC">
+      <circle cx="0" cy="-11" r="1.15" opacity="0.9"/>
+      <circle cx="0" cy="11" r="1.15" opacity="0.9"/>
+      <circle cx="-11" cy="0" r="1.15" opacity="0.9"/>
+      <circle cx="11" cy="0" r="1.15" opacity="0.9"/>
+      <circle cx="-7.8" cy="-7.8" r="1" opacity="0.7"/>
+      <circle cx="7.8" cy="-7.8" r="1" opacity="0.7"/>
+      <circle cx="-7.8" cy="7.8" r="1" opacity="0.7"/>
+      <circle cx="7.8" cy="7.8" r="1" opacity="0.7"/>
+    </g>
+  </g>
+  <!-- side paisleys 500 -->
+  <path d="M 458 44 C 468 26, 482 22, 485 36" stroke="#FFD60A" stroke-width="1.1" fill="none" opacity="0.8" stroke-linecap="round"/>
+  <path d="M 542 44 C 532 26, 518 22, 515 36" stroke="#FFD60A" stroke-width="1.1" fill="none" opacity="0.8" stroke-linecap="round"/>
+
+  <!-- === Module 4 at x=700 === -->
+  <g transform="translate(700,44)" opacity="0.95">
+    <g fill="none" stroke="#FFD60A" stroke-width="1">
+      <path d="M0 -14 C 5 -10, 5 -4, 0 0 C -5 -4, -5 -10, 0 -14 Z"/>
+      <path d="M0 14 C 5 10, 5 4, 0 0 C -5 4, -5 10, 0 14 Z"/>
+      <path d="M-14 0 C -10 -5, -4 -5, 0 0 C -4 5, -10 5, -14 0 Z"/>
+      <path d="M14 0 C 10 -5, 4 -5, 0 0 C 4 5, 10 5, 14 0 Z"/>
+      <path d="M-10 -10 C -6 -12, -2 -8, 0 0 C -8 -2, -12 -6, -10 -10 Z"/>
+      <path d="M10 -10 C 12 -6, 8 -2, 0 0 C 2 -8, 6 -12, 10 -10 Z"/>
+      <path d="M-10 10 C -12 6, -8 2, 0 0 C -2 8, -6 12, -10 10 Z"/>
+      <path d="M10 10 C 6 12, 2 8, 0 0 C 8 2, 12 6, 10 10 Z"/>
+    </g>
+    <circle cx="0" cy="0" r="2.6" fill="url(#ag-gold)"/>
+    <path d="M -38 0 C -28 -18, -6 -14, 0 -6" stroke="#FFD60A" stroke-width="1.1" fill="none" stroke-opacity="0.65" stroke-linecap="round"/>
+    <path d="M 38 0 C 28 18, 6 14, 0 6" stroke="#FFD60A" stroke-width="1.1" fill="none" stroke-opacity="0.65" stroke-linecap="round"/>
+  </g>
+  <path d="M 758 44 C 768 28, 788 24, 798 36" stroke="#FFD60A" stroke-width="1.15" fill="none" opacity="0.9"/>
+  <path d="M 842 44 C 832 60, 812 64, 802 52" stroke="#FFD60A" stroke-width="1.15" fill="none" opacity="0.9"/>
+  <circle cx="792" cy="32" r="1.2" fill="#FFF7CC"/>
+  <circle cx="808" cy="56" r="1.2" fill="#FFF7CC"/>
+
+  <!-- === Module 5 at x=900 lotus === -->
+  <g transform="translate(900,44)">
+    <g fill="none" stroke="#FFD60A" stroke-width="1.1" stroke-linecap="round">
+      <path d="M0 -18 C 6 -12, 6 -5, 0 0 C -6 -5, -6 -12, 0 -18 Z"/>
+      <path d="M0 18 C 6 12, 6 5, 0 0 C -6 5, -6 12, 0 18 Z"/>
+      <path d="M-18 0 C -12 -6, -5 -6, 0 0 C -5 6, -12 6, -18 0 Z"/>
+      <path d="M18 0 C 12 -6, 5 -6, 0 0 C 5 6, 12 6, 18 0 Z"/>
+      <path d="M-12.7 -12.7 C -7 -15, -3 -10, 0 0 C -10 -3, -15 -7, -12.7 -12.7 Z"/>
+      <path d="M12.7 -12.7 C 15 -7, 10 -3, 0 0 C 3 -10, 7 -15, 12.7 -12.7 Z"/>
+      <path d="M-12.7 12.7 C -15 7, -10 3, 0 0 C -3 10, -7 15, -12.7 12.7 Z"/>
+      <path d="M12.7 12.7 C 7 15, 3 10, 0 0 C 10 3, 15 7, 12.7 12.7 Z"/>
+    </g>
+    <circle cx="0" cy="0" r="3.2" fill="url(#ag-gold)"/>
+    <circle cx="0" cy="0" r="7" fill="none" stroke="#FFD60A" stroke-width="0.5" stroke-opacity="0.5"/>
+    <circle cx="0" cy="-10" r="1.3" fill="#FFF7CC" opacity="0.9"/>
+    <circle cx="0" cy="10" r="1.3" fill="#FFF7CC" opacity="0.9"/>
+    <circle cx="-10" cy="0" r="1.3" fill="#FFF7CC" opacity="0.9"/>
+    <circle cx="10" cy="0" r="1.3" fill="#FFF7CC" opacity="0.9"/>
+  </g>
+  <path d="M 858 44 C 868 26, 882 22, 892 34" stroke="#FFD60A" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+  <path d="M 942 44 C 932 26, 918 22, 908 34" stroke="#FFD60A" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+  <circle cx="888" cy="41" r="1.4" fill="#FFF7CC"/>
+  <circle cx="912" cy="41" r="1.4" fill="#FFF7CC"/>
+  <circle cx="876" cy="44" r="1.0" fill="#FFD60A" opacity="0.85"/>
+  <circle cx="924" cy="44" r="1.0" fill="#FFD60A" opacity="0.85"/>
+
+  <!-- === Module 6 at x=1100 close === -->
+  <g transform="translate(1100,44)">
+    <g fill="none" stroke="#FFD60A" stroke-width="1" stroke-linecap="round">
+      <path d="M0 -14 C 5 -10, 5 -4, 0 0 C -5 -4, -5 -10, 0 -14 Z"/>
+      <path d="M0 14 C 5 10, 5 4, 0 0 C -5 4, -5 10, 0 14 Z"/>
+      <path d="M-14 0 C -10 -5, -4 -5, 0 0 C -4 5, -10 5, -14 0 Z"/>
+      <path d="M14 0 C 10 -5, 4 -5, 0 0 C 4 5, 10 5, 14 0 Z"/>
+    </g>
+    <circle cx="0" cy="0" r="2.6" fill="url(#ag-gold)"/>
+    <path d="M -38 0 C -28 -18, -6 -14, 0 -6" stroke="#FFD60A" stroke-width="1.1" fill="none" stroke-opacity="0.65" stroke-linecap="round"/>
+  </g>
+</svg>
