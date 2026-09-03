@@ -215,6 +215,39 @@ export default function PujoRouteCreator() {
                 </li>
               ))}
             </ol>
+            <div className="grid grid-cols-2 gap-2 mt-3">
+              <button
+                onClick={() => {
+                  const list = result.optimized.filter((p) => p.id !== 'you')
+                  if (list.length < 2) return
+                  const origin = useLive && userLoc ? `${userLoc.lat},${userLoc.lon}` : `${list[0].latitude},${list[0].longitude}`
+                  const dest = `${list[list.length - 1].latitude},${list[list.length - 1].longitude}`
+                  const waypoints = list.slice(useLive && userLoc ? 0 : 1, -1).map((p: any) => `${p.latitude},${p.longitude}`).join('|')
+                  const base = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${dest}${waypoints ? `&waypoints=${waypoints}` : ''}&travelmode=driving`
+                  window.open(base, '_blank')
+                }}
+                className="bg-[#FFD60A] text-[#020617] rounded-xl py-2.5 text-sm font-semibold"
+              >
+                Open same route in Google Maps →
+              </button>
+              <button
+                onClick={() => {
+                  const list = result.optimized.filter((p) => p.id !== 'you')
+                  if (list.length < 2) return
+                  // walking profile if short
+                  const isWalk = result.distance < 4000
+                  const origin = useLive && userLoc ? `${userLoc.lat},${userLoc.lon}` : `${list[0].latitude},${list[0].longitude}`
+                  const dest = `${list[list.length - 1].latitude},${list[list.length - 1].longitude}`
+                  const waypoints = list.slice(useLive && userLoc ? 0 : 1, -1).map((p: any) => `${p.latitude},${p.longitude}`).join('|')
+                  const base = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${dest}${waypoints ? `&waypoints=${waypoints}` : ''}&travelmode=${isWalk ? 'walking' : 'driving'}`
+                  window.open(base, '_blank')
+                }}
+                className="bg-[#0B1220] border border-[#FFD60A]/20 text-[#FFD60A] rounded-xl py-2.5 text-sm font-medium"
+              >
+                Google Maps (walk/drive auto)
+              </button>
+            </div>
+            <p className="text-[10px] text-white/25 mt-1 text-center">Opens same optimized order in Google Maps — waypoints in exact TSP order from your Agomon map.</p>
             <p className="text-[11px] text-white/30 mt-2 text-center">Numbered markers on map = optimized road distance (PUJO-APP Trip TSP). Fallback to straight line if OSRM busy.</p>
 
             {/* Save */}

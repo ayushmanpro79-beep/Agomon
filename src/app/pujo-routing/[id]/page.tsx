@@ -42,6 +42,16 @@ export default async function RouteView({ params }: { params: Promise<{ id: stri
         <p className="text-xs text-white/40 mt-1">by {route.username || "Anonymous"} • {route.distance_m ? `${(route.distance_m / 1000).toFixed(1)} km • ${Math.round(route.duration_s / 60)} min` : ""} • {new Date(route.created_at).toLocaleDateString()}</p>
         {route.description && <p className="text-sm text-white/60 mt-2">{route.description}</p>}
         {pandals.length > 0 && <div className="mt-4"><PandalMap pandals={pandals} routeGeoJson={route.geojson} /></div>}
+        {pandals.length >= 2 && (
+          <a
+            href={`https://www.google.com/maps/dir/?api=1&origin=${pandals[0].latitude},${pandals[0].longitude}&destination=${pandals[pandals.length - 1].latitude},${pandals[pandals.length - 1].longitude}${pandals.length > 2 ? `&waypoints=${pandals.slice(1, -1).map((p: any) => `${p.latitude},${p.longitude}`).join('|')}` : ''}&travelmode=driving`}
+            target="_blank"
+            rel="noopener"
+            className="mt-3 block w-full text-center bg-[#FFD60A] text-[#020617] rounded-xl py-2.5 text-sm font-semibold"
+          >
+            Open same route in Google Maps →
+          </a>
+        )}
         <ol className="mt-3 space-y-1.5">
           {pandals.map((p: any, i: number) => (
             <li key={p.id} className="flex items-center gap-2 text-sm bg-[#020617]/40 border border-[#FFD60A]/10 rounded-xl px-3 py-2">

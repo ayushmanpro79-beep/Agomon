@@ -29,14 +29,21 @@ export default function HeaderAuth() {
 
   const close = () => setOpen(false)
 
+  const tabClass =
+    "px-3 py-2.5 rounded-full bg-[#0B1220] border border-[#FFD60A]/20 text-[#FFD60A] text-xs text-center font-medium " +
+    "transition-all duration-200 ease-out will-change-transform touch-manipulation select-none " +
+    "hover:bg-[#FFD60A] hover:text-[#020617] hover:border-[#FFD60A] hover:shadow-[0_0_14px_rgba(255,214,10,0.35)] hover:scale-[1.02] " +
+    "active:scale-[0.96] active:bg-[#FFD60A] active:text-[#020617] " +
+    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFD60A]/40"
+
   const NavLinks = ({ onClick }: { onClick?: () => void }) => (
     <>
-      <Link href="/" onClick={onClick} className="px-3 py-2.5 rounded-full bg-[#FFD60A] text-[#020617] font-semibold text-xs text-center">Welcome</Link>
-      <Link href="/browse" onClick={onClick} className="px-3 py-2.5 rounded-full border border-[#FFD60A]/20 text-[#FFD60A] text-xs text-center">Browse</Link>
-      <Link href="/pujo-routing" onClick={onClick} className="px-3 py-2.5 rounded-full bg-[#FFD60A]/15 border border-[#FFD60A]/30 text-[#FFD60A] text-xs text-center">Pujo Routing 🗺️</Link>
-      <Link href="/travel-plan" onClick={onClick} className="px-3 py-2.5 rounded-full border border-[#FFD60A]/20 text-[#FFD60A] text-xs text-center">Travel Plan</Link>
-      <Link href="/about" onClick={onClick} className="px-3 py-2.5 rounded-full border border-[#FFD60A]/20 text-[#FFD60A] text-xs text-center">About</Link>
-      {!user && <Link href="/login" onClick={onClick} className="px-3 py-2.5 rounded-full border border-[#FFD60A]/20 text-[#FFD60A] text-xs text-center">Login</Link>}
+      <Link href="/" onClick={onClick} className={tabClass}>Welcome</Link>
+      <Link href="/browse" onClick={onClick} className={tabClass}>Browse</Link>
+      <Link href="/pujo-routing" onClick={onClick} className={tabClass}>Pujo Routing 🗺️</Link>
+      <Link href="/travel-plan" onClick={onClick} className={tabClass}>Travel Plan</Link>
+      <Link href="/about" onClick={onClick} className={tabClass}>About</Link>
+      {!user && <Link href="/login" onClick={onClick} className={tabClass}>Login</Link>}
     </>
   )
 
@@ -56,7 +63,7 @@ export default function HeaderAuth() {
       {/* Drawer — 1/3 width, slide animation, PC + Mobile */}
       <div className={`fixed inset-y-0 right-0 w-[33%] min-w-[160px] max-w-[260px] md:max-w-[320px] bg-[#020617] border-l border-[#FFD60A]/20 p-4 pt-16 z-50 flex flex-col gap-3 overflow-y-auto shadow-[-12px_0_32px_rgba(0,0,0,0.6)] transition-transform duration-300 ease-out will-change-transform ${open ? 'translate-x-0' : 'translate-x-full'}`}>
         <NavLinks onClick={close} />
-        {user && <button onClick={() => { close(); logout() }} className="mt-2 px-3 py-2.5 rounded-full bg-[#FFD60A] text-[#020617] font-semibold text-xs text-center">Logout</button>}
+        {user && <button onClick={() => { close(); logout() }} className={`mt-2 ${tabClass}`}>Logout</button>}
         {user && <p className="text-[11px] text-white/30 text-center mt-1">{user.user_metadata?.username || user.email?.split('@')[0]}</p>}
       </div>
     </>
