@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react'
 import { getMapMode } from '@/lib/mapConfig'
 import BulkImageManager from '@/components/admin/BulkImageManager'
+import PandalManager from '@/components/admin/PandalManager'
 
 export default function AdminPage() {
   const [pw, setPw] = useState('')
@@ -63,7 +64,7 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="max-w-xl mx-auto py-6">
+    <div className="max-w-2xl mx-auto py-6">
       <div className="flex items-center justify-between mb-4">
         <h1 className="font-bold text-[#FFD60A]">Admin — Map Mode</h1>
         <button onClick={logout} className="text-xs text-white/50 underline">Logout</button>
@@ -110,6 +111,8 @@ export default function AdminPage() {
       <p className="text-[11px] text-white/20 mt-4 text-center">In-site red route works on both raster and vector (MapLibre overlay). OSRM `foot &lt;8km / driving &gt;8km` free.</p>
 
       <BulkImageManager />
+
+      <PandalManager />
     </div>
   )
 }
