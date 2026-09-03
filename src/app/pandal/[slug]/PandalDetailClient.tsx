@@ -8,6 +8,7 @@ import Legend from '@/components/map/Legend'
 import { metrosWithinKm, haversineKm } from '@/lib/geo'
 import SectionBorder from '@/components/ui/SectionBorder'
 import ReviewSection from '@/components/pandal/ReviewSection'
+import NearestMetros from '@/components/pandal/NearestMetros'
 import CrowdMeter from '@/components/pandal/CrowdMeter'
 import CrowdSummary from '@/components/pandal/CrowdSummary'
 import LandmarkList from '@/components/pandal/LandmarkList'
@@ -135,6 +136,7 @@ export default function PandalDetailClient({ pandal }: { pandal: Pandal }) {
                 <PandalMap pandals={[pandal]} mode="detail" highlightedSlug={pandal.slug} userLocation={userLoc} routeGeoJson={routeGeoJson} metrosToShow={metrosToShow} />
                 <div className="mt-3"><Legend metros={metros} showRoute={!!routeGeoJson} showUser={!!userLoc} /></div>
                 {routeGeoJson && <p className="text-xs text-[#FF1A1A]/70 mt-2">Red line is your in-site route (OSRM {routeInfo?.includes('walk') ? 'foot' : 'driving'} profile)</p>}
+                <NearestMetros latitude={pandal.latitude} longitude={pandal.longitude} userLoc={userLoc} />
                 <CrowdMeter pandal={pandal} />
                 <CrowdSummary pandal={pandal as any} />
                 <LandmarkList pandal={pandal} />
