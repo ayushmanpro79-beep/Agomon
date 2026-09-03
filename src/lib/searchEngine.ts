@@ -1,8 +1,9 @@
 // src/lib/searchEngine.ts: sophisticated OSM-first search
-// Order: 1) area alias (rajarhat -> Salt Lake), 2) area fuzzy strict, 3) OSM geocode (area vs place radius), 4) station strict, 5) pandal fuzzy, 6) fallback
+// Order: 1) pandal names, 2) metro/local stations, 3) areas, 4) landmarks, 5) OSM place (last resort)
 import Fuse from 'fuse.js'
 import { haversineKm } from './geo'
 import { STATIONS } from './trainStations'
+import { LANDMARKS } from './crowd'
 
 type Pandal = { id: string; name: string; slug: string; area: string; address: string | null; latitude: number | null; longitude: number | null }
 
@@ -190,16 +191,62 @@ export async function searchEngine(query: string, allPandals: Pandal[]): Promise
   const q = query.trim().toLowerCase().replace(/\s+/g,' ')
   if (!q) return { pandals: allPandals, meta: 'All' }
 
-  // 1. Area alias (rajarhat -> Salt Lake & Rajarhat) - instant, no API
+  // 1. Pandal names first — exact/substring wins before anything else (e.g. "tridhara" never hits OSM place)
+  const qNorm = q.replace(/[^a-z0-9]/g, '')
+  const exactPandal = allPandals.filter((p) => {
+    const name = p.name.toLowerCase()
+    const slug = (p.slug || '').toLowerCase()
+    const nameNorm = name.replace(/[^a-z0-9]/g, '')
+    const slugNorm = slug.replace(/[^a-z0-9]/g, '')
+    return name.includes(q) || slug.includes(q) || (qNorm.length >= 4 && (nameNorm.includes(qNorm) || qNorm.includes(nameNorm) || slugNorm.includes(qNorm)))
+  })
+  if (exactPandal.length) {
+    return { pandals: exactPandal.slice(0, 8), meta: `Pandal: ${exactPandal[0].name}`, accuracy: 100 }
+  }
+
+  // 1b. Pandal fuzzy (threshold 0.42 - allows chtla->chetla 0.400)
+  const pf = getPandalFuse(allPandals)
+  const pandalHits = pf.search(query)
+  if (pandalHits.length && pandalHits[0].score! < 0.42) {
+    const acc = Math.round((1 - (pandalHits[0].score||0))*100)
+    const res = pandalHits.slice(0,8).map(h=>h.item)
+    return { pandals: res, meta: `Pandal: ${pandalHits[0].item.name}`, accuracy: acc }
+  }
+
+  // 2. Metro / local stations — exact first
+  const qNormExact = q.replace(/[^a-z0-9]/g,'')
+  const exactStation = STATIONS.find(s=> s.name.toLowerCase().replace(/[^a-z0-9]/g,'') === qNormExact || s.name.toLowerCase() === q)
+  if (exactStation) {
+    const filtered = allPandals.filter(p=>p.latitude!=null && p.longitude!=null && haversineKm({lat:exactStation.lat,lon:exactStation.lon},{lat:p.latitude!,lon:p.longitude!}) <= 2.3)
+    if (filtered.length) return { pandals: filtered, meta: `Near ${exactStation.name} (${exactStation.type}) • 2.3km`, accuracy: 100 }
+  }
+
+  // 2b. Station strict fuzzy (threshold 0.35) + token guard
+  const stationHits = stationFuse.search(query)
+  if (stationHits.length && stationHits[0].score! < 0.35) {
+    // token guard: require query substring of station or vice versa for very short queries
+    const top = stationHits[0]
+    const stName = top.item.name.toLowerCase()
+    const stNorm = stName.replace(/[^a-z0-9]/g,'')
+    const tokenOk = qNorm.length >= 3 && (stNorm.includes(qNorm) || qNorm.includes(stNorm) || top.score! < 0.25)
+    if (tokenOk) {
+      const st = top.item
+      const filtered = allPandals.filter(p=>p.latitude!=null && p.longitude!=null && haversineKm({lat:st.lat,lon:st.lon},{lat:p.latitude!,lon:p.longitude!}) <= 2.3)
+      if (filtered.length) {
+        const acc = Math.round((1 - (top.score||0))*100)
+        return { pandals: filtered, meta: `Near ${st.name} (${st.type}) • 2.3km`, accuracy: acc }
+      }
+    }
+  }
+
+  // 3. Areas — alias, exact, strict fuzzy
   const alias = matchAreaAlias(q)
   if (alias) {
     const proper = AREA_PROPER[alias] || alias
     const filtered = allPandals.filter(p=> p.area.toLowerCase() === alias)
     if (filtered.length) return { pandals: filtered, meta: `Area: ${proper}` }
-    // if no pandals with exact area but alias matched, fall through to OSM spatial
+    // if no pandals with exact area but alias matched, fall through to landmarks/OSM spatial
   }
-
-  // 2. Area exact / strict fuzzy
   if (AREAS_LOWER.includes(q)) {
     const proper = AREA_PROPER[q] || q
     return { pandals: allPandals.filter(p=>p.area.toLowerCase()===q), meta: `Area: ${proper}` }
@@ -211,15 +258,18 @@ export async function searchEngine(query: string, allPandals: Pandal[]): Promise
     return { pandals: allPandals.filter(p=>p.area.toLowerCase()===area), meta: `Area: ${proper}` }
   }
 
-  // 3. Station exact (no fuzzy) - prioritize true station names before OSM area
-  const qNormExact = q.replace(/[^a-z0-9]/g,'')
-  const exactStation = STATIONS.find(s=> s.name.toLowerCase().replace(/[^a-z0-9]/g,'') === qNormExact || s.name.toLowerCase() === q)
-  if (exactStation) {
-    const filtered = allPandals.filter(p=>p.latitude!=null && p.longitude!=null && haversineKm({lat:exactStation.lat,lon:exactStation.lon},{lat:p.latitude!,lon:p.longitude!}) <= 2.3)
-    if (filtered.length) return { pandals: filtered, meta: `Near ${exactStation.name} (${exactStation.type}) • 2.3km`, accuracy: 100 }
+  // 4. Landmarks (malls/markets/parks from crowd.ts) — before generic OSM place
+  const landmarkHit = LANDMARKS.find((l) => {
+    const ln = l.name.toLowerCase()
+    return ln.includes(q) || (q.length >= 4 && q.split(/\s+/).some((tok) => tok.length >= 4 && ln.includes(tok)))
+  })
+  if (landmarkHit) {
+    const radius = 2.5
+    const filtered = allPandals.filter(p=> p.latitude!=null && p.longitude!=null && haversineKm({lat:landmarkHit.lat,lon:landmarkHit.lon},{lat:p.latitude!,lon:p.longitude!}) <= radius)
+    if (filtered.length) return { pandals: filtered, meta: `Near ${landmarkHit.name} • landmark • ${radius}km` }
   }
 
-  // 4. OSM geocode - Kolkata-bounded, railway=station check → place fallback 3km
+  // 5. OSM place last resort — Kolkata-bounded, railway=station check → place fallback 3km
   const geo = await geocodeOSM(query)
   if (geo) {
     // User spec: if not railway=station then check place=suburb/town/neighbourhood etc → 3km
@@ -260,34 +310,6 @@ export async function searchEngine(query: string, allPandals: Pandal[]): Promise
         if (byArea.length) return { pandals: byArea, meta: `Area: ${proper} (via ${suburb})` }
       }
     }
-  }
-
-  // 5. Station strict fuzzy (threshold 0.35) + token guard
-  const stationHits = stationFuse.search(query)
-  if (stationHits.length && stationHits[0].score! < 0.35) {
-    // token guard: require query substring of station or vice versa for very short queries
-    const top = stationHits[0]
-    const stName = top.item.name.toLowerCase()
-    const qNorm = q.replace(/[^a-z0-9]/g,'')
-    const stNorm = stName.replace(/[^a-z0-9]/g,'')
-    const tokenOk = qNorm.length >= 3 && (stNorm.includes(qNorm) || qNorm.includes(stNorm) || top.score! < 0.25)
-    if (tokenOk) {
-      const st = top.item
-      const filtered = allPandals.filter(p=>p.latitude!=null && p.longitude!=null && haversineKm({lat:st.lat,lon:st.lon},{lat:p.latitude!,lon:p.longitude!}) <= 2.3)
-      if (filtered.length) {
-        const acc = Math.round((1 - (top.score||0))*100)
-        return { pandals: filtered, meta: `Near ${st.name} (${st.type}) • 2.3km`, accuracy: acc }
-      }
-    }
-  }
-
-  // 6. Pandal fuzzy (threshold 0.42 - allows chtla->chetla 0.400)
-  const pf = getPandalFuse(allPandals)
-  const pandalHits = pf.search(query)
-  if (pandalHits.length && pandalHits[0].score! < 0.42) {
-    const acc = Math.round((1 - (pandalHits[0].score||0))*100)
-    const res = pandalHits.slice(0,8).map(h=>h.item)
-    return { pandals: res, meta: `Pandal: ${pandalHits[0].item.name}`, accuracy: acc }
   }
 
   // fallback: simple includes

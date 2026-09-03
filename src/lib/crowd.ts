@@ -1,8 +1,8 @@
 // src/lib/crowd.ts:1 - sophisticated crowd prediction using all map-retrievable signals
 import { haversineKm, KOLKATA_METROS } from './geo'
 
-// Major malls / eatery hubs in Kolkata (for POI proximity)
-const LANDMARKS = [
+// Major malls / eatery hubs in Kolkata (for POI proximity + search landmarks)
+export const LANDMARKS = [
   { name: 'South City Mall', lat: 22.501, lon: 88.346, type: 'mall', weight: 1.0 },
   { name: 'Acropolis Mall', lat: 22.515, lon: 88.391, type: 'mall', weight: 0.9 },
   { name: 'Quest Mall', lat: 22.544, lon: 88.351, type: 'mall', weight: 0.9 },
