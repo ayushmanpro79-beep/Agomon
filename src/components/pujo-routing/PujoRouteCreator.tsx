@@ -146,6 +146,9 @@ export default function PujoRouteCreator() {
 
   return (
     <div className="max-w-3xl mx-auto">
+      <Link href="/pujo-routing" className="inline-flex items-center gap-1.5 text-xs text-white/40 hover:text-[#FFD60A] mb-2 transition">
+        ← Back to Pujo Routing
+      </Link>
       <SectionBorder />
       <div className="glass-strong rounded-3xl p-4 md:p-6">
         <p className="text-[#FFD60A]/60 tracking-[0.2em] text-[10px]">PUJO ROUTING • CREATE</p>
