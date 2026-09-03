@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabase/client'
 import { getOptimizedRoute, fallbackNearestOrder, RoutablePandal } from '@/lib/pujoRouting'
 import PandalMap from '@/components/map/PandalMap'
 import SectionBorder from '@/components/ui/SectionBorder'
+import { haversineKm } from '@/lib/geo'
 
 type PandalLite = { id: string; name: string; slug: string; area: string; latitude: number | null; longitude: number | null }
 
@@ -89,11 +90,18 @@ export default function PujoRouteCreator() {
         // cache for instant re-open (fix long unresolved spinner)
         try { sessionStorage.setItem('agomon:lastRoute', JSON.stringify(res.geojson)) } catch {}
       } else {
-        // fallback nearest
+        // fallback nearest — draw straight-line so route is always visible (fixes your screenshot: markers but no line)
         const fb = fallbackNearestOrder(list)
-        const optimizedWithoutYou = fb.filter((x) => x.id !== 'you')
-        setError('OSRM busy — showed nearest-neighbor fallback (straight line). Try again for road-optimized.')
-        setResult({ optimized: fb as RoutablePandal[], distance: 0, duration: 0, geojson: null })
+        const fbCoords = fb.map((p) => [p.longitude, p.latitude] as [number, number])
+        const fallbackGeo = {
+          type: 'FeatureCollection' as const,
+          features: [{ type: 'Feature' as const, geometry: { type: 'LineString' as const, coordinates: fbCoords }, properties: { fallback: true } }],
+        }
+        // haversine sum for fallback km/min
+        let distKm = 0
+        for (let i = 1; i < fb.length; i++) distKm += haversineKm({ lat: fb[i - 1].latitude, lon: fb[i - 1].longitude }, { lat: fb[i].latitude, lon: fb[i].longitude })
+        setError('OSRM busy — showed straight-line fallback (dashed). Tap Optimize again for road route.')
+        setResult({ optimized: fb as RoutablePandal[], distance: distKm * 1000, duration: distKm * 1000 / 1.4, geojson: fallbackGeo as any })
       }
     } catch (e: any) {
       setError(e.message || 'Optimization failed')
