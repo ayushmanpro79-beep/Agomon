@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { FadeUp, PageTransition, PressButton } from '@/components/ui/Animated'
 import PandalMap from '@/components/map/PandalMap'
 import Legend from '@/components/map/Legend'
@@ -69,7 +70,14 @@ export default function PandalDetailClient({ pandal }: { pandal: Pandal }) {
         <div className="glass rounded-2xl overflow-hidden">
           <div className="h-56 md:h-64 bg-[#020617]/60 flex items-center justify-center relative border-b border-[#FFD60A]/10">
             {hasImage ? (
-              <img src={pandal.image_url!} alt={`${pandal.name} Durga Puja pandal in ${pandal.area} 2026`} className="w-full h-full object-cover" />
+              <Image
+                src={pandal.image_url!}
+                alt={`${pandal.name} Durga Puja pandal in ${pandal.area}, Kolkata 2026 — photo`}
+                fill
+                sizes="(max-width:768px) 100vw, 640px"
+                className="object-cover"
+                priority={false}
+              />
             ) : (
               <div className="text-center p-6">
                 <div className="w-12 h-12 mx-auto rounded-xl bg-[#FFD60A]/10 border border-[#FFD60A]/20 flex items-center justify-center text-[#FFD60A]">◆</div>
@@ -83,6 +91,18 @@ export default function PandalDetailClient({ pandal }: { pandal: Pandal }) {
           <div className="p-3 md:p-4">
             <h1 className="text-lg md:text-xl font-bold text-white leading-tight break-words">{pandal.name}</h1>
             <p className="text-xs md:text-sm text-white/40 mt-1 leading-snug break-words">{pandal.address || pandal.area + ', Kolkata'}</p>
+            {/* AI Overview / SEO citable summary — plain facts, extractable */}
+            <p className="text-[13px] text-white/70 mt-3 leading-relaxed">
+              {pandal.name} is a Durga Puja pandal in <strong className="text-white">{pandal.area}</strong>, Kolkata{pandal.address ? ` — ${pandal.address}` : ''}.
+              {metros.length > 0
+                ? ` Nearest metro: ${metros[0].name} (~${haversineKm({ lat: pandal.latitude!, lon: pandal.longitude! }, { lat: metros[0].lat, lon: metros[0].lon }).toFixed(1)} km).`
+                : ' Check map for nearest metro.'} Explore live crowd prediction, OSM route and community reviews on Agomon.
+            </p>
+            <div className="mt-2 flex flex-wrap gap-1.5 text-[11px]">
+              <Link href="/browse" className="text-[#FFD60A]/60 hover:text-[#FFD60A] underline">Browse all pandals</Link>
+              <span className="text-white/20">•</span>
+              <Link href={`/browse?area=${encodeURIComponent(pandal.area)}`} className="text-[#FFD60A]/60 hover:text-[#FFD60A] underline">More in {pandal.area}</Link>
+            </div>
             <div className="flex items-center gap-3 mt-3 p-3 glass rounded-xl">
               <div className="text-center">
                 <p className="text-2xl font-bold text-[#FFD60A]">{rating.toFixed(1)}</p>

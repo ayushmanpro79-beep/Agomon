@@ -14,14 +14,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   try {
     const supabase = createServerClient();
-    const { data, error } = await supabase.from("pandals").select("slug, created_at").order("name");
+    // include image + updated_at for freshness + Google Image sitemap
+    const { data, error } = await supabase
+      .from("pandals")
+      .select("slug, created_at, updated_at, image_url")
+      .order("name");
     if (error) throw error;
     if (data && data.length) {
       const pandalRoutes: MetadataRoute.Sitemap = data.map((p: any) => ({
         url: `${base}/pandal/${p.slug}`,
-        lastModified: p.created_at ? new Date(p.created_at) : new Date(),
+        lastModified: p.updated_at ? new Date(p.updated_at) : p.created_at ? new Date(p.created_at) : new Date(),
         changeFrequency: "weekly" as const,
         priority: 0.8,
+        // Next 14+ supports images in sitemap route — helps Google Discover/Image indexing
+        ...(p.image_url ? { images: [p.image_url] } : {}),
       }));
       return [...staticRoutes, ...pandalRoutes];
     }

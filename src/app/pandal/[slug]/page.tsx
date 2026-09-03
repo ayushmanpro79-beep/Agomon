@@ -18,8 +18,9 @@ type Pandal = {
 
 const base = process.env.NEXT_PUBLIC_SITE_URL || "https://agomon.vercel.app";
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+// ISR: static for crawlers, revalidated hourly — fixes `force-dynamic` TTFB penalty for SEO
+export const revalidate = 3600;
+export const dynamicParams = true;
 
 export async function generateStaticParams() {
   try {
@@ -35,16 +36,25 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   try {
     const supabase = createServerClient();
-    const { data } = await supabase.from("pandals").select("name, slug, area, address").eq("slug", slug).single();
+    const { data } = await supabase.from("pandals").select("name, slug, area, address, image_url").eq("slug", slug).single();
     if (!data) return { title: "Pandal Not Found | Agomon" };
-    const title = `${data.name} Durga Puja 2026 — ${data.area}`;
-    const description = `Explore ${data.name} in ${data.area}, Kolkata. ${data.address || data.area + ", Kolkata"} — map, nearest metro, crowd updates & community reviews on Agomon.`;
+    const title = `${data.name} Durga Puja 2026 — ${data.area}, Kolkata`;
+    const description = `Explore ${data.name} in ${data.area}, Kolkata. ${data.address || data.area + ", Kolkata"} — live OSM map, nearest metro, crowd meter & community reviews on Agomon.`;
+    const ogImage = (data as any).image_url || `${base}/agomon-logo.png`;
     return {
       title,
       description,
       alternates: { canonical: `${base}/pandal/${slug}` },
-      openGraph: { title, description, url: `${base}/pandal/${slug}`, type: "article", siteName: "Agomon" },
-      twitter: { card: "summary_large_image", title, description },
+      openGraph: {
+        title,
+        description,
+        url: `${base}/pandal/${slug}`,
+        type: "article",
+        siteName: "Agomon",
+        locale: "en_IN",
+        images: [{ url: ogImage, width: 1200, height: 630, alt: `${data.name} — ${data.area} Durga Puja pandal` }],
+      },
+      twitter: { card: "summary_large_image", title, description, images: [ogImage] },
     };
   } catch {
     return { title: "Agomon — Explore Various Pandals in Kolkata" };

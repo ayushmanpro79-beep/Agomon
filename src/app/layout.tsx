@@ -14,26 +14,62 @@ export const metadata: Metadata = {
     default: "Agomon — Explore Various Pandals in Kolkata 2026",
     template: "%s | Agomon",
   },
-  description: "Explore Various Pandals in Kolkata — live map, metro & community reviews. Discover Durga Puja pandals across the city with Agomon.",
-  keywords: ["Durga Puja Kolkata", "Kolkata pandals", "Durga Puja 2026", "Agomon", "Kolkata Puja map", "Durga Puja pandal list"],
-  alternates: { canonical: "/" },
-  icons: { icon: "/agomon-logo.png", apple: "/agomon-logo.png" },
+  description: "Explore Various Pandals in Kolkata — live map, nearest metro, crowd meter & community reviews. Discover 100+ Durga Puja pandals across the city with Agomon.",
+  keywords: ["Durga Puja Kolkata 2026", "Kolkata pandals map", "Durga Puja pandal list", "Agomon", "Kolkata Puja metro nearby", "Durga Puja crowd prediction"],
+  // no canonical here — each page sets its own canonical to avoid duplicate signals on GSC
+  icons: {
+    icon: [
+      { url: "/icon.png", sizes: "512x512", type: "image/png" },
+      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icon-96.png", sizes: "96x96", type: "image/png" },
+      { url: "/icon-48.png", sizes: "48x48", type: "image/png" },
+      { url: "/favicon.ico", sizes: "any" },
+    ],
+    apple: [
+      { url: "/apple-icon.png", sizes: "180x180", type: "image/png" },
+      { url: "/icon.png", sizes: "512x512", type: "image/png" },
+    ],
+    shortcut: ["/favicon.ico"],
+  },
   openGraph: {
     type: "website",
     locale: "en_IN",
     siteName: "Agomon",
     title: "Agomon — Explore Various Pandals in Kolkata 2026",
-    description: "Explore Various Pandals in Kolkata — live map, metro & community reviews.",
-    images: [{ url: "/agomon-logo.png", width: 1200, height: 1200, alt: "Agomon — আগমন" }],
+    description: "Explore Various Pandals in Kolkata — live map, nearest metro, crowd meter & community reviews.",
+    images: [{ url: "/agomon-logo.png", width: 1200, height: 1200, alt: "Agomon — আগমন, Durga Puja guide Kolkata" }],
   },
-  twitter: { card: "summary_large_image", title: "Agomon — Explore Various Pandals in Kolkata 2026", description: "Explore Various Pandals in Kolkata — live map, metro & community reviews.", images: ["/agomon-logo.png"] },
+  twitter: { card: "summary_large_image", title: "Agomon — Explore Various Pandals in Kolkata 2026", description: "Explore Various Pandals in Kolkata — live map, nearest metro, crowd meter & community reviews.", images: ["/agomon-logo.png"] },
   robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 } },
+  verification: { google: "google0b583c00175ca3fb" },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const base = process.env.NEXT_PUBLIC_SITE_URL || "https://agomon.vercel.app";
+  const websiteLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "Agomon",
+    alternateName: "আগমন",
+    url: base,
+    description: "Explore Various Pandals in Kolkata — live map, metro & crowd meter",
+    inLanguage: "en-IN",
+    publisher: { "@type": "Organization", name: "Agomon", logo: { "@type": "ImageObject", url: `${base}/agomon-logo.png` } },
+    potentialAction: { "@type": "SearchAction", target: `${base}/browse?q={search_term_string}`, "query-input": "required name=search_term_string" },
+  };
+  const orgLd = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "Agomon",
+    url: base,
+    logo: `${base}/agomon-logo.png`,
+    description: "Community platform to explore various pandals in Kolkata with live map, crowd meter and reviews.",
+  };
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full`}>
       <body className="min-h-full flex flex-col bg-[#020617] text-[#FFF8E1]">
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteLd) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgLd) }} />
         <header className="sticky top-0 z-50 glass-strong !rounded-none !border-x-0 !border-t-0 border-b border-[#FFD60A]/10">
           <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
             <Link href="/" className="flex items-center gap-2">
