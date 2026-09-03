@@ -67,10 +67,13 @@ const stationFuse = new Fuse(STATIONS, { keys: ['name'], threshold: 0.35, includ
 type GeoCacheEntry = { lat:number; lon:number; display:string; addresstype?: string; cls?: string; type?: string; bbox?: [number,number,number,number] }
 let geocodeCache = new Map<string, GeoCacheEntry | null>()
 let pandalFuse: Fuse<Pandal> | null = null
+let pandalFuseSize = -1
 
 function getPandalFuse(pandals: Pandal[]): Fuse<Pandal> {
-  if (!pandalFuse) {
+  // Rebuild when dataset changes (admin add/edit) — old cache hid new pandals like Tridhara
+  if (!pandalFuse || pandalFuseSize !== pandals.length) {
     pandalFuse = new Fuse(pandals, { keys: ['name','slug','area'], threshold: 0.42, includeScore: true, ignoreLocation: true })
+    pandalFuseSize = pandals.length
   }
   return pandalFuse
 }
@@ -292,4 +295,4 @@ export async function searchEngine(query: string, allPandals: Pandal[]): Promise
   return { pandals: fallback, meta: fallback.length ? `Search: ${query}` : `No match for "${query}"` }
 }
 
-export function resetFuseCache() { pandalFuse = null; geocodeCache.clear() }
+export function resetFuseCache() { pandalFuse = null; pandalFuseSize = -1; geocodeCache.clear() }

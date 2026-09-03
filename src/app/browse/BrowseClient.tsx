@@ -42,6 +42,27 @@ export default function BrowseClient({ initialPandals }: { initialPandals?: Pand
 
   const [nearbyLoc, setNearbyLoc] = useState<{ lat: number; lon: number } | null>(null)
   const [nearbyErr, setNearbyErr] = useState('')
+  const [refreshing, setRefreshing] = useState(false)
+  const [refreshErr, setRefreshErr] = useState('')
+  const [lastRefreshed, setLastRefreshed] = useState<string | null>(null)
+
+  const refresh = async () => {
+    setRefreshing(true)
+    setRefreshErr('')
+    try {
+      const { data, error } = await supabase.from('pandals').select('*').order('name')
+      if (error) throw error
+      setAllPandals((data as Pandal[]) || [])
+      try {
+        const { resetFuseCache } = await import('@/lib/searchEngine')
+        resetFuseCache()
+      } catch {}
+      setLastRefreshed(new Date().toLocaleTimeString())
+    } catch (e: any) {
+      setRefreshErr(e?.message || 'Refresh failed')
+    }
+    setRefreshing(false)
+  }
 
   const pandals = useMemo(() => {
     if (filter === 'All') return allPandals
@@ -143,8 +164,15 @@ export default function BrowseClient({ initialPandals }: { initialPandals?: Pand
       <FadeUp>
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-3">
           <h1 className="font-bold text-[#FFD60A] text-sm md:text-base leading-tight">Browse — Explore Various Pandals in Kolkata</h1>
-          <Link href="/" className="self-start md:self-auto text-xs bg-[#FFD60A] text-[#020617] px-3 py-1.5 rounded-full font-semibold">Welcome</Link>
+          <div className="flex items-center gap-2 self-start md:self-auto">
+            <button onClick={refresh} disabled={refreshing} className="text-xs bg-[#0B1220] border border-[#FFD60A]/20 text-[#FFD60A] px-3 py-1.5 rounded-full font-semibold disabled:opacity-50">
+              {refreshing ? 'Refreshing…' : '↻ Refresh'}
+            </button>
+            <Link href="/" className="text-xs bg-[#FFD60A] text-[#020617] px-3 py-1.5 rounded-full font-semibold">Welcome</Link>
+          </div>
         </div>
+        {lastRefreshed && <p className="text-[11px] text-white/30 mb-2">Updated just now ({lastRefreshed}) • {allPandals.length} pandals loaded — new admin adds appear here</p>}
+        {refreshErr && <p className="text-[11px] text-red-400 mb-2">{refreshErr}</p>}
       </FadeUp>
 
       <FadeUp delay={80}>
