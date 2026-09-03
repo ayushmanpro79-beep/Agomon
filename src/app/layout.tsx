@@ -46,44 +46,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <HeaderAuth />
           </div>
         </header>
-        {/* Festive site-wide toran — marigold garland + jhalar lights (additive, pointer-events-none) */}
-        <div aria-hidden className="pointer-events-none select-none w-full overflow-hidden">
-          <img
-            src="/illustrations/marigold-garland.svg"
-            alt=""
-            draggable={false}
-            className="w-full h-auto block"
-            style={{ filter: 'drop-shadow(0 4px 14px rgba(0,0,0,0.45))' } as any}
-          />
-          <img
-            src="/illustrations/jhalar-lights.svg"
-            alt=""
-            draggable={false}
-            className="w-full h-auto block -mt-1 md:-mt-2"
-            style={{ filter: 'drop-shadow(0 0 8px rgba(255,214,10,0.22))' } as any}
-          />
-        </div>
         <main className="flex-1 max-w-5xl mx-auto w-full px-4 py-4">{children}</main>
-        {/* Festive bottom strip — kash phool + alpana (additive) */}
-        <div aria-hidden className="pointer-events-none select-none w-full overflow-hidden mt-2">
-          <img
-            src="/illustrations/kash-phool.svg"
-            alt=""
-            draggable={false}
-            className="w-full h-auto block opacity-90"
-            style={{ filter: 'drop-shadow(0 2px 10px rgba(255,255,255,0.06))' } as any}
-          />
-          <div
-            className="w-full h-[54px] md:h-[72px] opacity-90"
-            style={{
-              backgroundImage: 'url(/illustrations/alpana-border.svg)',
-              backgroundRepeat: 'repeat-x',
-              backgroundSize: 'auto 100%',
-              backgroundPosition: 'center',
-              filter: 'drop-shadow(0 0 6px rgba(255,214,10,0.18))',
-            } as any}
-          />
-        </div>
         <footer className="py-6 flex flex-col items-center gap-2 text-center text-xs text-[#FFD60A]/30">
           <span>Agomon — Explore Various Pandals in Kolkata • 2026</span>
           <Image
