@@ -33,6 +33,7 @@ export default function HeaderAuth() {
     <>
       <Link href="/" onClick={onClick} className="px-3 py-2.5 rounded-full bg-[#FFD60A] text-[#020617] font-semibold text-xs text-center">Welcome</Link>
       <Link href="/browse" onClick={onClick} className="px-3 py-2.5 rounded-full border border-[#FFD60A]/20 text-[#FFD60A] text-xs text-center">Browse</Link>
+      <Link href="/pujo-routing" onClick={onClick} className="px-3 py-2.5 rounded-full bg-[#FFD60A]/15 border border-[#FFD60A]/30 text-[#FFD60A] text-xs text-center">Pujo Routing 🗺️</Link>
       <Link href="/travel-plan" onClick={onClick} className="px-3 py-2.5 rounded-full border border-[#FFD60A]/20 text-[#FFD60A] text-xs text-center">Travel Plan</Link>
       <Link href="/about" onClick={onClick} className="px-3 py-2.5 rounded-full border border-[#FFD60A]/20 text-[#FFD60A] text-xs text-center">About</Link>
       {!user && <Link href="/login" onClick={onClick} className="px-3 py-2.5 rounded-full border border-[#FFD60A]/20 text-[#FFD60A] text-xs text-center">Login</Link>}

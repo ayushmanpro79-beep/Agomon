@@ -33,22 +33,38 @@ export default function PandalDetailClient({ pandal }: { pandal: Pandal }) {
   useEffect(() => {
     if (!pandal?.latitude || !pandal?.longitude) return
     if (!navigator.geolocation) return
+    // cached route (fixes long unresolved spinner on revisit — from PUJO-APP caching idea)
+    const cacheKey = `agomon:route:${pandal.id}`
+    try {
+      const cached = sessionStorage.getItem(cacheKey)
+      if (cached) {
+        const { geo, info } = JSON.parse(cached)
+        setRouteGeoJson(geo)
+        setRouteInfo(info)
+      }
+    } catch {}
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
         const u = { lat: pos.coords.latitude, lon: pos.coords.longitude }
         setUserLoc(u)
         try {
           const straightKm = haversineKm({ lat: u.lat, lon: u.lon }, { lat: pandal.latitude!, lon: pandal.longitude! })
-          const profile = straightKm > 8 ? 'driving' : 'foot'
+          const profile = straightKm > 4 ? 'driving' : 'foot' // tightened from 8km (PUJO-APP walking-aware)
           const url = `https://router.project-osrm.org/route/v1/${profile}/${u.lon},${u.lat};${pandal.longitude},${pandal.latitude}?overview=full&geometries=geojson`
-          const res = await fetch(url)
+          const ctrl = new AbortController()
+          const t = setTimeout(() => ctrl.abort(), 8000)
+          const res = await fetch(url, { signal: ctrl.signal })
+          clearTimeout(t)
           const json = await res.json()
           if (json.routes?.[0]) {
-            setRouteGeoJson({ type: 'FeatureCollection', features: [{ type: 'Feature', geometry: json.routes[0].geometry, properties: {} }] })
+            const geo = { type: 'FeatureCollection', features: [{ type: 'Feature', geometry: json.routes[0].geometry, properties: {} }] } as any
             const dist = (json.routes[0].distance / 1000).toFixed(1)
             const isFoot = profile === 'foot'
             const dur = isFoot ? Math.round(json.routes[0].distance / 1.4 / 60) : Math.round(json.routes[0].duration / 60)
-            setRouteInfo(`${dist} km • ${dur} min ${isFoot ? 'walk' : 'drive'}`)
+            const info = `${dist} km • ${dur} min ${isFoot ? 'walk' : 'drive'}`
+            setRouteGeoJson(geo)
+            setRouteInfo(info)
+            try { sessionStorage.setItem(cacheKey, JSON.stringify({ geo, info })) } catch {}
           }
         } catch {}
       },
