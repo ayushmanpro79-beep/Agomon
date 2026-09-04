@@ -136,13 +136,42 @@ body { background: var(--agomon-bg); color: var(--agomon-yellow-soft); }
 }
 .dhak-fade { animation: dhak-fade 700ms cubic-bezier(0.16,1,0.3,1) forwards; }
 
-/* Browse filter yellow pop-in — replays on selection (row keyed by active filter) */
+/* Browse filter yellow pop — selected + hover/tap (crisp yellow) */
 @keyframes filter-pop {
   0% { transform: scale(0.88); box-shadow: 0 0 0 rgba(255,214,10,0); }
   55% { transform: scale(1.07); box-shadow: 0 0 24px rgba(255,214,10,0.55); border-color: rgba(255,214,10,0.6); }
   100% { transform: scale(1.01); box-shadow: 0 0 18px rgba(255,214,10,0.3); }
 }
-.filter-pop { animation: filter-pop 380ms cubic-bezier(0.16,1,0.3,1); }
+.filter-pop { animation: filter-pop 380ms cubic-bezier(0.34,1.56,0.64,1); will-change: transform; }
+@keyframes filter-hover-pop {
+  0% { transform: scale(1); box-shadow: 0 0 0 rgba(255,214,10,0); }
+  50% { transform: scale(1.06); box-shadow: 0 0 20px rgba(255,214,10,0.42); }
+  100% { transform: scale(1.04); box-shadow: 0 0 18px rgba(255,214,10,0.35); }
+}
+@keyframes filter-tap-pop {
+  0% { transform: scale(1); }
+  40% { transform: scale(0.92); box-shadow: 0 0 16px rgba(255,214,10,0.5); }
+  70% { transform: scale(1.05); box-shadow: 0 0 22px rgba(255,214,10,0.45); }
+  100% { transform: scale(1); }
+}
+/* base filter button — 44px touch target on mobile, crisp on PC */
+.filter-btn {
+  will-change: transform, box-shadow;
+  transform: translateZ(0);
+  transition: transform 220ms cubic-bezier(0.16,1,0.3,1), box-shadow 220ms ease, background 220ms ease, border-color 220ms ease, color 220ms ease;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+.filter-btn:focus-visible { outline: 2px solid rgba(255,214,10,0.55); outline-offset: 2px; }
+.filter-scroll {
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scroll-padding-inline: 12px;
+  overscroll-behavior-x: contain;
+}
+.filter-scroll > * { scroll-snap-align: start; }
+.filter-btn:active { animation: filter-tap-pop 260ms cubic-bezier(0.34,1.56,0.64,1); }
 
 /* Metro dropdown refined enter — fade + slide-down + settle */
 @keyframes metro-drop-in {
@@ -150,17 +179,48 @@ body { background: var(--agomon-bg); color: var(--agomon-yellow-soft); }
   60% { opacity: 1; transform: translateY(2px) scale(1.005); }
   100% { opacity: 1; transform: translateY(0) scale(1); }
 }
-.metro-drop-in { animation: metro-drop-in 320ms cubic-bezier(0.16,1,0.3,1); transform-origin: top center; }
+.metro-drop-in { animation: metro-drop-in 320ms cubic-bezier(0.16,1,0.3,1); transform-origin: top center; will-change: transform, opacity; }
+@keyframes metro-drop-out {
+  0% { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(-6px) scale(0.98); }
+}
+.metro-drop-out { animation: metro-drop-out 180ms ease forwards; transform-origin: top center; }
+@keyframes metro-item-in {
+  0% { opacity: 0; transform: translateY(4px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.metro-item { animation: metro-item-in 280ms cubic-bezier(0.16,1,0.3,1) both; }
 @media (max-width: 768px) {
   .filter-pop { animation-duration: 300ms; }
   .metro-drop-in { animation-duration: 260ms; }
 }
+/* Dropdown crisp - backdrop + scroll */
+.metro-dropdown {
+  backdrop-filter: blur(20px) saturate(1.35);
+  -webkit-backdrop-filter: blur(20px) saturate(1.35);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,214,10,0.08) inset, 0 1px 0 rgba(255,255,255,0.06) inset;
+}
 
+/* Responsive yellow pop on hover (PC) and tap (touch) — always yellow */
+@media (hover: hover) and (pointer: fine) {
+  .filter-btn:not(.filter-btn-selected):hover {
+    animation: filter-hover-pop 340ms cubic-bezier(0.34,1.56,0.64,1) forwards;
+    border-color: rgba(255,214,10,0.45) !important;
+    background: rgba(255,214,10,0.08) !important;
+    color: #FFD60A !important;
+  }
+  .filter-btn-selected:hover {
+    box-shadow: 0 0 24px rgba(255,214,10,0.45);
+    transform: scale(1.03);
+    border-color: rgba(255,214,10,0.6) !important;
+  }
+}
 /* Mobile tap pop — slight scale + glow on phone, no hover needed */
 @media (hover: none) and (pointer: coarse) {
   .pc-btn:active { transform: scale(0.96); box-shadow: 0 0 12px rgba(255,214,10,0.35); transition-duration: 0.12s; }
   .glass-pop:active { transform: scale(0.985); transition-duration: 0.14s; }
   .tap-active { transform: scale(0.96); }
+  .filter-btn:active { transform: scale(0.96); box-shadow: 0 0 16px rgba(255,214,10,0.38); }
 }
 /* Ultra-responsive mobile infrastructure — lightweight */
 html { -webkit-tap-highlight-color: transparent; }
@@ -170,12 +230,18 @@ button, a { touch-action: manipulation; }
   /* Reduce blur cost on mobile GPU */
   .glass { backdrop-filter: blur(12px) saturate(1.2); -webkit-backdrop-filter: blur(12px) saturate(1.2); }
   .glass-strong { backdrop-filter: blur(14px) saturate(1.25); -webkit-backdrop-filter: blur(14px) saturate(1.25); }
+  .metro-dropdown { backdrop-filter: blur(14px) saturate(1.25); -webkit-backdrop-filter: blur(14px) saturate(1.25); }
   /* Faster, cheaper transitions on touch */
   .glass-pop, .pc-btn, .pc-hover { transition-duration: 0.18s; will-change: transform; transform: translateZ(0); }
+  .filter-btn { transition-duration: 0.16s; }
   /* Shorter fade for snappy feel */
   .dhak-fade { animation-duration: 450ms; }
   /* Prevent layout jank on tap */
   body { overscroll-behavior-y: contain; -webkit-font-smoothing: antialiased; }
+}
+@media (max-width: 640px) {
+  .filter-btn { font-size: 13px; padding: 8px 14px; }
+  .metro-dropdown { border-radius: 16px; }
 }
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {

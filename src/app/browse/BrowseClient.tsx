@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { supabase } from '@/lib/supabase/client'
 import PandalMap from '@/components/map/PandalMap'
 import PandalCard from '@/components/pandal/PandalCard'
@@ -30,6 +30,8 @@ export default function BrowseClient({ initialPandals }: { initialPandals?: Pand
   const [filter, setFilter] = useState('All')
   const [selectedMetro, setSelectedMetro] = useState<string>('All')
   const [showMetroDropdown, setShowMetroDropdown] = useState(false)
+  const dropdownWrapRef = useRef<HTMLDivElement>(null)
+  const filterRowRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (initialPandals && initialPandals.length) return
@@ -76,6 +78,32 @@ export default function BrowseClient({ initialPandals }: { initialPandals?: Pand
   useEffect(() => {
     setSelectedMetro('All')
     setShowMetroDropdown(false)
+  }, [filter])
+
+  // click outside + Esc to close metro dropdown — crisp on both PC and mobile
+  useEffect(() => {
+    if (!showMetroDropdown) return
+    const onDown = (e: MouseEvent | TouchEvent) => {
+      if (!dropdownWrapRef.current) return
+      const t = e.target as Node
+      if (!dropdownWrapRef.current.contains(t)) setShowMetroDropdown(false)
+    }
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setShowMetroDropdown(false) }
+    document.addEventListener('mousedown', onDown)
+    document.addEventListener('touchstart', onDown as any)
+    document.addEventListener('keydown', onKey)
+    return () => {
+      document.removeEventListener('mousedown', onDown)
+      document.removeEventListener('touchstart', onDown as any)
+      document.removeEventListener('keydown', onKey)
+    }
+  }, [showMetroDropdown])
+
+  // keep active filter button visible in scroll row (mobile)
+  useEffect(() => {
+    if (!filterRowRef.current) return
+    const el = filterRowRef.current.querySelector(`[data-filter="${filter}"]`) as HTMLElement | null
+    if (el) el.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' })
   }, [filter])
 
   const metrosForArea = useMemo(() => {
@@ -139,7 +167,19 @@ export default function BrowseClient({ initialPandals }: { initialPandals?: Pand
     if (!query.trim()) setFilteredBySearch(filteredByMetro)
   }, [filteredByMetro, query])
 
-  const handleAreaClick = (a: string) => {
+  const handleAreaClick = (a: string, e?: React.MouseEvent<HTMLButtonElement>) => {
+    // yellow pop on every tap/click — force reflow if same element to retrigger filter-pop
+    if (e?.currentTarget) {
+      const btn = e.currentTarget
+      btn.classList.remove('filter-pop')
+      void btn.offsetWidth
+      btn.classList.add('filter-pop')
+      // quick tap feedback
+      btn.animate?.(
+        [{ transform: 'scale(1)' }, { transform: 'scale(0.96)' }, { transform: 'scale(1.04)' }, { transform: 'scale(1)' }],
+        { duration: 260, easing: 'cubic-bezier(0.34,1.56,0.64,1)' }
+      )
+    }
     if (a === 'Nearby me') {
       setNearbyErr('')
       if (!navigator.geolocation) { setNearbyErr('Geolocation not supported'); return }
@@ -223,43 +263,73 @@ export default function BrowseClient({ initialPandals }: { initialPandals?: Pand
       </FadeUp>
 
       <FadeUp delay={120}>
-        {/* hover opens the metro menu on desktop, tap toggles it on touch */}
-        <div
-          onMouseEnter={() => { if (filter !== 'All' && filter !== 'Nearby me') setShowMetroDropdown(true) }}
-          onMouseLeave={() => setShowMetroDropdown(false)}
-        >
-        <div key={filter} className="flex gap-2 overflow-x-auto scrollbar-hide pb-2 mt-4">
-          {AREAS.map((a) => (
-            <button
-              key={a}
-              onClick={() => handleAreaClick(a)}
-              className={`whitespace-nowrap px-3 py-1 rounded-full text-xs border flex items-center gap-1 transition-all active:scale-95 ${filter === a ? 'bg-[#FFD60A] text-[#020617] border-[#FFD60A] pc-selected filter-pop' : 'glass text-[#FFD60A]/70 border-[#FFD60A]/10 hover:border-[#FFD60A]/30 hover:scale-[1.04] hover:text-[#FFD60A]'}`}
-            >
-              {a === 'Nearby me' ? '📍 Nearby me' : a} {a !== 'All' && a !== 'Nearby me' && filter === a && metrosForArea.length > 0 && <span className="text-[10px]">{metroMenuOpen ? '▴' : '▾'}</span>}
-            </button>
-          ))}
-        </div>
-        {nearbyErr && filter === 'Nearby me' && <p className="text-[11px] text-red-400 mt-2">{nearbyErr}</p>}
-        {filter === 'Nearby me' && !nearbyLoc && !nearbyErr && <p className="text-[11px] text-white/30 mt-2">Getting your location…</p>}
-        {filter === 'Nearby me' && nearbyLoc && <p className="text-[11px] text-[#FFD60A]/60 mt-2">{pandals.length} pandals within 3 km of you</p>}
-        {metroMenuOpen && (
-          <div key={`metro-${filter}-${selectedMetro}`} className="mt-2 glass-strong rounded-xl overflow-hidden metro-drop-in border border-[#FFD60A]/15 shadow-[0_8px_30px_rgba(0,0,0,0.45)]">
-            <button onClick={() => { setSelectedMetro('All'); setShowMetroDropdown(false) }} className={`w-full text-left px-3 py-2.5 text-xs hover:bg-[#FFD60A]/10 hover:pl-4 flex justify-between transition-all pc-btn ${selectedMetro === 'All' ? 'bg-[#FFD60A]/15 text-[#FFD60A] font-semibold pc-selected' : 'text-white/80'}`}>
-              <span>* All — {pandals.length} pandals</span><span className="text-white/30">▸</span>
-            </button>
-            <div className="grid grid-cols-2 gap-0 border-t border-[#FFD60A]/10">
-              {metrosForArea.map((m) => {
-                const cnt = pandals.filter((p) => p.latitude && p.longitude && haversineKm({ lat: p.latitude, lon: p.longitude }, { lat: m.lat, lon: m.lon }) <= 2.2).length
-                return (
-                  <button key={m.id} onClick={() => { setSelectedMetro(m.id); setShowMetroDropdown(false) }} className={`text-left px-3 py-2.5 text-xs hover:bg-[#FFD60A]/10 hover:pl-4 flex justify-between border-b border-[#FFD60A]/5 transition-all pc-btn ${selectedMetro === m.id ? 'bg-[#FFD60A]/15 text-[#FFD60A] font-semibold pc-selected' : 'text-white/80'}`}>
-                    <span>* {m.name}</span><span className="text-white/30 text-[11px]">{cnt}</span>
-                  </button>
-                )
-              })}
-            </div>
-            {metrosForArea.length === 0 && <p className="px-3 py-3 text-xs text-white/30">No metro within 2.2km of this area</p>}
+        {/* filter row — responsive yellow pop on tap/hover/click, crisp dropdown */}
+        <div ref={dropdownWrapRef} className="relative" onMouseEnter={() => { if (filter !== 'All' && filter !== 'Nearby me') setShowMetroDropdown(true) }} onMouseLeave={() => setShowMetroDropdown(false)}>
+          <div ref={filterRowRef} key={filter} className="flex gap-2.5 overflow-x-auto scrollbar-hide filter-scroll pb-3 mt-4 px-1 -mx-1 snap-x snap-mandatory">
+            {AREAS.map((a) => (
+              <button
+                key={a}
+                data-filter={a}
+                aria-pressed={filter === a}
+                onClick={(e) => handleAreaClick(a, e)}
+                onMouseEnter={(e) => {
+                  // subtle yellow preview on hover before click (desktop)
+                  if (filter !== a) {
+                    e.currentTarget.style.borderColor = 'rgba(255,214,10,0.35)'
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (filter !== a) e.currentTarget.style.borderColor = ''
+                }}
+                className={`whitespace-nowrap shrink-0 snap-start min-h-[38px] md:min-h-[34px] px-4 py-2 rounded-full text-[13px] md:text-xs font-semibold border flex items-center gap-1.5 filter-btn select-none ${
+                  filter === a
+                    ? 'bg-[#FFD60A] text-[#020617] border-[#FFD60A] shadow-[0_0_18px_rgba(255,214,10,0.32)] filter-btn-selected filter-pop'
+                    : 'glass text-[#FFD60A]/75 border-[#FFD60A]/15 hover:text-[#FFD60A] hover:border-[#FFD60A]/40'
+                }`}
+              >
+                {a === 'Nearby me' ? '📍 Nearby me' : a} {a !== 'All' && a !== 'Nearby me' && filter === a && metrosForArea.length > 0 && <span className="text-[11px] leading-none ml-0.5">{metroMenuOpen ? '▴' : '▾'}</span>}
+              </button>
+            ))}
           </div>
-        )}
+          {nearbyErr && filter === 'Nearby me' && <p className="text-[11px] text-red-400 mt-1">{nearbyErr}</p>}
+          {filter === 'Nearby me' && !nearbyLoc && !nearbyErr && <p className="text-[11px] text-white/30 mt-1">Getting your location…</p>}
+          {filter === 'Nearby me' && nearbyLoc && <p className="text-[11px] text-[#FFD60A]/60 mt-1">{pandals.length} pandals within 3 km of you</p>}
+          {metroMenuOpen && (
+            <div
+              key={`metro-${filter}-${selectedMetro}`}
+              role="listbox"
+              aria-label="Metro filter"
+              className="mt-3 glass-strong metro-dropdown metro-drop-in rounded-2xl overflow-hidden border border-[#FFD60A]/15 md:absolute md:left-0 md:top-full md:z-30 md:w-[min(560px,92vw)] w-full max-h-[52vh] overflow-y-auto shadow-[0_16px_48px_rgba(0,0,0,0.55)]"
+            >
+              <button
+                role="option"
+                aria-selected={selectedMetro === 'All'}
+                onClick={() => { setSelectedMetro('All'); setShowMetroDropdown(false) }}
+                className={`w-full text-left px-4 py-3 text-[13px] md:text-xs flex justify-between items-center transition-all hover:bg-[#FFD60A]/10 hover:pl-5 active:scale-[0.99] pc-btn metro-item ${selectedMetro === 'All' ? 'bg-[#FFD60A]/15 text-[#FFD60A] font-semibold pc-selected' : 'text-white/85'}`}
+                style={{ animationDelay: '0ms' }}
+              >
+                <span className="flex items-center gap-2"><span className="text-[#FFD60A]">◆</span> All — {pandals.length} pandals</span><span className="text-white/25 text-xs">▸</span>
+              </button>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-0 border-t border-[#FFD60A]/10">
+                {metrosForArea.map((m, idx) => {
+                  const cnt = pandals.filter((p) => p.latitude && p.longitude && haversineKm({ lat: p.latitude, lon: p.longitude }, { lat: m.lat, lon: m.lon }) <= 2.2).length
+                  return (
+                    <button
+                      key={m.id}
+                      role="option"
+                      aria-selected={selectedMetro === m.id}
+                      onClick={() => { setSelectedMetro(m.id); setShowMetroDropdown(false) }}
+                      className={`text-left px-4 py-3 text-[13px] md:text-xs flex justify-between items-center border-b border-[#FFD60A]/5 transition-all hover:bg-[#FFD60A]/10 hover:pl-5 active:scale-[0.98] pc-btn metro-item ${selectedMetro === m.id ? 'bg-[#FFD60A]/15 text-[#FFD60A] font-semibold pc-selected' : 'text-white/85'}`}
+                      style={{ animationDelay: `${(idx + 1) * 30}ms` }}
+                    >
+                      <span className="flex items-center gap-2"><span className="text-white/20 text-[10px]">●</span> {m.name}</span><span className="text-white/30 text-[11px] font-mono bg-white/5 px-1.5 py-0.5 rounded-full">{cnt}</span>
+                    </button>
+                  )
+                })}
+              </div>
+              {metrosForArea.length === 0 && <p className="px-4 py-4 text-xs text-white/30 text-center">No metro within 2.2km of this area</p>}
+            </div>
+          )}
         </div>
       </FadeUp>
 
