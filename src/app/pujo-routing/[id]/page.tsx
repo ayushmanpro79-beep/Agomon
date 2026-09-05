@@ -34,7 +34,9 @@ export default async function RouteView({ params }: { params: Promise<{ id: stri
     pandals = (route.ordered_slugs || []).map((s: string) => bySlug.get(s)).filter(Boolean);
   }
   const { data: auth } = await supabase.auth.getUser();
-  const isOwner = !!auth.user && auth.user.id === route.user_id;
+  const isAdminSuggested = (route as any).is_admin_suggested === true || route.username === 'Admin Suggested'
+  const isAiRoute = (route as any).is_ai === true
+  const isOwner = !!auth.user && auth.user.id === route.user_id && !isAdminSuggested && !isAiRoute;
 
   return (
     <div className="max-w-3xl mx-auto">
@@ -45,7 +47,12 @@ export default async function RouteView({ params }: { params: Promise<{ id: stri
           {isOwner && <RouteDeleteButton routeId={route.id} ownerId={route.user_id} />}
         </div>
         <h1 className="text-xl font-bold text-white mt-2">{route.title}</h1>
-        <p className="text-xs text-white/40 mt-1">by {route.username || "Anonymous"} • {route.distance_m ? `${(route.distance_m / 1000).toFixed(1)} km • ${Math.round(route.duration_s / 60)} min` : ""} • {new Date(route.created_at).toLocaleDateString()} {route.is_public ? '• Public' : '• Private'}</p>
+        <p className="text-xs text-white/40 mt-1">
+          by {route.username || 'Anonymous'} • {route.distance_m ? `${(route.distance_m / 1000).toFixed(1)} km • ${Math.round(route.duration_s / 60)} min` : ''} • {new Date(route.created_at).toLocaleDateString()} {route.is_public ? '• Public' : '• Private'}{' '}
+          {isAdminSuggested && <span className="ml-2 text-[10px] px-2 py-0.5 rounded-full bg-purple-500/15 border border-purple-500/30 text-purple-300">Admin Suggested</span>}
+          {isAiRoute && !isAdminSuggested && <span className="ml-2 text-[10px] px-2 py-0.5 rounded-full bg-sky-500/15 border border-sky-500/30 text-sky-300">AI</span>}
+        </p>
+        {isAdminSuggested && <p className="text-[11px] text-purple-300/70 mt-1">This route is Admin Suggested — public for everyone, deletable only by admin in Admin tab.</p>}
         {route.description && <p className="text-sm text-white/60 mt-2">{route.description}</p>}
         {pandals.length > 0 && <div className="mt-4"><PandalMap pandals={pandals} routeGeoJson={route.geojson} /></div>}
         {pandals.length >= 2 && (

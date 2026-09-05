@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { getMapMode } from '@/lib/mapConfig'
 import BulkImageManager from '@/components/admin/BulkImageManager'
 import PandalManager from '@/components/admin/PandalManager'
+import AdminPujaRoutingEngine from '@/components/admin/AdminPujaRoutingEngine'
 
 export default function AdminPage() {
   const [pw, setPw] = useState('')
@@ -113,6 +114,8 @@ export default function AdminPage() {
       <BulkImageManager />
 
       <PandalManager />
+
+      <AdminPujaRoutingEngine />
     </div>
   )
 }

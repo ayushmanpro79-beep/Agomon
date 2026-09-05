@@ -14,6 +14,9 @@ type RouteRow = {
   is_public: boolean | null
   created_at: string
   user_id: string | null
+  is_admin_suggested?: boolean | null
+  is_ai?: boolean | null
+  admin_area?: string | null
 }
 
 function formatRouteTitle(r: RouteRow): string {
@@ -74,7 +77,7 @@ export default function PujoRoutingFeedClient() {
             .order('created_at', { ascending: false })
             .limit(24)
           if (err) throw err
-          setRoutes((data as RouteRow[]) || [])
+          setRoutes((data as any) || [])
         } else {
           // private tab: default view — only private routes of current user
           if (!currentUser) {
@@ -238,7 +241,9 @@ export default function PujoRoutingFeedClient() {
             {routes.map((r) => {
               const displayTitle = formatRouteTitle(r)
               const count = r.ordered_slugs?.length || 0
-              const canDelete = !!user && r.user_id === user.id
+              const isAdminSuggested = r.username === 'Admin Suggested' || (r as any).is_admin_suggested === true
+              const isAi = (r as any).is_ai === true
+              const canDelete = !!user && r.user_id === user.id && !isAdminSuggested && !isAi
               return (
                 <div
                   key={r.id}
@@ -252,10 +257,13 @@ export default function PujoRoutingFeedClient() {
                         <span className="w-5 h-5 rounded-full bg-[#FFD60A]/15 border border-[#FFD60A]/20 flex items-center justify-center text-[10px] text-[#FFD60A]">👤</span>
                         <span className="text-[#FFD60A]/80 font-medium">{r.username || 'Anonymous'}</span>
                       </span>
+                      {isAdminSuggested && <span className="text-[10px] px-2 py-0.5 rounded-full bg-purple-500/15 border border-purple-500/30 text-purple-300">Admin Suggested</span>}
+                      {isAi && !isAdminSuggested && <span className="text-[10px] px-2 py-0.5 rounded-full bg-sky-500/15 border border-sky-500/30 text-sky-300">AI</span>}
                       <span>•</span>
                       <span>{r.distance_m ? `${(r.distance_m / 1000).toFixed(1)} km` : ''}</span>
                       <span>{r.duration_s ? `• ${Math.round(r.duration_s / 60)} min` : ''}</span>
-                      {!isPublic && <span className="ml-auto text-[10px] px-2 py-0.5 rounded-full bg-[#0B1220] border border-[#FFD60A]/15 text-white/50">Private</span>}
+                      {!isPublic && !isAdminSuggested && <span className="ml-auto text-[10px] px-2 py-0.5 rounded-full bg-[#0B1220] border border-[#FFD60A]/15 text-white/50">Private</span>}
+                      {isAdminSuggested && <span className="ml-auto text-[10px] px-2 py-0.5 rounded-full bg-[#0B1220] border border-purple-500/20 text-purple-300/80">⭐ Admin</span>}
                     </div>
                   </Link>
                   {canDelete && (
@@ -268,6 +276,7 @@ export default function PujoRoutingFeedClient() {
                       <span aria-hidden>🗑️</span> {deletingId === r.id ? 'Deleting…' : 'Delete'}
                     </button>
                   )}
+                  {isAdminSuggested && <span className="absolute top-3 right-3 text-[10px] px-2 py-1 rounded-full bg-[#0B1220] border border-white/10 text-white/25">Admin only</span>}
                 </div>
               )
             })}
