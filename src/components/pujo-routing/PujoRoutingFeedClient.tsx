@@ -42,6 +42,8 @@ export default function PujoRoutingFeedClient() {
   const [routes, setRoutes] = useState<RouteRow[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [deleteMsg, setDeleteMsg] = useState<string | null>(null)
 
   useEffect(() => {
     let mounted = true
@@ -117,6 +119,26 @@ export default function PujoRoutingFeedClient() {
     setTab(checked ? 'public' : 'private')
   }
 
+  const handleDelete = async (id: string) => {
+    if (!user) return
+    const ok = window.confirm('Delete this route? This cannot be undone.')
+    if (!ok) return
+    setDeletingId(id)
+    setDeleteMsg(null)
+    setError(null)
+    try {
+      const { error: delErr } = await supabase.from('puja_routes').delete().eq('id', id).eq('user_id', user.id)
+      if (delErr) throw delErr
+      setRoutes((prev) => prev.filter((r) => r.id !== id))
+      setDeleteMsg('Route deleted')
+      setTimeout(() => setDeleteMsg(null), 2500)
+    } catch (e: any) {
+      setError(e.message || 'Failed to delete route')
+    } finally {
+      setDeletingId(null)
+    }
+  }
+
   const isPrivate = tab === 'private'
   const isPublic = tab === 'public'
 
@@ -162,7 +184,13 @@ export default function PujoRoutingFeedClient() {
         {createLabel}
       </Link>
       {!user && isPrivate && <p className="text-[11px] text-amber-300/80 mt-2">Login to see your private routes. Public routes are visible to everyone.</p>}
+      {user && isPrivate && !loading && routes.length === 0 && !error && (
+        <p className="text-[11px] text-white/30 mt-2">
+          Why not showing? You have {routes.length} private routes. Check: 1) you’re logged as <span className="text-[#FFD60A]">{user.email}</span> 2) routes saved with <span className="text-white/60">Private</span> unchecked as public go to Public tab 3) table <code className="bg-[#0B1220] px-1 rounded">puja_routes</code> must exist + RLS owner read own.
+        </p>
+      )}
 
+      {deleteMsg && <p className="text-xs text-emerald-400 mt-3 bg-emerald-400/10 border border-emerald-400/20 rounded-xl px-3 py-2">{deleteMsg}</p>}
       {error && <p className="text-xs text-amber-400 mt-3 bg-amber-400/10 border border-amber-400/20 rounded-xl px-3 py-2">{error}</p>}
 
       {/* Routes grid */}
@@ -210,25 +238,37 @@ export default function PujoRoutingFeedClient() {
             {routes.map((r) => {
               const displayTitle = formatRouteTitle(r)
               const count = r.ordered_slugs?.length || 0
+              const canDelete = !!user && r.user_id === user.id
               return (
-                <Link
+                <div
                   key={r.id}
-                  href={`/pujo-routing/${r.id}`}
-                  className="block p-4 rounded-2xl glass border border-[#FFD60A]/10 transition glass-pop hover:border-[#FFD60A]/25 hover:shadow-[0_0_22px_rgba(255,214,10,0.16)] active:scale-[0.97]"
+                  className="group relative p-4 rounded-2xl glass border border-[#FFD60A]/10 transition glass-pop hover:border-[#FFD60A]/25 hover:shadow-[0_0_22px_rgba(255,214,10,0.16)] active:scale-[0.97]"
                 >
-                  <h3 className="text-sm font-semibold text-white line-clamp-1">{displayTitle}</h3>
-                  <p className="text-xs text-white/40 mt-1 line-clamp-2">{r.description || `${count} pandals • ${isPrivate ? 'private' : 'public'}`}</p>
-                  <div className="flex items-center gap-2 mt-2 text-[11px] text-white/30 flex-wrap">
-                    <span className="inline-flex items-center gap-1.5">
-                      <span className="w-5 h-5 rounded-full bg-[#FFD60A]/15 border border-[#FFD60A]/20 flex items-center justify-center text-[10px] text-[#FFD60A]">👤</span>
-                      <span className="text-[#FFD60A]/80 font-medium">{r.username || 'Anonymous'}</span>
-                    </span>
-                    <span>•</span>
-                    <span>{r.distance_m ? `${(r.distance_m / 1000).toFixed(1)} km` : ''}</span>
-                    <span>{r.duration_s ? `• ${Math.round(r.duration_s / 60)} min` : ''}</span>
-                    {!isPublic && <span className="ml-auto text-[10px] px-2 py-0.5 rounded-full bg-[#0B1220] border border-[#FFD60A]/15 text-white/50">Private</span>}
-                  </div>
-                </Link>
+                  <Link href={`/pujo-routing/${r.id}`} className="block">
+                    <h3 className="text-sm font-semibold text-white line-clamp-1 pr-14">{displayTitle}</h3>
+                    <p className="text-xs text-white/40 mt-1 line-clamp-2">{r.description || `${count} pandals • ${isPrivate ? 'private' : 'public'}`}</p>
+                    <div className="flex items-center gap-2 mt-2 text-[11px] text-white/30 flex-wrap">
+                      <span className="inline-flex items-center gap-1.5">
+                        <span className="w-5 h-5 rounded-full bg-[#FFD60A]/15 border border-[#FFD60A]/20 flex items-center justify-center text-[10px] text-[#FFD60A]">👤</span>
+                        <span className="text-[#FFD60A]/80 font-medium">{r.username || 'Anonymous'}</span>
+                      </span>
+                      <span>•</span>
+                      <span>{r.distance_m ? `${(r.distance_m / 1000).toFixed(1)} km` : ''}</span>
+                      <span>{r.duration_s ? `• ${Math.round(r.duration_s / 60)} min` : ''}</span>
+                      {!isPublic && <span className="ml-auto text-[10px] px-2 py-0.5 rounded-full bg-[#0B1220] border border-[#FFD60A]/15 text-white/50">Private</span>}
+                    </div>
+                  </Link>
+                  {canDelete && (
+                    <button
+                      onClick={() => handleDelete(r.id)}
+                      disabled={deletingId === r.id}
+                      aria-label="Delete route"
+                      className="absolute top-3 right-3 inline-flex items-center gap-1 text-[11px] bg-red-500/10 border border-red-500/20 text-red-300 hover:bg-red-500/15 hover:border-red-500/30 px-2.5 py-1 rounded-full transition pc-btn disabled:opacity-50"
+                    >
+                      <span aria-hidden>🗑️</span> {deletingId === r.id ? 'Deleting…' : 'Delete'}
+                    </button>
+                  )}
+                </div>
               )
             })}
           </div>

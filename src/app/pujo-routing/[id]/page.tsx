@@ -2,6 +2,7 @@ import { createServerClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import PandalMap from "@/components/map/PandalMap";
 import SectionBorder from "@/components/ui/SectionBorder";
+import RouteDeleteButton from "@/components/pujo-routing/RouteDeleteButton";
 
 const base = process.env.NEXT_PUBLIC_SITE_URL || "https://agomon.vercel.app";
 
@@ -32,14 +33,19 @@ export default async function RouteView({ params }: { params: Promise<{ id: stri
     const bySlug = new Map((data || []).map((p: any) => [p.slug, p]));
     pandals = (route.ordered_slugs || []).map((s: string) => bySlug.get(s)).filter(Boolean);
   }
+  const { data: auth } = await supabase.auth.getUser();
+  const isOwner = !!auth.user && auth.user.id === route.user_id;
 
   return (
     <div className="max-w-3xl mx-auto">
       <SectionBorder />
       <div className="glass-strong rounded-3xl p-4 md:p-6">
-        <Link href="/pujo-routing" className="text-xs text-white/40">← All routes</Link>
+        <div className="flex items-center justify-between gap-3">
+          <Link href="/pujo-routing" className="text-xs text-white/40">← All routes</Link>
+          {isOwner && <RouteDeleteButton routeId={route.id} ownerId={route.user_id} />}
+        </div>
         <h1 className="text-xl font-bold text-white mt-2">{route.title}</h1>
-        <p className="text-xs text-white/40 mt-1">by {route.username || "Anonymous"} • {route.distance_m ? `${(route.distance_m / 1000).toFixed(1)} km • ${Math.round(route.duration_s / 60)} min` : ""} • {new Date(route.created_at).toLocaleDateString()}</p>
+        <p className="text-xs text-white/40 mt-1">by {route.username || "Anonymous"} • {route.distance_m ? `${(route.distance_m / 1000).toFixed(1)} km • ${Math.round(route.duration_s / 60)} min` : ""} • {new Date(route.created_at).toLocaleDateString()} {route.is_public ? '• Public' : '• Private'}</p>
         {route.description && <p className="text-sm text-white/60 mt-2">{route.description}</p>}
         {pandals.length > 0 && <div className="mt-4"><PandalMap pandals={pandals} routeGeoJson={route.geojson} /></div>}
         {pandals.length >= 2 && (
