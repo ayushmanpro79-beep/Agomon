@@ -4,6 +4,7 @@ import "./globals.css";
 import Link from "next/link";
 import Image from "next/image";
 import HeaderAuth from "@/components/auth/HeaderAuth";
+import RegisterSW from "@/components/pwa/RegisterSW";
 import { cn } from "@/lib/utils";
 
 const figtree = Figtree({subsets:['latin'],variable:'--font-sans'});
@@ -71,6 +72,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={cn("h-full", geistSans.variable, geistMono.variable, "font-sans", figtree.variable)}>
       <body className="min-h-full flex flex-col bg-[#020617] text-[#FFF8E1]">
+        <RegisterSW />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteLd) }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgLd) }} />
         <header className="sticky top-0 z-50 glass-strong !rounded-none !border-x-0 !border-t-0 border-b border-[#FFD60A]/10">
