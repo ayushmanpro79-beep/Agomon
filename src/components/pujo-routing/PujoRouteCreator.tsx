@@ -85,8 +85,16 @@ export default function PujoRouteCreator() {
         const optimizedWithoutYou = res.optimizedPandals.filter((x) => x.id !== 'you') as PandalLite[]
         // keep original road line (includes start), but ordered pandals without 'you'
         setResult({ optimized: res.optimizedPandals as RoutablePandal[], distance: res.distance, duration: res.duration, geojson: res.geojson })
-        // auto-title suggestion
-        if (!title) setTitle(optimizedWithoutYou.slice(0, 2).map((p) => p.name).join(' → ') + (optimizedWithoutYou.length > 2 ? ` +${optimizedWithoutYou.length - 2}` : ''))
+        // auto-title suggestion: start → +n → last (requested format)
+        if (!title) {
+          if (optimizedWithoutYou.length === 0) setTitle('')
+          else if (optimizedWithoutYou.length === 1) setTitle(optimizedWithoutYou[0].name)
+          else if (optimizedWithoutYou.length === 2) setTitle(`${optimizedWithoutYou[0].name} → ${optimizedWithoutYou[1].name}`)
+          else {
+            const n = optimizedWithoutYou.length - 2
+            setTitle(`${optimizedWithoutYou[0].name} → +${n} → ${optimizedWithoutYou[optimizedWithoutYou.length - 1].name}`)
+          }
+        }
         // cache for instant re-open (fix long unresolved spinner)
         try { sessionStorage.setItem('agomon:lastRoute', JSON.stringify(res.geojson)) } catch {}
       } else {
