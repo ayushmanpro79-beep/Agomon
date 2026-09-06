@@ -4,6 +4,7 @@ import { getMapMode } from '@/lib/mapConfig'
 import BulkImageManager from '@/components/admin/BulkImageManager'
 import PandalManager from '@/components/admin/PandalManager'
 import AdminPujaRoutingEngine from '@/components/admin/AdminPujaRoutingEngine'
+import GalleryManager from '@/components/admin/GalleryManager'
 
 export default function AdminPage() {
   const [pw, setPw] = useState('')
@@ -116,6 +117,8 @@ export default function AdminPage() {
       <PandalManager />
 
       <AdminPujaRoutingEngine />
+
+      <GalleryManager />
     </div>
   )
 }

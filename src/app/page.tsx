@@ -5,6 +5,7 @@ import { CornerDeepaks } from '@/components/animations/Deepak'
 import BlogSection from '@/components/blog/BlogSection'
 import SectionBorder from '@/components/ui/SectionBorder'
 import InstallGuide from '@/components/pwa/InstallGuide'
+import GallerySection from '@/components/gallery/GallerySection'
 import Link from 'next/link'
 
 // src/app/page.tsx:12 - welcome only, no browse list, Browse → /browse
@@ -40,6 +41,12 @@ export default function Home() {
       </FadeUp>
 
       <FadeUp delay={150}>
+        <SectionBorder />
+        <GallerySection />
+        <SectionBorder className="mt-3 rotate-180" />
+      </FadeUp>
+
+      <FadeUp delay={170}>
         <SectionBorder />
         <InstallGuide />
         <SectionBorder className="mt-3 rotate-180" />
