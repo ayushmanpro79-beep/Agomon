@@ -1,10 +1,7 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import {
   BackHandler,
-  ActivityIndicator,
   View,
-  Text,
-  TouchableOpacity,
   StyleSheet,
   StatusBar,
   Linking,
@@ -14,6 +11,15 @@ import { WebView } from "react-native-webview";
 import type { WebViewNavigation } from "react-native-webview";
 import Constants from "expo-constants";
 import * as SplashScreen from "expo-splash-screen";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import {
+  Provider as PaperProvider,
+  ActivityIndicator,
+  Text,
+  Button,
+  Card,
+  MD3DarkTheme,
+} from "react-native-paper";
 
 // Keep splash visible until WebView ready
 SplashScreen.preventAutoHideAsync().catch(() => {});
@@ -34,6 +40,22 @@ const getSiteUrl = (): string => {
 };
 
 const SITE_URL = getSiteUrl();
+
+// Agomon dark theme for React Native Paper (latest MD3) — matches web #020617 / #FFD60A
+const agomonTheme = {
+  ...MD3DarkTheme,
+  colors: {
+    ...MD3DarkTheme.colors,
+    primary: "#FFD60A",
+    onPrimary: "#020617",
+    primaryContainer: "#FFD60A",
+    background: "#020617",
+    surface: "#0B1220",
+    surfaceVariant: "#0B1220",
+    outline: "rgba(255,214,10,0.2)",
+  },
+  roundness: 16,
+};
 
 // Lightweight viewport injection: ensure responsive meta, prevent white flash,
 // enable smooth scrolling. Keep <5KB.
@@ -112,68 +134,85 @@ export default function App() {
   }, []);
 
   return (
-    <View style={styles.root}>
-      <StatusBar barStyle="light-content" backgroundColor="#020617" translucent={false} />
+    <GestureHandlerRootView style={styles.root}>
+      <PaperProvider theme={agomonTheme}>
+        <StatusBar barStyle="light-content" backgroundColor="#020617" translucent={false} />
 
-      <WebView
-        ref={webRef}
-        source={{ uri: SITE_URL }}
-        style={styles.webview}
-        // --- Performance / lightweight ---
-        cacheEnabled={true}
-        cacheMode="LOAD_DEFAULT"
-        incognito={false}
-        javaScriptEnabled={true}
-        domStorageEnabled={true}
-        thirdPartyCookiesEnabled={false}
-        sharedCookiesEnabled={false}
-        allowFileAccess={false}
-        allowFileAccessFromFileURLs={false}
-        allowUniversalAccessFromFileURLs={false}
-        setSupportMultipleWindows={false}
-        javaScriptCanOpenWindowsAutomatically={false}
-        mixedContentMode="always"
-        // Geolocation for "nearby pandal / metro" features
-        geolocationEnabled={true}
-        // Responsive
-        injectedJavaScriptBeforeContentLoaded={INJECTED_JS}
-        scalesPageToFit={true}
-        showsHorizontalScrollIndicator={false}
-        showsVerticalScrollIndicator={false}
-        overScrollMode="never"
-        androidLayerType="hardware"
-        // Pull to refresh (native)
-        pullToRefreshEnabled={true}
-        // Loading
-        startInLoadingState={true}
-        renderLoading={() => (
-          <View style={styles.loading}>
-            <ActivityIndicator size="large" color="#FFD60A" />
-            <Text style={styles.loadingText}>Loading Agomon…</Text>
-          </View>
+        <WebView
+          ref={webRef}
+          source={{ uri: SITE_URL }}
+          style={styles.webview}
+          // --- Performance / lightweight ---
+          cacheEnabled={true}
+          cacheMode="LOAD_DEFAULT"
+          incognito={false}
+          javaScriptEnabled={true}
+          domStorageEnabled={true}
+          thirdPartyCookiesEnabled={false}
+          sharedCookiesEnabled={false}
+          allowFileAccess={false}
+          allowFileAccessFromFileURLs={false}
+          allowUniversalAccessFromFileURLs={false}
+          setSupportMultipleWindows={false}
+          javaScriptCanOpenWindowsAutomatically={false}
+          mixedContentMode="always"
+          // Geolocation for "nearby pandal / metro" features
+          geolocationEnabled={true}
+          // Responsive
+          injectedJavaScriptBeforeContentLoaded={INJECTED_JS}
+          scalesPageToFit={true}
+          showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
+          overScrollMode="never"
+          androidLayerType="hardware"
+          // Pull to refresh (native)
+          pullToRefreshEnabled={true}
+          // Loading — latest Paper ActivityIndicator
+          startInLoadingState={true}
+          renderLoading={() => (
+            <View style={styles.loading}>
+              <ActivityIndicator animating size="large" color="#FFD60A" />
+              <Text variant="labelSmall" style={styles.loadingText}>
+                Loading Agomon…
+              </Text>
+            </View>
+          )}
+          onNavigationStateChange={onNavChange}
+          onLoadEnd={() => SplashScreen.hideAsync().catch(() => {})}
+          onError={() => setOffline(true)}
+          onHttpError={() => {}}
+          onShouldStartLoadWithRequest={handleShouldLoad}
+          // Reduce memory: limit nested scroll
+          nestedScrollEnabled={true}
+        />
+
+        {offline && (
+          <Card style={styles.offlineCard} mode="outlined">
+            <Card.Content style={styles.offlineContent}>
+              <Text variant="titleSmall" style={styles.offlineTitle}>
+                You are offline
+              </Text>
+              <Text variant="bodySmall" style={styles.offlineSub}>
+                Check your connection and try again.
+              </Text>
+              <Text variant="labelSmall" style={styles.offlineUrl} numberOfLines={1}>
+                {currentUri}
+              </Text>
+              <Button
+                mode="contained"
+                onPress={reload}
+                style={styles.retryBtn}
+                buttonColor="#FFD60A"
+                textColor="#020617"
+                icon="refresh"
+              >
+                Retry
+              </Button>
+            </Card.Content>
+          </Card>
         )}
-        onNavigationStateChange={onNavChange}
-        onLoadEnd={() => SplashScreen.hideAsync().catch(() => {})}
-        onError={() => setOffline(true)}
-        onHttpError={() => {}}
-        onShouldStartLoadWithRequest={handleShouldLoad}
-        // Reduce memory: limit nested scroll
-        nestedScrollEnabled={true}
-      />
-
-      {offline && (
-        <View style={styles.offline}>
-          <Text style={styles.offlineTitle}>You are offline</Text>
-          <Text style={styles.offlineSub}>Check your connection and try again.</Text>
-          <Text style={styles.offlineUrl} numberOfLines={1}>
-            {currentUri}
-          </Text>
-          <TouchableOpacity onPress={reload} style={styles.retryBtn} activeOpacity={0.8}>
-            <Text style={styles.retryText}>Retry</Text>
-          </TouchableOpacity>
-        </View>
-      )}
-    </View>
+      </PaperProvider>
+    </GestureHandlerRootView>
   );
 }
 
@@ -192,28 +231,21 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   loadingText: { color: "#FFD60A", fontSize: 12, letterSpacing: 1.2, opacity: 0.8 },
-  offline: {
+  offlineCard: {
     position: "absolute",
     left: 16,
     right: 16,
     bottom: 24,
     backgroundColor: "#0B1220",
     borderColor: "rgba(255,214,10,0.2)",
-    borderWidth: 1,
     borderRadius: 16,
-    padding: 16,
-    alignItems: "center",
-    gap: 6,
   },
+  offlineContent: { alignItems: "center", gap: 6, padding: 16 },
   offlineTitle: { color: "#FFD60A", fontWeight: "700", fontSize: 14 },
   offlineSub: { color: "rgba(255,255,255,0.6)", fontSize: 12, textAlign: "center" },
   offlineUrl: { color: "rgba(255,255,255,0.3)", fontSize: 10, marginTop: 4 },
   retryBtn: {
     marginTop: 10,
-    backgroundColor: "#FFD60A",
-    paddingHorizontal: 24,
-    paddingVertical: 10,
     borderRadius: 999,
   },
-  retryText: { color: "#020617", fontWeight: "700", fontSize: 13 },
 });
