@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import HeaderAuth from "@/components/auth/HeaderAuth";
 import RegisterSW from "@/components/pwa/RegisterSW";
+import VaniIcon from "@/components/chatbot/VaniIcon";
 import { cn } from "@/lib/utils";
 
 const figtree = Figtree({subsets:['latin'],variable:'--font-sans'});
@@ -88,6 +89,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </div>
         </header>
         <main className="flex-1 max-w-5xl mx-auto w-full px-4 py-4">{children}</main>
+        <VaniIcon />
         <footer className="py-6 flex flex-col items-center gap-2 text-center text-xs text-[#FFD60A]/30">
           <span>Agomon — Explore Various Pandals in Kolkata • 2026</span>
           <Image
