@@ -45,8 +45,9 @@ function beautify(slug: string) {
 }
 
 const ALLOWED_MODELS: Record<string, { id: string; baseURL: string }> = {
-  'muse-spark-1.2-free': { id: 'muse-spark-1.2-free', baseURL: 'https://opencode.ai/zen/v1/responses' },
-  'muse-spark-1.2': { id: 'muse-spark-1.2-free', baseURL: 'https://opencode.ai/zen/v1/responses' },
+  // 1.2 Free not on Zen free list — map to 1.3 contributor free so default never 404
+  'muse-spark-1.2-free': { id: 'muse-spark-1.3-contributor-free', baseURL: 'https://opencode.ai/zen/v1/responses' },
+  'muse-spark-1.2': { id: 'muse-spark-1.3-contributor-free', baseURL: 'https://opencode.ai/zen/v1/responses' },
   'muse-spark-1.3-free': { id: 'muse-spark-1.3-contributor-free', baseURL: 'https://opencode.ai/zen/v1/responses' },
   'muse-spark-1.3': { id: 'muse-spark-1.3-contributor-free', baseURL: 'https://opencode.ai/zen/v1/responses' },
   'nemotron-3-ultra-free': { id: 'nemotron-3-ultra-free', baseURL: 'https://opencode.ai/zen/v1/chat/completions' },
@@ -87,6 +88,10 @@ export async function POST(req: Request) {
       temperature: 0.2,
       topP: 0.8,
       maxOutputTokens: 380,
+      // ensure streaming errors surface as text, not generic "An error occurred"
+      onError: ({ error }) => {
+        console.error('Vani stream error:', error)
+      },
       tools: {
         search_pandals: tool({
           description: 'OSM-first Kolkata pandal search: pandal name, station, area, landmark, OSM place. Returns up to 8 pandals with meta.',
@@ -297,7 +302,12 @@ export async function POST(req: Request) {
       },
     })
 
-    return result.toUIMessageStreamResponse()
+    return result.toUIMessageStreamResponse({
+      onError: (error) => {
+        console.error('Vani stream onError:', error)
+        return `Vani hit a model error — trying local fallback. ${String(error).slice(0, 200)}`
+      },
+    })
   } catch (e: any) {
     console.error('Vani LLM error, falling back:', e?.message || e)
     // Fallback to rule-based so user still gets crowd compare instead of 500
