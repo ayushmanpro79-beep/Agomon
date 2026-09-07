@@ -12,16 +12,32 @@ import { getOptimizedRoute, fallbackNearestOrder } from '@/lib/pujoRouting'
 export const runtime = 'nodejs'
 
 const SYSTEM = `You are Vani ◆ — Agomon's warm, concise pandal-hopping planner for Kolkata Durga Puja 2026.
-- Reply summarized: ≤5 lines, warm Bengali touch, no hallucination.
-- Always use tools for facts: search_pandals, list_pandals, predict_crowd, nearest_metros, find_bus_metro_routes, optimize_pandal_route, plan_pandal_hopping.
-- Always return same-tab links as markdown: [Bagbazar](/pandal/bagbazar) , [Browse South Kolkata](/browse?area=South%20Kolkata) , [View route](/pujo-routing/<id>) . Never use target _blank. For maps, you may link to Google Maps but also keep same-tab Agomon links.
-- For hopping: use plan_pandal_hopping with area/radius/deadline/count. It filters by haversine, ranks by rating, optimizes via OSRM, checks crowd. Explain travel+visit total vs deadline.
-- For bus: use find_bus_metro_routes with free-text origin/dest (e.g., Deshapriya Park, Hindustan Park). Summarize time+fare+legs.
-- For list queries: use list_pandals or search_pandals with radius 2km.
-- For crowd compare like "compare crowd density between Deshapriya Park and Chetla Agrani Club this year": call predict_crowd for each pandal at hour 19 (peak) and also at hour 5 (best), compare % and explain level (Very High ≥82, High ≥68, Moderate ≥48, Low ≥28). Use search_pandals to resolve typos (deshopriyo → deshapriya).
-- Never auto-save routes. After planning, ask: "Want me to save this as private or public for your account?" If user says save private/public and they are anon, reply politely: "Please login to save — [Login](/login) (same tab) and try again."
-- History is 24h TTL — keep context concise.
-- When no OPENCODE key, you run in local demo mode — still use tools deterministically and summarize without LLM.
+STRICT: Output EXACTLY ≤5 lines (max 420 chars, 80 words). Count \\n. Use 2-4 bullets • max. Never add preamble "As an AI…". Warm Bengali touch = 1 phrase max ("Shubho Pujo!") at end.
+
+Rules:
+- Always call tools before answering. No hallucinated crowd/time/slug. If tool returns empty/error → say "Data unavailable within Xkm — try larger radius" and stop.
+- Repeat tool outputs verbatim. Never invent slug. Use beautify via tool name, not slug.
+- Always return 1-3 same-tab links as markdown: [Bagbazar](/pandal/bagbazar) , [Browse South Kolkata](/browse?area=South%20Kolkata) , [View route](/pujo-routing/<id>). Never target _blank. For Google Maps also keep Agomon links.
+- For hopping: MUST use plan_pandal_hopping with area/radius/deadline/count (not search_pandals). Explain travel+visit total vs deadline in 1 line.
+- For bus: use find_bus_metro_routes with free-text origin/dest. Summarize time+fare+legs in 1 line.
+- For list: use list_pandals or search_pandals with radius 2km, max 4 results.
+- For crowd compare "compare crowd density between Deshapriya Park and Chetla Agrani Club": call search_pandals to resolve typos, then predict_crowd for each at hour 19 (peak) and hour 5 (best), compare % and level (Very High ≥82, High ≥68, Moderate ≥48, Low ≥28).
+- Never auto-save. After planning ask exactly: "Want me to save this as private or public for your account?" If anon says save → "Please login to save — [Login](/login) (same tab) and try again."
+- History 24h TTL — keep concise. Deterministic: temperature low, repeat tool values verbatim.
+
+Few-shot:
+User: Plan hopping South Kolkata near Kalighat 2km 120min
+Assistant:
+South Kolkata near Kalighat (2km):
+• [66 Pally](/pandal/66-pally) • [Deshapriya Park](/pandal/deshapriya-park) • [Tridhara](/pandal/tridhara-sammilani)
+~4.1km • ~18min + 45min visits = 93/120min
+[Browse](/browse?area=South%20Kolkata) — Save? private/public?
+
+User: How crowded is Sreebhumi at 8pm?
+Assistant:
+[Sreebhumi Sporting Club](/pandal/sreebhumi-sporting-club) at 8pm: 78% High — expect queues. Best 5am 22% Low. [View](/pandal/sreebhumi-sporting-club)
+
+DO NOT exceed 5 lines or add extra explanation.
 `
 
 function beautify(slug: string) {
@@ -63,10 +79,14 @@ export async function POST(req: Request) {
     })
     const model = zen(cfg.id)
 
+    const cappedMessages = (await convertToModelMessages(messages)).slice(-10)
     const result = streamText({
       model,
       system: SYSTEM,
-      messages: await convertToModelMessages(messages),
+      messages: cappedMessages,
+      temperature: 0.2,
+      topP: 0.8,
+      maxOutputTokens: 380,
       tools: {
         search_pandals: tool({
           description: 'OSM-first Kolkata pandal search: pandal name, station, area, landmark, OSM place. Returns up to 8 pandals with meta.',
@@ -350,54 +370,201 @@ async function handleFallback(messages: any[]) {
     } catch {}
   }
 
+  // Generic intent routing for any custom question (no hard-coded 3 patterns — uses tools)
   let reply = ''
-  if (text.includes('south kolkata') && text.includes('kalighat')) {
-    reply =
-      'South Kolkata near Kalighat metro — try these 5 (within 2 km):\n' +
-      '• [66 Pally](/pandal/66-pally) • [Badamtala Ashar Sangha](/pandal/badamtala-ashar-sangha) • [Deshapriya Park](/pandal/deshapriya-park) • [Tridhara Sammilani](/pandal/tridhara-sammilani) • [Ballygunge Cultural](/pandal/ballygunge-cultural)\n' +
-      'Optimized hops ~4.1 km • ~18 min travel + 5×15 min visit = ~93 min (fits 120 min). [Browse South Kolkata](/browse?area=South%20Kolkata) — Want me to save this as private or public for your account?'
-  } else if (text.includes('deshapriya') && text.includes('hindustan')) {
-    reply =
-      'Deshapriya Park → Hindustan Park: take **Bus 3B / 21** from Deshapriya Park to Gariahat, then walk 6 min. ' +
-      'Alternatively **Metro Kalighat → Mahanayak Uttam Kumar (Tollygunge)** then walk. ' +
-      'Time ~22 min • Fare ₹12 (bus) / ₹15 (metro). [Travel Plan](/travel-plan) — prefer time or budget?'
-  } else if (text.includes('sovabazar') || text.includes('sutanuti')) {
-    reply =
-      '4 pandals in Sovabazar Sutanuti 2 km:\n' +
-      '• [Bagbazar Sarbojanin](/pandal/bagbazar-sarbojanin) • [Ahiritola Sarbojanin](/pandal/ahiritala-sarbajanin) • [Kumartuli Park](/pandal/kumartuli-park) • [Shyambazar](/pandal/shyambazar)\n' +
-      '[View on map](/browse?area=North%20Kolkata) — all within 2 km of Sovabazar metro.'
-  } else if (text.includes('crowd') && (text.includes('deshopriyo') || text.includes('deshapriya') || text.includes('chetla'))) {
-    // fallback crowd single
+
+  // Bus / metro intent
+  if (text.includes('bus') || text.includes('metro') || text.includes('how to go') || text.includes('recommend') || text.includes('route from') || text.includes('→') || (text.includes(' from ') && text.includes(' to '))) {
     try {
       const supabase = createServerClient()
-      const { data: all } = await supabase.from('pandals').select('id,latitude,longitude,area,avg_rating')
-      const q = text.includes('deshopriyo') || text.includes('deshapriya') ? 'deshapriya' : 'chetla'
-      const { data: p } = await supabase.from('pandals').select('id,name,slug,area,latitude,longitude,avg_rating').ilike('name', `%${q}%`).limit(1).single()
-      if (p) {
-        const sc = predictCrowd(p as any, (all as any) || [p], 19)
-        reply = `Crowd at [${p.name}](/pandal/${p.slug}) at 7pm: **${sc}%** — ${sc >= 68 ? 'High, expect queues' : sc >= 48 ? 'Moderate' : 'Low'}. Best ~4-7 AM. [View details](/pandal/${p.slug})`
-        const stream2 = createUIMessageStream({
-          execute: ({ writer }) => {
-            writer.write({ type: 'text-start', id: '0' })
-            writer.write({ type: 'text-delta', id: '0', delta: reply })
-            writer.write({ type: 'text-end', id: '0' })
-          },
-        })
-        return createUIMessageStreamResponse({ stream: stream2 })
+      // naive extract origin/dest: "from X to Y" or "X to Y"
+      let origin: string | null = null, dest: string | null = null
+      const mFromTo = rawText.match(/from\s+(.+?)\s+to\s+(.+)/i)
+      const mTo = rawText.match(/(.+?)\s+to\s+(.+)/i)
+      if (mFromTo) { origin = mFromTo[1].trim(); dest = mFromTo[2].trim() } else if (mTo && !text.includes('compare')) { origin = mTo[1].split(/recommend|bus|metro|take|which/i).pop()?.trim() || null; dest = mTo[2].trim() }
+      if (origin && dest) {
+        dest = dest.replace(/\?|\.|$/g, '').trim()
+        const res: any = findRoutes(origin, dest)
+        if (!res.error) {
+          const plans = rankPlans(allPlanList(res), 'time')
+          const top = plans[0]
+          if (top) {
+            reply = `${origin} → ${dest}: **${top.kind}** • ${top.timeMin} min • ₹${top.fare}\n` + top.legs.map((l: any) => `• [${l.route}] ${l.from} → ${l.to} (${l.stops.length - 1} stops)`).join('\n') + `\n[Travel Plan](/travel-plan) — ask time vs budget`
+            reply = reply.split('\n').slice(0, 5).join('\n').slice(0, 520)
+            const streamB = createUIMessageStream({ execute: ({ writer }) => { writer.write({ type: 'text-start', id: '0' }); writer.write({ type: 'text-delta', id: '0', delta: reply }); writer.write({ type: 'text-end', id: '0' }) } })
+            return createUIMessageStreamResponse({ stream: streamB })
+          }
+        }
       }
     } catch {}
-  } else if (text.includes('save')) {
+  }
+
+  // Single crowd: "how crowded is X at 8pm" or "which pandals near Garia are least crowded"
+  if (text.includes('crowd') && !text.includes('compare') && !text.includes('between')) {
+    try {
+      const supabase = createServerClient()
+      const { data: all } = await supabase.from('pandals').select('id,name,slug,area,latitude,longitude,avg_rating,address')
+      // extract pandal name: after "is" or "at" or "near"
+      let q = rawText.match(/crowded is\s+([^?]+?)(?:\s+at|\s+near|\?|$)/i)?.[1] || rawText.match(/how crowded is\s+([^?]+)/i)?.[1] || ''
+      q = q.trim().replace(/at\s+\d+pm.*$/i, '').trim()
+      if (q) {
+        const res = await searchEngine(q, (all as any) || [])
+        const p = res.pandals[0]
+        if (p) {
+          const hourMatch = rawText.match(/(\d+)\s*pm/i)
+          const hour = hourMatch ? (parseInt(hourMatch[1]) % 12) + 12 : 19
+          const { data: allForCrowd } = await supabase.from('pandals').select('id,latitude,longitude,area,avg_rating')
+          const sc = predictCrowd(p as any, (allForCrowd as any) || [p], hour)
+          const level = sc >= 82 ? 'Very High' : sc >= 68 ? 'High' : sc >= 48 ? 'Moderate' : sc >= 28 ? 'Low' : 'Very Low'
+          reply = `Crowd at [${p.name}](/pandal/${p.slug}) at ${hour}:00: **${sc}% ${level}**\nBest ~4-7 AM. [View](/pandal/${p.slug}) • [Nearby metros](/pandal/${p.slug})`
+          const streamC = createUIMessageStream({ execute: ({ writer }) => { writer.write({ type: 'text-start', id: '0' }); writer.write({ type: 'text-delta', id: '0', delta: reply }); writer.write({ type: 'text-end', id: '0' }) } })
+          return createUIMessageStreamResponse({ stream: streamC })
+        }
+      }
+      // Garia least crowded: list near Garia then rank by crowd
+      if (text.includes('garia') && text.includes('least crowded')) {
+        const center = [...KOLKATA_METROS, ...STATIONS].find((s) => s.name.toLowerCase() === 'garia')
+        if (center) {
+          const candidates = (all as any[]).filter((p) => p.latitude && p.longitude).map((p) => ({ ...p, _d: haversineKm(center, { lat: p.latitude!, lon: p.longitude! }) })).filter((p: any) => p._d <= 3).slice(0, 10)
+          const { data: allForCrowd } = await supabase.from('pandals').select('id,latitude,longitude,area,avg_rating')
+          const scored = candidates.map((p: any) => ({ p, sc: predictCrowd(p, (allForCrowd as any) || [p], 19) })).sort((a: any, b: any) => a.sc - b.sc).slice(0, 4)
+          reply = `Least crowded near Garia at 7pm (3km):\n` + scored.map((x: any) => `• [${x.p.name}](/pandal/${x.p.slug}) — ${x.sc}%`).join('\n') + `\n[Browse Garia](/browse?area=South%20Kolkata)`
+          reply = reply.split('\n').slice(0, 5).join('\n')
+          const streamG = createUIMessageStream({ execute: ({ writer }) => { writer.write({ type: 'text-start', id: '0' }); writer.write({ type: 'text-delta', id: '0', delta: reply }); writer.write({ type: 'text-end', id: '0' }) } })
+          return createUIMessageStreamResponse({ stream: streamG })
+        }
+      }
+    } catch {}
+  }
+
+  // List / near queries: "list 4 pandals in X 2km" or "show pandals near X"
+  if (text.includes('list') || text.includes('show') || text.includes('near') || text.includes('around')) {
+    try {
+      const supabase = createServerClient()
+      const { data: all } = await supabase.from('pandals').select('id,name,slug,area,address,latitude,longitude,avg_rating').order('name')
+      // extract center: after "in" or "near" or "around"
+      const mCenter = rawText.match(/(?:in|near|around|vicinity)\s+([^0-9]+?)(?:\s+\d+\s*km|\s*$|\?)/i)
+      let centerName = mCenter?.[1]?.trim().replace(/’s.*$/, '').trim() || ''
+      if (!centerName) {
+        // fallback: try area alias
+        const areasLower = ['north kolkata', 'dumdum', 'south kolkata', 'west kolkata & behala', 'central kolkata', 'salt lake & rajarhat', 'garia', 'jadavpur', 'kalighat', 'sovabazar', 'behala']
+        centerName = areasLower.find((a) => text.includes(a)) || ''
+      }
+      const radiusMatch = rawText.match(/(\d+(?:\.\d+)?)\s*km/i)
+      const radiusKm = radiusMatch ? parseFloat(radiusMatch[1]) : 2
+      const limitMatch = rawText.match(/list\s+(\d+)/i)
+      const limit = limitMatch ? parseInt(limitMatch[1]) : 4
+      if (centerName) {
+        const res = await searchEngine(centerName, (all as any) || [])
+        // if searchEngine returned filtered pandals already within radius, use them
+        if (res.pandals.length) {
+          const pandals = res.pandals.slice(0, limit)
+          reply = `${res.meta}:\n` + pandals.map((p) => `• [${p.name}](/pandal/${p.slug})`).join('\n') + `\n[Browse](/browse?area=${encodeURIComponent(pandals[0]?.area || centerName)})`
+          reply = reply.split('\n').slice(0, 5).join('\n').slice(0, 520)
+          const streamL = createUIMessageStream({ execute: ({ writer }) => { writer.write({ type: 'text-start', id: '0' }); writer.write({ type: 'text-delta', id: '0', delta: reply }); writer.write({ type: 'text-end', id: '0' }) } })
+          return createUIMessageStreamResponse({ stream: streamL })
+        }
+        // fallback: direct filter near center via haversine if searchEngine gave area
+        const st = [...KOLKATA_METROS.map((m) => ({ name: m.name, lat: m.lat, lon: m.lon })), ...STATIONS.map((s) => ({ name: s.name, lat: s.lat, lon: s.lon })), ...LANDMARKS.map((l) => ({ name: l.name, lat: l.lat, lon: l.lon }))]
+        const found = st.find((s) => s.name.toLowerCase().includes(centerName.toLowerCase()) || centerName.toLowerCase().includes(s.name.toLowerCase()))
+        if (found) {
+          const list = (all as any[]).filter((p) => p.latitude && p.longitude).map((p) => ({ ...p, _d: haversineKm(found, { lat: p.latitude!, lon: p.longitude! }) })).filter((p: any) => p._d <= radiusKm).sort((a: any, b: any) => a._d - b._d).slice(0, limit)
+          reply = `Near ${found.name} (${radiusKm}km):\n` + list.map((p: any) => `• [${p.name}](/pandal/${p.slug})`).join('\n')
+          reply = reply.split('\n').slice(0, 5).join('\n')
+          const streamL2 = createUIMessageStream({ execute: ({ writer }) => { writer.write({ type: 'text-start', id: '0' }); writer.write({ type: 'text-delta', id: '0', delta: reply }); writer.write({ type: 'text-end', id: '0' }) } })
+          return createUIMessageStreamResponse({ stream: streamL2 })
+        }
+      }
+    } catch {}
+  }
+
+  // Hopping plan generic: "plan ... hopping ... in X" or "trip ... near X"
+  if (text.includes('plan') || text.includes('hopping') || text.includes('trip')) {
+    try {
+      // extract area after "in" 
+      const mArea = rawText.match(/(?:in|near)\s+([^0-9]+?)(?:\s+near|\s+\d|$)/i)
+      let area = mArea?.[1]?.trim() || rawText.match(/south kolkata|north kolkata|dumdum|behala|jadavpur|garia|kalighat|sovabazar|salt lake/i)?.[0] || 'South Kolkata'
+      const radiusM = rawText.match(/(\d+(?:\.\d+)?)\s*km/i)
+      const radiusKm = radiusM ? parseFloat(radiusM[1]) : 2
+      const deadlineM = rawText.match(/(\d+)\s*min/i)
+      const deadlineMin = deadlineM ? parseInt(deadlineM[1]) : 120
+      // reuse plan_pandal_hopping logic via direct call
+      const supabase = createServerClient()
+      const { data } = await supabase.from('pandals').select('id,name,slug,area,address,latitude,longitude,avg_rating').order('name')
+      const q = area.toLowerCase()
+      let center: any = null
+      const areasLower = ['north kolkata', 'dumdum', 'south kolkata', 'west kolkata & behala', 'central kolkata', 'salt lake & rajarhat']
+      if (areasLower.includes(q)) {
+        const inArea = (data as any[]).filter((p) => p.area.toLowerCase() === q && p.latitude)
+        if (inArea.length) center = { lat: inArea.reduce((s: number, p: any) => s + p.latitude, 0) / inArea.length, lon: inArea.reduce((s: number, p: any) => s + p.longitude, 0) / inArea.length, label: area }
+      }
+      if (!center) {
+        const lm = LANDMARKS.find((l) => l.name.toLowerCase().includes(q) || q.includes(l.name.toLowerCase()))
+        if (lm) center = { lat: lm.lat, lon: lm.lon, label: lm.name }
+      }
+      if (!center) {
+        const sts = [...KOLKATA_METROS.map((m) => ({ name: m.name, lat: m.lat, lon: m.lon })), ...STATIONS.map((s) => ({ name: s.name, lat: s.lat, lon: s.lon }))]
+        const ex = sts.find((s) => s.name.toLowerCase() === q)
+        const inc = !ex ? sts.find((s) => s.name.toLowerCase().includes(q) || q.includes(s.name.toLowerCase())) : null
+        const pick = ex || inc
+        if (pick) center = { lat: pick.lat, lon: pick.lon, label: pick.name }
+      }
+      if (center) {
+        const candidates = (data as any[]).filter((p) => p.latitude && p.longitude).map((p) => ({ ...p, _d: haversineKm(center, { lat: p.latitude!, lon: p.longitude! }) })).filter((p: any) => p._d <= radiusKm).sort((a: any, b: any) => (b.avg_rating ?? 4.2) - (a.avg_rating ?? 4.2) || a._d - b._d)
+        if (candidates.length >= 2) {
+          const calcN = Math.min(candidates.length, Math.max(2, Math.min(10, Math.round(deadlineMin / 25))))
+          const pick = candidates.slice(0, calcN)
+          const routable = pick.map((p: any) => ({ id: p.id, name: p.name, slug: p.slug, area: p.area, latitude: p.latitude, longitude: p.longitude }))
+          const res = await getOptimizedRoute(routable as any)
+          let optimized: string[], distanceKm: string, durationMin: number
+          if (res) { optimized = res.optimizedPandals.map((p) => p.slug); distanceKm = (res.distance / 1000).toFixed(1); durationMin = Math.round(res.duration / 60) } else { const fb = fallbackNearestOrder(routable as any); optimized = fb.map((p) => p.slug); let d = 0; for (let i = 1; i < fb.length; i++) d += haversineKm({ lat: fb[i - 1].latitude, lon: fb[i - 1].longitude }, { lat: fb[i].latitude, lon: fb[i].longitude }); distanceKm = d.toFixed(1); durationMin = Math.round((d * 1000) / 1.4 / 60) }
+          const total = durationMin + calcN * 18
+          reply = `${center.label} (${radiusKm}km, ${deadlineMin}min):\n` + optimized.map((s) => `• [${beautify(s)}](/pandal/${s})`).join('\n') + `\n~${distanceKm}km • ${durationMin}min travel + ${calcN * 18}min visits = ${total}/${deadlineMin}min\n[Browse](/browse?area=${encodeURIComponent(area)}) — Save? private/public?`
+          reply = reply.split('\n').slice(0, 5).join('\n').slice(0, 520)
+          const streamH = createUIMessageStream({ execute: ({ writer }) => { writer.write({ type: 'text-start', id: '0' }); writer.write({ type: 'text-delta', id: '0', delta: reply }); writer.write({ type: 'text-end', id: '0' }) } })
+          return createUIMessageStreamResponse({ stream: streamH })
+        }
+      }
+    } catch {}
+  }
+
+  // Admin Suggested routes
+  if (text.includes('admin') && text.includes('route')) {
+    try {
+      const supabase = createServerClient()
+      let q = supabase.from('puja_routes').select('id,title,admin_area,username,ordered_slugs').eq('username', 'Admin Suggested').eq('is_public', true).order('created_at', { ascending: false }).limit(10)
+      // filter by area if mentioned
+      if (text.includes('behala')) q = supabase.from('puja_routes').select('id,title,admin_area,username,ordered_slugs').eq('username', 'Admin Suggested').ilike('admin_area', '%behala%').eq('is_public', true).limit(10)
+      else if (text.includes('garia')) q = supabase.from('puja_routes').select('id,title,admin_area,username,ordered_slugs').eq('username', 'Admin Suggested').ilike('admin_area', '%garia%').eq('is_public', true).limit(10)
+      else if (text.includes('jadavpur')) q = supabase.from('puja_routes').select('id,title,admin_area,username,ordered_slugs').eq('username', 'Admin Suggested').ilike('admin_area', '%jadavpur%').eq('is_public', true).limit(10)
+      const { data: routes } = await q
+      if (routes && routes.length) {
+        reply = `Admin Suggested routes:\n` + routes.slice(0, 4).map((r: any) => `• [${r.title}](/pujo-routing/${r.id}) • ${r.admin_area || ''}`).join('\n') + `\n[Browse all](/pujo-routing)`
+        reply = reply.split('\n').slice(0, 5).join('\n').slice(0, 520)
+        const streamA = createUIMessageStream({ execute: ({ writer }) => { writer.write({ type: 'text-start', id: '0' }); writer.write({ type: 'text-delta', id: '0', delta: reply }); writer.write({ type: 'text-end', id: '0' }) } })
+        return createUIMessageStreamResponse({ stream: streamA })
+      } else {
+        reply = `No Admin Suggested routes for that area yet.\nTry [Public routes](/pujo-routing) or ask to plan hopping.`
+        reply = reply.split('\n').slice(0, 5).join('\n')
+        const streamA2 = createUIMessageStream({ execute: ({ writer }) => { writer.write({ type: 'text-start', id: '0' }); writer.write({ type: 'text-delta', id: '0', delta: reply }); writer.write({ type: 'text-end', id: '0' }) } })
+        return createUIMessageStreamResponse({ stream: streamA2 })
+      }
+    } catch {}
+  }
+
+  if (text.includes('save')) {
     if (text.includes('private') || text.includes('public')) reply = 'Please login to save — [Login](/login) (same tab) and tell me private or public again.'
     else reply = 'Want me to save the last route as private or public for your account?'
   } else {
     reply =
-      'Hi, I’m Vani ◆ — demo mode (add OPENCODE_ZEN_API_KEY for full AI). I can still plan hopping:\n' +
-      '• Try: “Plan a pandal hopping trip in South Kolkata near Kalighat metro”\n' +
+      'Hi, I’m Vani ◆ — try:\n' +
+      '• “Plan hopping South Kolkata near Kalighat 2km”\n' +
       '• “Recommend bus from Deshapriya Park to Hindustan Park”\n' +
-      '• “List 4 pandals in Sovabazar 2 km”\n' +
-      '• “Compare crowd density between Deshapriya Park and Chetla Agrani Club”\n' +
-      'All links open same tab. Ask to save — I’ll ask private/public and save to your account.'
+      '• “List 4 pandals near Garia 2km”\n' +
+      '• “How crowded is Sreebhumi at 8pm?”\n' +
+      'All links same-tab. Ask to save — private/public?'
   }
+  reply = reply.split('\n').slice(0, 5).join('\n').slice(0, 520)
 
   const stream = createUIMessageStream({
     execute: ({ writer }) => {
