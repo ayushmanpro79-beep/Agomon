@@ -18,6 +18,7 @@ const SYSTEM = `You are Vani ◆ — Agomon's warm, concise pandal-hopping plann
 - For hopping: use plan_pandal_hopping with area/radius/deadline/count. It filters by haversine, ranks by rating, optimizes via OSRM, checks crowd. Explain travel+visit total vs deadline.
 - For bus: use find_bus_metro_routes with free-text origin/dest (e.g., Deshapriya Park, Hindustan Park). Summarize time+fare+legs.
 - For list queries: use list_pandals or search_pandals with radius 2km.
+- For crowd compare like "compare crowd density between Deshapriya Park and Chetla Agrani Club this year": call predict_crowd for each pandal at hour 19 (peak) and also at hour 5 (best), compare % and explain level (Very High ≥82, High ≥68, Moderate ≥48, Low ≥28). Use search_pandals to resolve typos (deshopriyo → deshapriya).
 - Never auto-save routes. After planning, ask: "Want me to save this as private or public for your account?" If user says save private/public and they are anon, reply politely: "Please login to save — [Login](/login) (same tab) and try again."
 - History is 24h TTL — keep context concise.
 - When no OPENCODE key, you run in local demo mode — still use tools deterministically and summarize without LLM.
@@ -28,8 +29,8 @@ function beautify(slug: string) {
 }
 
 const ALLOWED_MODELS: Record<string, { id: string; baseURL: string }> = {
-  'muse-spark-1.2-free': { id: 'muse-spark-1.2-contributor-free', baseURL: 'https://opencode.ai/zen/v1/responses' },
-  'muse-spark-1.2': { id: 'muse-spark-1.2-contributor-free', baseURL: 'https://opencode.ai/zen/v1/responses' },
+  'muse-spark-1.2-free': { id: 'muse-spark-1.2-free', baseURL: 'https://opencode.ai/zen/v1/responses' },
+  'muse-spark-1.2': { id: 'muse-spark-1.2-free', baseURL: 'https://opencode.ai/zen/v1/responses' },
   'muse-spark-1.3-free': { id: 'muse-spark-1.3-contributor-free', baseURL: 'https://opencode.ai/zen/v1/responses' },
   'muse-spark-1.3': { id: 'muse-spark-1.3-contributor-free', baseURL: 'https://opencode.ai/zen/v1/responses' },
   'nemotron-3-ultra-free': { id: 'nemotron-3-ultra-free', baseURL: 'https://opencode.ai/zen/v1/chat/completions' },
@@ -278,14 +279,76 @@ export async function POST(req: Request) {
 
     return result.toUIMessageStreamResponse()
   } catch (e: any) {
-    return new Response(JSON.stringify({ error: e.message }), { status: 500 })
+    console.error('Vani LLM error, falling back:', e?.message || e)
+    // Fallback to rule-based so user still gets crowd compare instead of 500
+    return handleFallback(messages)
   }
 }
 
 async function handleFallback(messages: any[]) {
-  // Simple rule-based local handling when no key — still uses tools deterministically but without LLM
   const last = messages[messages.length - 1]
-  const text = (last?.parts?.map((p: any) => p.text).join('') || last?.content || last?.text || '').toLowerCase()
+  const rawText = last?.parts?.map((p: any) => p.text).join('') || last?.content || last?.text || ''
+  const text = rawText.toLowerCase()
+
+  // Try crowd comparison via local tools even in fallback — handles typos like deshopriyo vs deshapriya
+  if (text.includes('crowd') && (text.includes('compare') || text.includes('between') || text.includes('vs') || text.includes('and'))) {
+    try {
+      const supabase = createServerClient()
+      const { data: all } = await supabase.from('pandals').select('id,name,slug,area,latitude,longitude,avg_rating,address')
+      const allList = (all as any[]) || []
+
+      let aName: string | null = null, bName: string | null = null
+      const mBetween = rawText.toLowerCase().match(/between\s+(.+?)\s+(?:and|&|vs|,|with)\s+(.+)/i)
+      if (mBetween) {
+        aName = mBetween[1].trim()
+        bName = mBetween[2].trim().replace(/\?|\.|$/g, '').trim()
+      } else {
+        const mentions = allList.filter((p) => text.includes(p.name.toLowerCase().split(' ')[0]) || text.includes(p.slug.replace(/-/g, ' ')))
+        if (mentions.length >= 2) {
+          aName = mentions[0].name
+          bName = mentions[1].name
+        }
+      }
+
+      if (aName && bName) {
+        // use searchEngine fuzzy to handle typos (deshopriyo -> deshapriya)
+        const resA = await searchEngine(aName, allList as any)
+        const resB = await searchEngine(bName, allList as any)
+        const a = resA.pandals[0] || allList.find((p) => p.name.toLowerCase().includes(aName!.split(' ')[0].slice(0, 4)))
+        const b = resB.pandals[0] || allList.find((p) => p.name.toLowerCase().includes(bName!.split(' ')[0].slice(0, 4)))
+        if (a && b) {
+          const { data: allForCrowd } = await supabase.from('pandals').select('id,latitude,longitude,area,avg_rating')
+          const hour = 19 // peak 7pm this year
+          const scoreA = predictCrowd(a as any, (allForCrowd as any) || [a], hour)
+          const scoreB = predictCrowd(b as any, (allForCrowd as any) || [b], hour)
+          const level = (s: number) => (s >= 82 ? 'Very High' : s >= 68 ? 'High' : s >= 48 ? 'Moderate' : s >= 28 ? 'Low' : 'Very Low')
+          const diff = Math.abs(scoreA - scoreB)
+          const winner = scoreA > scoreB ? a : b
+          const loser = scoreA > scoreB ? b : a
+          const wScore = Math.max(scoreA, scoreB)
+          let replyCrowd =
+            `This year crowd at peak (7pm):\n` +
+            `• [${a.name}](/pandal/${a.slug}) — **${scoreA}% ${level(scoreA)}** (${a.area})\n` +
+            `• [${b.name}](/pandal/${b.slug}) — **${scoreB}% ${level(scoreB)}** (${b.area})\n` +
+            `→ ${winner.name} is **${diff}% denser** than ${loser.name} at 7pm. ${wScore >= 68 ? 'Expect queues — prefer metro.' : 'Manageable — good window 4-7pm.'}\n` +
+            `[Compare on map](/browse?area=${encodeURIComponent(a.area)}) • [${a.name} details](/pandal/${a.slug}) • [${b.name} details](/pandal/${b.slug})`
+          const hourBest = 5 // 5am very low per TIME_SLOTS
+          const bestA = predictCrowd(a as any, (allForCrowd as any) || [a], hourBest)
+          const bestB = predictCrowd(b as any, (allForCrowd as any) || [b], hourBest)
+          replyCrowd += `\nBest window ~4-7 AM: ${a.name} ${bestA}% / ${b.name} ${bestB}%`
+
+          const streamC = createUIMessageStream({
+            execute: ({ writer }) => {
+              writer.write({ type: 'text-start', id: '0' })
+              writer.write({ type: 'text-delta', id: '0', delta: replyCrowd })
+              writer.write({ type: 'text-end', id: '0' })
+            },
+          })
+          return createUIMessageStreamResponse({ stream: streamC })
+        }
+      }
+    } catch {}
+  }
 
   let reply = ''
   if (text.includes('south kolkata') && text.includes('kalighat')) {
@@ -303,6 +366,26 @@ async function handleFallback(messages: any[]) {
       '4 pandals in Sovabazar Sutanuti 2 km:\n' +
       '• [Bagbazar Sarbojanin](/pandal/bagbazar-sarbojanin) • [Ahiritola Sarbojanin](/pandal/ahiritala-sarbajanin) • [Kumartuli Park](/pandal/kumartuli-park) • [Shyambazar](/pandal/shyambazar)\n' +
       '[View on map](/browse?area=North%20Kolkata) — all within 2 km of Sovabazar metro.'
+  } else if (text.includes('crowd') && (text.includes('deshopriyo') || text.includes('deshapriya') || text.includes('chetla'))) {
+    // fallback crowd single
+    try {
+      const supabase = createServerClient()
+      const { data: all } = await supabase.from('pandals').select('id,latitude,longitude,area,avg_rating')
+      const q = text.includes('deshopriyo') || text.includes('deshapriya') ? 'deshapriya' : 'chetla'
+      const { data: p } = await supabase.from('pandals').select('id,name,slug,area,latitude,longitude,avg_rating').ilike('name', `%${q}%`).limit(1).single()
+      if (p) {
+        const sc = predictCrowd(p as any, (all as any) || [p], 19)
+        reply = `Crowd at [${p.name}](/pandal/${p.slug}) at 7pm: **${sc}%** — ${sc >= 68 ? 'High, expect queues' : sc >= 48 ? 'Moderate' : 'Low'}. Best ~4-7 AM. [View details](/pandal/${p.slug})`
+        const stream2 = createUIMessageStream({
+          execute: ({ writer }) => {
+            writer.write({ type: 'text-start', id: '0' })
+            writer.write({ type: 'text-delta', id: '0', delta: reply })
+            writer.write({ type: 'text-end', id: '0' })
+          },
+        })
+        return createUIMessageStreamResponse({ stream: stream2 })
+      }
+    } catch {}
   } else if (text.includes('save')) {
     if (text.includes('private') || text.includes('public')) reply = 'Please login to save — [Login](/login) (same tab) and tell me private or public again.'
     else reply = 'Want me to save the last route as private or public for your account?'
@@ -312,6 +395,7 @@ async function handleFallback(messages: any[]) {
       '• Try: “Plan a pandal hopping trip in South Kolkata near Kalighat metro”\n' +
       '• “Recommend bus from Deshapriya Park to Hindustan Park”\n' +
       '• “List 4 pandals in Sovabazar 2 km”\n' +
+      '• “Compare crowd density between Deshapriya Park and Chetla Agrani Club”\n' +
       'All links open same tab. Ask to save — I’ll ask private/public and save to your account.'
   }
 
