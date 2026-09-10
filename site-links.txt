@@ -1,0 +1,7 @@
+Agomon — Site Links
+
+Welcome page (production): https://agomon.vercel.app/
+Admin page (production): https://agomon.vercel.app/admin
+
+Welcome page (local dev): http://localhost:3000/
+Admin page (local dev): http://localhost:3000/admin

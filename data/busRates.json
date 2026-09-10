@@ -1,0 +1,15 @@
+{
+  "source": "bus rates.txt — Kolkata bus stage fare",
+  "ordinary": [
+    { "stage": "0_to_4", "km": [0, 4], "fare": 7 },
+    { "stage": "4_to_8", "km": [4, 8], "fare": 9 },
+    { "stage": "8_to_12", "km": [8, 12], "fare": 9 },
+    { "stage": "12_to_16", "km": [12, 16], "fare": 10 },
+    { "stage": "16_to_20", "km": [16, 20], "fare": 17 },
+    { "stage": "20_to_24", "km": [20, 24], "fare": 21 },
+    { "stage": "Above_24", "km": [24, null], "fare": "+1_per_4km_stage" }
+  ],
+  "ac_minimum": 25,
+  "non_ac_minimum": 10,
+  "note": "Above 24km: 21 + ceil((km-24)/4)"
+}

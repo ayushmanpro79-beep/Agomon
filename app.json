@@ -1,0 +1,59 @@
+{
+  "expo": {
+    "name": "Agomon",
+    "slug": "agomon",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "platforms": [
+      "android"
+    ],
+    "userInterfaceStyle": "dark",
+    "icon": "./public/icon.png",
+    "android": {
+      "package": "com.ayushmamsteam.agomon",
+      "adaptiveIcon": {
+        "foregroundImage": "./public/icon.png",
+        "backgroundColor": "#020617"
+      },
+      "permissions": [
+        "INTERNET",
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION"
+      ],
+      "blockedPermissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.CAMERA"
+      ]
+    },
+    "extra": {
+      "eas": {
+        "projectId": "ffd1bc24-73e3-4f9c-81b5-d5bac1b6f560"
+      },
+      "siteUrl": "https://agomon.vercel.app"
+    },
+    "plugins": [
+      [
+        "expo-splash-screen",
+        {
+          "image": "./public/icon.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#020617",
+          "dark": {
+            "backgroundColor": "#020617"
+          }
+        }
+      ],
+      [
+        "expo-status-bar",
+        {
+          "style": "light",
+          "backgroundColor": "#020617"
+        }
+      ]
+    ],
+    "updates": {
+      "enabled": false
+    }
+  }
+}

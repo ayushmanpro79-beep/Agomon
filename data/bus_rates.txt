@@ -1,0 +1,10 @@
+Route_Type,Stage_Distance_Km,Fare_INR
+Ordinary_Bus,0_to_4,7
+Ordinary_Bus,4_to_8,9
+Ordinary_Bus,8_to_12,9
+Ordinary_Bus,12_to_16,10
+Ordinary_Bus,16_to_20,17
+Ordinary_Bus,20_to_24,21
+Ordinary_Bus,Above_24,+1_per_4km_stage
+AC_Bus,Minimum_Base_Fare,25
+Non_AC_Bus,Minimum_Base_Fare,10

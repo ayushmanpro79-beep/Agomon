@@ -1,0 +1,11 @@
+{
+  "source": "metro rates.txt — Kolkata Metro fare by stations crossed",
+  "slabs": [
+    { "stations": [1, 2], "fare": 5 },
+    { "stations": [3, 5], "fare": 10 },
+    { "stations": [6, 10], "fare": 15 },
+    { "stations": [11, 15], "fare": 20 },
+    { "stations": [16, 20], "fare": 25 },
+    { "stations": [21, null], "fare": 30 }
+  ]
+}
