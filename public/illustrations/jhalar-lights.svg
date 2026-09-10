@@ -1,0 +1,174 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 140" fill="none" aria-hidden="true">
+  <defs>
+    <linearGradient id="jh-string" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFD60A"/>
+      <stop offset="100%" stop-color="#92400E"/>
+    </linearGradient>
+    <radialGradient id="jh-bulb" cx="50%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#FFFEF8"/>
+      <stop offset="45%" stop-color="#FFD60A"/>
+      <stop offset="100%" stop-color="#F59E0B"/>
+    </radialGradient>
+    <radialGradient id="jh-bulb-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFD60A" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#FFD60A" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="jh-pennant-red" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FCA5A5"/>
+      <stop offset="50%" stop-color="#DC2626"/>
+      <stop offset="100%" stop-color="#7F1D1D"/>
+    </linearGradient>
+    <linearGradient id="jh-pennant-yellow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FEF08A"/>
+      <stop offset="50%" stop-color="#FFD60A"/>
+      <stop offset="100%" stop-color="#A16207"/>
+    </linearGradient>
+    <linearGradient id="jh-pennant-green" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#86EFAC"/>
+      <stop offset="50%" stop-color="#16A34A"/>
+      <stop offset="100%" stop-color="#14532D"/>
+    </linearGradient>
+    <filter id="jh-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2.2" result="b"/>
+      <feColorMatrix values="1 1 0 0 0  1 0.8 0 0 0  0 0 0 0 0  0 0 0 0.7 0"/>
+    </filter>
+  </defs>
+
+  <!-- Main festoon strings - double draped -->
+  <path d="M -10 18 Q 150 34, 300 22 T 600 26 T 900 22 T 1210 18" stroke="url(#jh-string)" stroke-width="1.4" fill="none" stroke-linecap="round" opacity="0.95"/>
+  <path d="M -10 20 Q 150 36, 300 24 T 600 28 T 900 24 T 1210 20" stroke="#FFD60A" stroke-width="0.4" fill="none" opacity="0.3"/>
+
+  <!-- Lower pennant string -->
+  <path d="M -10 42 Q 200 78, 400 62 T 700 66 T 1000 58 T 1210 42" stroke="url(#jh-string)" stroke-width="1.1" fill="none" stroke-linecap="round" stroke-dasharray="0.2 16" opacity="0.0"/>
+  <!-- actual thread -->
+  <path d="M -10 42 Q 200 78, 400 62 T 700 66 T 1000 58 T 1210 42" stroke="#FFD60A" stroke-width="0.7" fill="none" opacity="0.55"/>
+
+  <!-- Pennants (triangular flags) - alternating colors -->
+  <!-- We'll place ~12 pennants -->
+
+  <g>
+    <!-- 1 -->
+    <path d="M 38 43 L 18 96 L 58 96 Z" fill="url(#jh-pennant-red)" stroke="#7F1D1D" stroke-width="0.5"/>
+    <path d="M 38 43 L 18 96 L 58 96 Z" fill="none" stroke="white" stroke-width="0.25" opacity="0.25"/>
+    <circle cx="38" cy="48" r="1" fill="white" opacity="0.6"/>
+    <!-- 2 -->
+    <path d="M 116 55 L 92 106 L 140 106 Z" fill="url(#jh-pennant-yellow)" stroke="#92400E" stroke-width="0.5"/>
+    <circle cx="116" cy="60" r="1" fill="white" opacity="0.6"/>
+    <!-- 3 -->
+    <path d="M 196 69 L 172 118 L 220 118 Z" fill="url(#jh-pennant-green)" stroke="#14532D" stroke-width="0.5"/>
+    <!-- 4 -->
+    <path d="M 276 66 L 252 116 L 300 116 Z" fill="url(#jh-pennant-red)" stroke="#7F1D1D" stroke-width="0.5"/>
+    <!-- 5 -->
+    <path d="M 358 61 L 334 112 L 382 112 Z" fill="url(#jh-pennant-yellow)" stroke="#92400E" stroke-width="0.5"/>
+    <!-- 6 central larger -->
+    <path d="M 460 60 L 432 118 L 488 118 Z" fill="url(#jh-pennant-red)" stroke="#7F1D1D" stroke-width="0.6"/>
+    <text x="460" y="95" text-anchor="middle" font-size="16" fill="white" opacity="0.9">ॐ</text>
+    <!-- 7 -->
+    <path d="M 560 63 L 536 116 L 584 116 Z" fill="url(#jh-pennant-green)" stroke="#14532D" stroke-width="0.5"/>
+    <!-- 8 -->
+    <path d="M 660 64 L 636 116 L 684 116 Z" fill="url(#jh-pennant-yellow)" stroke="#92400E" stroke-width="0.5"/>
+    <!-- 9 central -->
+    <path d="M 740 62 L 716 112 L 764 112 Z" fill="url(#jh-pennant-red)" stroke="#7F1D1D" stroke-width="0.5"/>
+    <!-- 10 -->
+    <path d="M 842 59 L 818 110 L 866 110 Z" fill="url(#jh-pennant-green)" stroke="#14532D" stroke-width="0.5"/>
+    <!-- 11 -->
+    <path d="M 924 54 L 900 104 L 948 104 Z" fill="url(#jh-pennant-yellow)" stroke="#92400E" stroke-width="0.5"/>
+    <!-- 12 -->
+    <path d="M 1004 48 L 984 96 L 1024 96 Z" fill="url(#jh-pennant-red)" stroke="#7F1D1D" stroke-width="0.5"/>
+    <!-- 13 -->
+    <path d="M 1084 44 L 1066 90 L 1102 90 Z" fill="url(#jh-pennant-green)" stroke="#14532D" stroke-width="0.5"/>
+    <!-- 14 -->
+    <path d="M 1162 42 L 1144 88 L 1180 88 Z" fill="url(#jh-pennant-yellow)" stroke="#92400E" stroke-width="0.5"/>
+  </g>
+
+  <!-- String bulbs - hanging festive lights -->
+  <!-- Bulb design: small socket + glowing orb -->
+  <g>
+    <!-- positions along top string at ~70px intervals -->
+    <g transform="translate(78,22)">
+      <rect x="-3.5" y="0" width="7" height="7" rx="1.2" fill="#1F2937" stroke="#FFD60A" stroke-width="0.4"/>
+      <ellipse cx="0" cy="14" rx="7" ry="9" fill="url(#jh-bulb)" stroke="#F59E0B" stroke-width="0.5"/>
+      <ellipse cx="-1.6" cy="11" rx="2" ry="2.8" fill="white" opacity="0.65"/>
+      <ellipse cx="0" cy="14" rx="12" ry="12" fill="url(#jh-bulb-glow)" opacity="0.9" filter="url(#jh-glow)"/>
+      <path d="M0 7 L 0 0" stroke="#1F2937" stroke-width="1"/>
+    </g>
+    <g transform="translate(154,27)">
+      <rect x="-3.5" y="0" width="7" height="7" rx="1.2" fill="#1F2937" stroke="#FFD60A" stroke-width="0.4"/>
+      <ellipse cx="0" cy="14" rx="7" ry="9" fill="url(#jh-bulb)" stroke="#F59E0B" stroke-width="0.5"/>
+      <ellipse cx="-1.6" cy="11" rx="2" ry="2.8" fill="white" opacity="0.65"/>
+      <ellipse cx="0" cy="14" rx="12" ry="12" fill="url(#jh-bulb-glow)" opacity="0.7" />
+    </g>
+    <g transform="translate(236,25)">
+      <rect x="-3.5" y="0" width="7" height="7" rx="1.2" fill="#1F2937" stroke="#FFD60A" stroke-width="0.4"/>
+      <ellipse cx="0" cy="14" rx="7" ry="9" fill="url(#jh-bulb)" stroke="#F59E0B" stroke-width="0.5"/>
+      <ellipse cx="-1.6" cy="11" rx="2" ry="2.8" fill="white" opacity="0.65"/>
+      <ellipse cx="0" cy="14" rx="12" ry="12" fill="url(#jh-bulb-glow)" opacity="0.8"/>
+    </g>
+    <g transform="translate(318,22)">
+      <rect x="-3.5" y="0" width="7" height="7" rx="1.2" fill="#1F2937" stroke="#FFD60A" stroke-width="0.4"/>
+      <ellipse cx="0" cy="14" rx="7" ry="9" fill="url(#jh-bulb)" stroke="#F59E0B" stroke-width="0.5"/>
+      <ellipse cx="-1.6" cy="11" rx="2" ry="2.8" fill="white" opacity="0.65"/>
+      <ellipse cx="0" cy="14" rx="12" ry="12" fill="url(#jh-bulb-glow)" opacity="0.7"/>
+    </g>
+    <g transform="translate(400,24)">
+      <rect x="-3.5" y="0" width="7" height="7" rx="1.2" fill="#1F2937" stroke="#FFD60A" stroke-width="0.4"/>
+      <ellipse cx="0" cy="14" rx="7" ry="9" fill="url(#jh-bulb)" stroke="#F59E0B" stroke-width="0.5"/>
+      <ellipse cx="-1.6" cy="11" rx="2" ry="2.8" fill="white" opacity="0.65"/>
+      <ellipse cx="0" cy="14" rx="12" ry="12" fill="url(#jh-bulb-glow)" opacity="0.85"/>
+    </g>
+    <g transform="translate(484,26)">
+      <rect x="-3.5" y="0" width="7" height="7" rx="1.2" fill="#1F2937" stroke="#FFD60A" stroke-width="0.4"/>
+      <ellipse cx="0" cy="14" rx="7" ry="9" fill="url(#jh-bulb)" stroke="#F59E0B" stroke-width="0.5"/>
+      <ellipse cx="-1.6" cy="11" rx="2" ry="2.8" fill="white" opacity="0.65"/>
+      <ellipse cx="0" cy="14" rx="12" ry="12" fill="url(#jh-bulb-glow)" opacity="0.7"/>
+    </g>
+    <g transform="translate(568,26)">
+      <rect x="-3.5" y="0" width="7" height="7" rx="1.2" fill="#1F2937" stroke="#FFD60A" stroke-width="0.4"/>
+      <ellipse cx="0" cy="14" rx="7" ry="9" fill="url(#jh-bulb)" stroke="#F59E0B" stroke-width="0.5"/>
+      <ellipse cx="-1.6" cy="11" rx="2" ry="2.8" fill="white" opacity="0.65"/>
+      <ellipse cx="0" cy="14" rx="12" ry="12" fill="url(#jh-bulb-glow)" opacity="0.85"/>
+    </g>
+    <g transform="translate(652,26)">
+      <rect x="-3.5" y="0" width="7" height="7" rx="1.2" fill="#1F2937" stroke="#FFD60A" stroke-width="0.4"/>
+      <ellipse cx="0" cy="14" rx="7" ry="9" fill="url(#jh-bulb)" stroke="#F59E0B" stroke-width="0.5"/>
+      <ellipse cx="-1.6" cy="11" rx="2" ry="2.8" fill="white" opacity="0.65"/>
+      <ellipse cx="0" cy="14" rx="12" ry="12" fill="url(#jh-bulb-glow)" opacity="0.7"/>
+    </g>
+    <g transform="translate(734,25)">
+      <rect x="-3.5" y="0" width="7" height="7" rx="1.2" fill="#1F2937" stroke="#FFD60A" stroke-width="0.4"/>
+      <ellipse cx="0" cy="14" rx="7" ry="9" fill="url(#jh-bulb)" stroke="#F59E0B" stroke-width="0.5"/>
+      <ellipse cx="-1.6" cy="11" rx="2" ry="2.8" fill="white" opacity="0.65"/>
+      <ellipse cx="0" cy="14" rx="12" ry="12" fill="url(#jh-bulb-glow)" opacity="0.8"/>
+    </g>
+    <g transform="translate(818,24)">
+      <rect x="-3.5" y="0" width="7" height="7" rx="1.2" fill="#1F2937" stroke="#FFD60A" stroke-width="0.4"/>
+      <ellipse cx="0" cy="14" rx="7" ry="9" fill="url(#jh-bulb)" stroke="#F59E0B" stroke-width="0.5"/>
+      <ellipse cx="-1.6" cy="11" rx="2" ry="2.8" fill="white" opacity="0.65"/>
+      <ellipse cx="0" cy="14" rx="12" ry="12" fill="url(#jh-bulb-glow)" opacity="0.7"/>
+    </g>
+    <g transform="translate(894,22)">
+      <rect x="-3.5" y="0" width="7" height="7" rx="1.2" fill="#1F2937" stroke="#FFD60A" stroke-width="0.4"/>
+      <ellipse cx="0" cy="14" rx="7" ry="9" fill="url(#jh-bulb)" stroke="#F59E0B" stroke-width="0.5"/>
+      <ellipse cx="-1.6" cy="11" rx="2" ry="2.8" fill="white" opacity="0.65"/>
+      <ellipse cx="0" cy="14" rx="12" ry="12" fill="url(#jh-bulb-glow)" opacity="0.85"/>
+    </g>
+    <g transform="translate(974,22)">
+      <rect x="-3.5" y="0" width="7" height="7" rx="1.2" fill="#1F2937" stroke="#FFD60A" stroke-width="0.4"/>
+      <ellipse cx="0" cy="14" rx="7" ry="9" fill="url(#jh-bulb)" stroke="#F59E0B" stroke-width="0.5"/>
+      <ellipse cx="-1.6" cy="11" rx="2" ry="2.8" fill="white" opacity="0.65"/>
+      <ellipse cx="0" cy="14" rx="12" ry="12" fill="url(#jh-bulb-glow)" opacity="0.7"/>
+    </g>
+    <g transform="translate(1054,20)">
+      <rect x="-3.5" y="0" width="7" height="7" rx="1.2" fill="#1F2937" stroke="#FFD60A" stroke-width="0.4"/>
+      <ellipse cx="0" cy="14" rx="7" ry="9" fill="url(#jh-bulb)" stroke="#F59E0B" stroke-width="0.5"/>
+      <ellipse cx="-1.6" cy="11" rx="2" ry="2.8" fill="white" opacity="0.65"/>
+      <ellipse cx="0" cy="14" rx="12" ry="12" fill="url(#jh-bulb-glow)" opacity="0.8"/>
+    </g>
+    <g transform="translate(1128,18)">
+      <rect x="-3.5" y="0" width="7" height="7" rx="1.2" fill="#1F2937" stroke="#FFD60A" stroke-width="0.4"/>
+      <ellipse cx="0" cy="14" rx="7" ry="9" fill="url(#jh-bulb)" stroke="#F59E0B" stroke-width="0.5"/>
+      <ellipse cx="-1.6" cy="11" rx="2" ry="2.8" fill="white" opacity="0.65"/>
+      <ellipse cx="0" cy="14" rx="12" ry="12" fill="url(#jh-bulb-glow)" opacity="0.7"/>
+    </g>
+  </g>
+</svg>

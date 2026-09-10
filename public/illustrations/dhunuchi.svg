@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 140" fill="none" aria-hidden="true">
+  <defs>
+    <linearGradient id="dh-clay" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7C2D12"/>
+      <stop offset="50%" stop-color="#9A3412"/>
+      <stop offset="100%" stop-color="#451A03"/>
+    </linearGradient>
+    <linearGradient id="dh-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF7CC"/>
+      <stop offset="50%" stop-color="#FFD60A"/>
+      <stop offset="100%" stop-color="#92400E"/>
+    </linearGradient>
+    <radialGradient id="dh-ember" cx="50%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#FEF08A"/>
+      <stop offset="40%" stop-color="#F97316"/>
+      <stop offset="100%" stop-color="#7F1D1D"/>
+    </radialGradient>
+    <filter id="dh-smoke" x="-50%" y="-50%" width="200%" height="100%">
+      <feGaussianBlur stdDeviation="0.7"/>
+    </filter>
+  </defs>
+
+  <!-- Pot body - earthen dhunuchi -->
+  <!-- Upper rim -->
+  <ellipse cx="50" cy="78" rx="34" ry="9" fill="#1A0F0A" stroke="url(#dh-gold)" stroke-width="1"/>
+  <ellipse cx="50" cy="76" rx="34" ry="9" fill="none" stroke="#FFD60A" stroke-width="0.35" opacity="0.4"/>
+  <!-- body -->
+  <path d="M16 78 C 16 78, 18 112, 50 120 C 82 112, 84 78, 84 78 Z" fill="url(#dh-clay)" stroke="#451A03" stroke-width="0.8"/>
+  <!-- mid gold band -->
+  <path d="M18 92 Q 50 98, 82 92" stroke="url(#dh-gold)" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+  <path d="M20 98 Q 50 104, 80 98" stroke="url(#dh-gold)" stroke-width="0.7" fill="none" opacity="0.6"/>
+  <!-- handle left -->
+  <path d="M16 78 C 6 82, 4 96, 18 100" stroke="#451A03" stroke-width="3.2" fill="none" stroke-linecap="round"/>
+  <path d="M16 78 C 6 82, 4 96, 18 100" stroke="url(#dh-clay)" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+  <!-- handle right -->
+  <path d="M84 78 C 94 82, 96 96, 82 100" stroke="#451A03" stroke-width="3.2" fill="none" stroke-linecap="round"/>
+  <path d="M84 78 C 94 82, 96 96, 82 100" stroke="url(#dh-clay)" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+
+  <!-- Base foot -->
+  <path d="M38 120 L 62 120 L 58 128 L 42 128 Z" fill="url(#dh-clay)" stroke="#451A03" stroke-width="0.5"/>
+  <ellipse cx="50" cy="128" rx="10" ry="2.2" fill="#1A0F0A" opacity="0.9"/>
+
+  <!-- Embers / incense inside -->
+  <ellipse cx="50" cy="76" rx="26" ry="6" fill="url(#dh-ember)" opacity="0.95"/>
+  <ellipse cx="50" cy="75" rx="18" ry="3.5" fill="#FEF08A" opacity="0.7"/>
+  <!-- charcoal pieces -->
+  <ellipse cx="44" cy="75" rx="4" ry="2" fill="#1A0F0A" opacity="0.8"/>
+  <ellipse cx="56" cy="76.5" rx="3.5" ry="1.8" fill="#1A0F0A" opacity="0.8"/>
+  <ellipse cx="50" cy="77" rx="2.8" ry="1.4" fill="#450A0A" opacity="0.9"/>
+
+  <!-- Smoke wisps - elegant curves -->
+  <g stroke="white" stroke-linecap="round" fill="none" opacity="0.85" filter="url(#dh-smoke)">
+    <!-- central wisp -->
+    <path d="M50 68 C 50 58, 46 50, 48 40 C 50 30, 54 24, 52 14" stroke-width="1.1" opacity="0.55"/>
+    <path d="M50 68 C 54 58, 58 46, 54 36 C 52 28, 48 22, 50 12" stroke-width="0.75" opacity="0.38"/>
+    <path d="M50 68 C 46 58, 42 48, 46 36 C 48 28, 52 20, 48 10" stroke-width="0.75" opacity="0.32"/>
+  </g>
+  <!-- smoke dots / sparkles ascending -->
+  <g fill="white" opacity="0.5">
+    <circle cx="52" cy="42" r="0.9"/>
+    <circle cx="48" cy="30" r="0.7"/>
+    <circle cx="54" cy="18" r="0.6"/>
+    <circle cx="46" cy="52" r="0.5"/>
+  </g>
+
+  <!-- Alpana dot pattern on pot -->
+  <g fill="#FFD60A" opacity="0.75">
+    <circle cx="30" cy="102" r="0.9"/>
+    <circle cx="38" cy="108" r="0.9"/>
+    <circle cx="46" cy="111" r="1"/>
+    <circle cx="54" cy="111" r="1"/>
+    <circle cx="62" cy="108" r="0.9"/>
+    <circle cx="70" cy="102" r="0.9"/>
+  </g>
+  <path d="M28 104 Q 50 112, 72 104" stroke="#FFD60A" stroke-width="0.45" fill="none" opacity="0.5"/>
+
+  <!-- tiny flame hints inside ember -->
+  <path d="M48 72 C 48 70, 49 69, 50 69 C 51 69, 52 70, 52 72" stroke="#FEF08A" stroke-width="0.6" fill="none" opacity="0.8"/>
+</svg>
