@@ -173,26 +173,52 @@ body { background: var(--agomon-bg); color: var(--agomon-yellow-soft); }
 .filter-scroll > * { scroll-snap-align: start; }
 .filter-btn:active { animation: filter-tap-pop 260ms cubic-bezier(0.34,1.56,0.64,1); }
 
-/* Metro dropdown refined enter — fade + slide-down + settle */
+/* Metro dropdown — smooth enter (blur + slide) + exit — only pill arrow toggles (mobile+desktop) */
 @keyframes metro-drop-in {
-  0% { opacity: 0; transform: translateY(-8px) scale(0.98); }
-  60% { opacity: 1; transform: translateY(2px) scale(1.005); }
-  100% { opacity: 1; transform: translateY(0) scale(1); }
+  0% { opacity: 0; transform: translateY(-10px) scale(0.985); filter: blur(6px); }
+  100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
 }
-.metro-drop-in { animation: metro-drop-in 320ms cubic-bezier(0.16,1,0.3,1); transform-origin: top center; will-change: transform, opacity; }
+.metro-drop-in { animation: metro-drop-in 420ms cubic-bezier(0.22,1,0.36,1) forwards; transform-origin: top center; will-change: transform, opacity, filter; }
 @keyframes metro-drop-out {
-  0% { opacity: 1; transform: translateY(0) scale(1); }
-  100% { opacity: 0; transform: translateY(-6px) scale(0.98); }
+  0% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+  100% { opacity: 0; transform: translateY(-8px) scale(0.985); filter: blur(4px); }
 }
-.metro-drop-out { animation: metro-drop-out 180ms ease forwards; transform-origin: top center; }
+.metro-drop-out { animation: metro-drop-out 300ms cubic-bezier(0.4,0,0.6,1) forwards; transform-origin: top center; will-change: transform, opacity, filter; }
 @keyframes metro-item-in {
-  0% { opacity: 0; transform: translateY(4px); }
+  0% { opacity: 0; transform: translateY(6px); }
   100% { opacity: 1; transform: translateY(0); }
 }
-.metro-item { animation: metro-item-in 280ms cubic-bezier(0.16,1,0.3,1) both; }
+.metro-item { animation: metro-item-in 360ms cubic-bezier(0.22,1,0.36,1) both; }
+/* Height-animated collapse wrapper — pushes pandal cards down with fluid glide */
+.metro-collapse-wrapper {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transform: translateY(-8px);
+  transition: grid-template-rows 480ms cubic-bezier(0.22,1,0.36,1), opacity 380ms cubic-bezier(0.22,1,0.36,1), transform 480ms cubic-bezier(0.22,1,0.36,1);
+  will-change: grid-template-rows, opacity, transform;
+}
+.metro-collapse-wrapper.open {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  transform: translateY(0);
+}
+.metro-collapse-inner {
+  overflow: hidden;
+  min-height: 0;
+}
+.pandal-shift {
+  transition: transform 480ms cubic-bezier(0.22,1,0.36,1);
+  will-change: transform;
+}
+.pandal-shift.shifted {
+  transform: translateY(2px);
+}
 @media (max-width: 768px) {
   .filter-pop { animation-duration: 300ms; }
-  .metro-drop-in { animation-duration: 260ms; }
+  .metro-drop-in { animation-duration: 360ms; }
+  .metro-drop-out { animation-duration: 260ms; }
+  .metro-collapse-wrapper { transition: grid-template-rows 420ms cubic-bezier(0.22,1,0.36,1), opacity 320ms ease, transform 420ms cubic-bezier(0.22,1,0.36,1); }
 }
 /* Dropdown crisp - backdrop + scroll */
 .metro-dropdown {
@@ -284,7 +310,8 @@ button, a { touch-action: manipulation; }
   .glass-pop, .pc-hover, .pc-btn { transition: none; }
   .glass-pop:hover { transform: none; }
   .diya-flicker { animation: none; }
-  .filter-pop, .metro-drop-in { animation: none; }
+  .filter-pop, .metro-drop-in, .metro-drop-out, .metro-item { animation: none; }
+  .metro-collapse-wrapper, .pandal-shift { transition: none; }
 }
 
 @theme inline {
