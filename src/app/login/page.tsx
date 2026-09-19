@@ -16,6 +16,7 @@ export default function LoginPage() {
   const [forgotOpen, setForgotOpen] = useState(false)
   const [resetPass, setResetPass] = useState('')
   const [isRecovery, setIsRecovery] = useState(false)
+  const [googleLoading, setGoogleLoading] = useState(false)
 
   const handleSignup = async () => {
     setErr(''); setMsg(''); setLoading(true)
@@ -82,11 +83,57 @@ export default function LoginPage() {
     setResetPass('')
   }
 
+  const handleGoogle = async () => {
+    setErr(''); setMsg('')
+    setGoogleLoading(true)
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: typeof window !== 'undefined' ? `${window.location.origin}/auth/callback` : undefined,
+        queryParams: { access_type: 'offline', prompt: 'consent' },
+      }
+    })
+    if (error) {
+      setErr(error.message)
+      setGoogleLoading(false)
+    }
+    // on success, browser redirects to Google — no need to reset loading
+  }
+
+  // surface auth callback errors (?error=auth_code_error)
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const p = new URLSearchParams(window.location.search)
+      if (p.get('error') === 'auth_code_error') setErr('Google sign-in failed — please try again.')
+    }
+  }, [])
+
   return (
     <div className="min-h-[60vh] flex items-center justify-center py-8">
       <div className="bg-[#0B1220] border border-[#FFD60A]/10 rounded-2xl p-6 w-full max-w-sm">
         <h1 className="font-bold text-[#FFD60A] text-lg">Welcome to Agomon</h1>
         <p className="text-xs text-white/40 mb-4">{mode === 'login' ? 'Login with Gmail + password' : 'Create account — Gmail will be verified via link'}</p>
+
+        <button
+          onClick={handleGoogle}
+          disabled={googleLoading || loading}
+          className="w-full flex items-center justify-center gap-2.5 bg-white hover:bg-white/90 text-[#020617] py-2.5 rounded-xl text-sm font-semibold border border-[#FFD60A]/10 shadow-[0_2px_12px_rgba(0,0,0,0.2)] disabled:opacity-50 transition"
+        >
+          <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden>
+            <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.91 5.38 2.69 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+            <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+            <path fill="#FBBC05" d="M10.67 28.59c-.53-1.57-.83-3.24-.83-4.59s.3-3.02.83-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24s.92 7.54 2.69 10.78l7.98-6.19z"/>
+            <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.91 42.62 14.62 48 24 48z"/>
+            <path fill="none" d="M0 0h48v48H0z"/>
+          </svg>
+          {googleLoading ? 'Redirecting...' : 'Continue with Google'}
+        </button>
+
+        <div className="flex items-center gap-2 my-4">
+          <div className="h-px flex-1 bg-[#FFD60A]/10" />
+          <span className="text-[11px] text-white/20">or</span>
+          <div className="h-px flex-1 bg-[#FFD60A]/10" />
+        </div>
 
         <div className="flex gap-2 mb-4">
           <button onClick={() => { setMode('login'); setErr(''); setMsg('') }} className={`flex-1 py-2 rounded-xl text-xs font-semibold ${mode==='login'?'bg-[#FFD60A] text-[#020617]':'bg-[#020617] text-white/50 border border-[#FFD60A]/10'}`}>Login</button>

@@ -1,3 +1,4 @@
+import { createBrowserClient } from '@supabase/ssr'
 import { createClient } from '@supabase/supabase-js'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
@@ -7,7 +8,11 @@ if (!supabaseUrl || !supabaseAnonKey) {
   console.warn('Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY in .env.local')
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+// Browser client with PKCE cookie support (for OAuth)
+export const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey)
+
+// Fallback plain client for helpers that don't need cookies (optional)
+export const supabasePlain = createClient(supabaseUrl, supabaseAnonKey)
 
 // Helper for search - used in src/app/page.tsx:20 - handles sreebhumi = shree bhumi = shribhumi variants
 const normalizeSearch = (s: string) =>

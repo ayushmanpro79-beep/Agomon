@@ -9,7 +9,7 @@ const base = process.env.NEXT_PUBLIC_SITE_URL || "https://agomon.vercel.app";
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   try {
-    const supabase = createServerClient();
+    const supabase = await createServerClient();
     const { data } = await supabase.from("puja_routes").select("title, description").eq("id", id).single();
     if (!data) return { title: "Route not found | Agomon" };
     return { title: `${data.title} — Pujo Route | Agomon`, description: data.description || "Optimized Pujo route", alternates: { canonical: `${base}/pujo-routing/${id}` } };
@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
 export default async function RouteView({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const supabase = createServerClient();
+  const supabase = await createServerClient();
   const { data: route } = await supabase.from("puja_routes").select("*").eq("id", id).single();
   if (!route) return <div className="py-20 text-center text-white/50">Route not found or private. <Link href="/pujo-routing" className="text-[#FFD60A] underline">Back</Link></div>;
   if (!route.is_public) {

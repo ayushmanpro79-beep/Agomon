@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { createServerClient } from "@/lib/supabase/server";
+import { createPlainServerClient } from "@/lib/supabase/server";
 import PandalDetailClient from "./PandalDetailClient";
 
 type Pandal = {
@@ -24,7 +24,7 @@ export const dynamicParams = true;
 
 export async function generateStaticParams() {
   try {
-    const supabase = createServerClient();
+    const supabase = createPlainServerClient();
     const { data } = await supabase.from("pandals").select("slug");
     return (data || []).map((p: any) => ({ slug: p.slug }));
   } catch {
@@ -35,7 +35,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   try {
-    const supabase = createServerClient();
+    const supabase = createPlainServerClient();
     const { data } = await supabase.from("pandals").select("name, slug, area, address, image_url").eq("slug", slug).single();
     if (!data) return { title: "Pandal Not Found | Agomon" };
     const title = `${data.name} Durga Puja 2026 — ${data.area}, Kolkata`;
@@ -63,7 +63,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function PandalPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const supabase = createServerClient();
+  const supabase = createPlainServerClient();
   const { data } = await supabase.from("pandals").select("*").eq("slug", slug).single();
 
   if (!data) {

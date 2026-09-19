@@ -1,4 +1,5 @@
 'use client'
+import { useEffect, useState } from 'react'
 import { FadeUp, PageTransition } from '@/components/ui/Animated'
 import DurgaEyes from '@/components/animations/DurgaEyes'
 import { CornerDeepaks } from '@/components/animations/Deepak'
@@ -7,9 +8,20 @@ import SectionBorder from '@/components/ui/SectionBorder'
 import InstallGuide from '@/components/pwa/InstallGuide'
 import GallerySection from '@/components/gallery/GallerySection'
 import Link from 'next/link'
+import { supabase } from '@/lib/supabase/client'
 
 // src/app/page.tsx:12 - welcome only, no browse list, Browse → /browse
 export default function Home() {
+  const [user, setUser] = useState<any>(null)
+  const [authChecked, setAuthChecked] = useState(false)
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => { setUser(data.user); setAuthChecked(true) })
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
+      setUser(session?.user ?? null)
+      setAuthChecked(true)
+    })
+    return () => sub.subscription.unsubscribe()
+  }, [])
   return (
     <PageTransition>
       <FadeUp>
@@ -34,6 +46,11 @@ export default function Home() {
           </div>
           <div>
             <Link href="/browse" className="inline-block bg-[#FFD60A] text-[#020617] px-10 py-3 rounded-full text-sm font-semibold hover:bg-[#FFE566] transition pc-btn">Browse Pandals 🪔</Link>
+            {authChecked && !user && (
+              <div className="mt-3 flex justify-center">
+                <Link href="/login" className="inline-flex items-center gap-1.5 glass border border-[#FFD60A]/20 text-[#FFD60A] px-6 py-2 rounded-full text-xs font-semibold hover:bg-[#FFD60A] hover:text-[#020617] hover:border-[#FFD60A] transition">Login / Sign Up</Link>
+              </div>
+            )}
             <p className="text-[10px] text-white/20 mt-3">Explore Various Pandals in Kolkata • OSM map • Metro nearby</p>
           </div>
         </div>

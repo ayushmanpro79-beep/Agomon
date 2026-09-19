@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { createServerClient } from "@/lib/supabase/server";
+import { createPlainServerClient } from "@/lib/supabase/server";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = process.env.NEXT_PUBLIC_SITE_URL || "https://agomon.vercel.app";
@@ -15,7 +15,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   try {
-    const supabase = createServerClient();
+    const supabase = createPlainServerClient();
     // pandals table has slug,created_at,image_url (no updated_at) — select only existing columns
     const { data, error } = await supabase.from("pandals").select("slug, created_at, image_url").order("name");
     if (error) throw error;

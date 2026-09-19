@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { createServerClient } from "@/lib/supabase/server";
+import { createPlainServerClient } from "@/lib/supabase/server";
 import BrowseClient from "./BrowseClient";
 
 const base = process.env.NEXT_PUBLIC_SITE_URL || "https://agomon.vercel.app";
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 export default async function BrowsePage() {
   let initialPandals: any[] = [];
   try {
-    const supabase = createServerClient();
+    const supabase = createPlainServerClient();
     const { data } = await supabase.from("pandals").select("*").order("name");
     initialPandals = data || [];
   } catch {}
