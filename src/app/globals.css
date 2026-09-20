@@ -305,6 +305,27 @@ button, a { touch-action: manipulation; }
   transition-duration: .2s;
 }
 
+/* Botpress Webchat — Agomon bottom corner, all devices */
+#bp-web-widget-container,
+#bp-web-widget {
+  z-index: 50 !important;
+}
+#bp-web-widget {
+  bottom: 16px !important;
+  right: 16px !important;
+}
+@media (max-width: 640px) {
+  #bp-web-widget {
+    bottom: calc(12px + env(safe-area-inset-bottom, 0px)) !important;
+    right: 12px !important;
+  }
+  /* Botpress chat window takes full width on mobile when opened */
+  #bp-web-widget iframe {
+    max-height: calc(100vh - 80px) !important;
+    max-height: calc(100dvh - 80px) !important;
+  }
+}
+
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .glass-pop, .pc-hover, .pc-btn { transition: none; }
