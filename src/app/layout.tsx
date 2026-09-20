@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Figtree } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import Link from "next/link";
 import Image from "next/image";
@@ -99,6 +100,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             title="SOUL Productions"
           />
         </footer>
+        {/* Botpress Chatbot Vani — bottom corner every page, all devices */}
+        <Script src="https://cdn.botpress.cloud/webchat/v5.0/inject.js" strategy="afterInteractive" />
+        <Script src="https://files.bpcontent.cloud/2026/09/20/14/20260920144900-VQX9PA0X.js" strategy="afterInteractive" />
       </body>
     </html>
   );

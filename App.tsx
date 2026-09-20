@@ -101,12 +101,15 @@ export default function App() {
   const handleShouldLoad = useCallback(
     (req: { url: string }) => {
       const url = req.url;
-      // Allow Site + OSM tiles + Supabase
+      // Allow Site + OSM tiles + Supabase + Botpress (chatbot Vani)
       if (
         url.startsWith(SITE_URL) ||
         url.startsWith("https://tile.openstreetmap.org") ||
         url.startsWith("https://tiles.stadiamaps.com") ||
         url.startsWith("https://oqqnskvunpjgkkonnuqh.supabase.co") ||
+        url.startsWith("https://cdn.botpress.cloud") ||
+        url.startsWith("https://files.bpcontent.cloud") ||
+        url.startsWith("https://api.botpress.cloud") ||
         url.startsWith("https://agomon") ||
         url.startsWith("about:blank") ||
         url.startsWith("data:")
@@ -148,8 +151,8 @@ export default function App() {
           incognito={false}
           javaScriptEnabled={true}
           domStorageEnabled={true}
-          thirdPartyCookiesEnabled={false}
-          sharedCookiesEnabled={false}
+          thirdPartyCookiesEnabled={true}
+          sharedCookiesEnabled={true}
           allowFileAccess={false}
           allowFileAccessFromFileURLs={false}
           allowUniversalAccessFromFileURLs={false}
