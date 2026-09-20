@@ -103,6 +103,50 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* Botpress Chatbot Vani — bottom corner every page, all devices */}
         <Script src="https://cdn.botpress.cloud/webchat/v5.0/inject.js" strategy="afterInteractive" />
         <Script src="https://files.bpcontent.cloud/2026/09/20/14/20260920144900-VQX9PA0X.js" strategy="afterInteractive" />
+        {/* Fix blinking caret beside chatbot icon when closed */}
+        <Script id="bp-caret-fix" strategy="afterInteractive">{`
+          (function(){
+            function blurWidgetCaret(){
+              try{
+                var ae=document.activeElement;
+                if(ae && ae.closest && ae.closest('#bp-web-widget')){
+                  var isInput = ae.matches('input,textarea,[contenteditable="true"]');
+                  if(!isInput){
+                    ae.blur();
+                    if(document.body) document.body.focus({preventScroll:true});
+                  }
+                }
+              }catch(e){}
+            }
+            document.addEventListener('click', function(){ setTimeout(blurWidgetCaret, 80); }, true);
+            document.addEventListener('focusin', function(){
+              setTimeout(function(){
+                var ae=document.activeElement;
+                if(ae && ae.closest && ae.closest('#bp-web-widget')){
+                  var widget=document.getElementById('bp-web-widget');
+                  var iframe=widget && widget.querySelector('iframe');
+                  var isOpen=iframe && iframe.offsetHeight>100 && iframe.offsetWidth>100 && getComputedStyle(iframe).display!=='none';
+                  if(!isOpen && !ae.matches('input,textarea,[contenteditable="true"]')) blurWidgetCaret();
+                }
+              }, 80);
+            }, true);
+            var tries=0;
+            var iv=setInterval(function(){
+              tries++;
+              if(window.botpressWebChat && window.botpressWebChat.onEvent){
+                clearInterval(iv);
+                try{
+                  window.botpressWebChat.onEvent(function(e){
+                    if(e && (e.type==='webchat:closed' || e.type==='UI.CLOSED' || e.type==='LIFECYCLE.ANIMATED_OUT' || String(e.type).indexOf('CLOSED')>-1)){
+                      setTimeout(blurWidgetCaret, 50);
+                    }
+                  }, ['webchat:closed','UI.CLOSED']);
+                }catch(e){}
+              }
+              if(tries>40) clearInterval(iv);
+            },500);
+          })();
+        `}</Script>
       </body>
     </html>
   );

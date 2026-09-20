@@ -314,6 +314,21 @@ button, a { touch-action: manipulation; }
   bottom: 16px !important;
   right: 16px !important;
 }
+/* Fix blinking text cursor beside chatbot icon when closed — hide caret on widget shell, keep inside inputs */
+#bp-web-widget,
+#bp-web-widget * {
+  caret-color: transparent !important;
+}
+#bp-web-widget input,
+#bp-web-widget textarea,
+#bp-web-widget [contenteditable="true"],
+#bp-web-widget iframe {
+  caret-color: auto !important;
+}
+#bp-web-widget:focus,
+#bp-web-widget *:focus {
+  outline: none !important;
+}
 @media (max-width: 640px) {
   #bp-web-widget {
     bottom: calc(12px + env(safe-area-inset-bottom, 0px)) !important;
