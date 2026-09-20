@@ -73,6 +73,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={cn("h-full", geistSans.variable, geistMono.variable, "font-sans", figtree.variable)}>
       <body className="min-h-full flex flex-col bg-[#020617] text-[#FFF8E1]">
+        <div className="gradient-untitled" aria-hidden />
         <RegisterSW />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteLd) }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgLd) }} />
