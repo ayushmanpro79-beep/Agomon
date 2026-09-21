@@ -3,9 +3,9 @@
 @import "shadcn/tailwind.css";
 
 @custom-variant dark (&:is(.dark *));
-:root {
-  --agomon-bg: #020617;
-  --agomon-navy: #020617;
+: root {
+  --agomon-bg: #030624;
+  --agomon-navy: #05071f;
   --agomon-card: #0B1220;
   --agomon-yellow: #FFD60A;
   --agomon-yellow-soft: #FFF8E1;
