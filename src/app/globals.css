@@ -3,9 +3,9 @@
 @import "shadcn/tailwind.css";
 
 @custom-variant dark (&:is(.dark *));
-: root {
-  --agomon-bg: #030624;
-  --agomon-navy: #05071f;
+:root {
+  --agomon-bg: #020617;
+  --agomon-navy: #020617;
   --agomon-card: #0B1220;
   --agomon-yellow: #FFD60A;
   --agomon-yellow-soft: #FFF8E1;
@@ -52,24 +52,6 @@
 }
 body { background: var(--agomon-bg); color: var(--agomon-yellow-soft); }
 * { scrollbar-width: thin; scrollbar-color: var(--agomon-border) transparent; }
-
-/* Untitled blend — MIDNIGHT LAPIS #08154D / BLACK CURRENT #071F46 / DUSK PINE #796B28 / INK BLUE #05134F — static, no wave */
-.gradient-untitled {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background: linear-gradient(135deg, #08154D 12.5%, #071F46 37.5%, #796B28 62.5%, #05134F 87.5%);
-  background: linear-gradient(135deg in oklab, #08154D 12.5%, #071F46 37.5%, #796B28 62.5%, #05134F 87.5%);
-}
-.gradient-untitled::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(900px circle at 70% 20%, rgba(121,107,40,0.12), transparent 60%),
-              radial-gradient(700px circle at 20% 80%, rgba(8,21,77,0.35), transparent 65%);
-  opacity: 0.5;
-}
 .scrollbar-hide::-webkit-scrollbar { display: none; }
 .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
@@ -321,42 +303,6 @@ button, a { touch-action: manipulation; }
 #checkboxInput:checked+.toggleSwitch {
   background-color: #FFD60A;
   transition-duration: .2s;
-}
-
-/* Botpress Webchat — Agomon bottom corner, all devices */
-#bp-web-widget-container,
-#bp-web-widget {
-  z-index: 50 !important;
-}
-#bp-web-widget {
-  bottom: 16px !important;
-  right: 16px !important;
-}
-/* Fix blinking text cursor beside chatbot icon when closed — hide caret on widget shell, keep inside inputs */
-#bp-web-widget,
-#bp-web-widget * {
-  caret-color: transparent !important;
-}
-#bp-web-widget input,
-#bp-web-widget textarea,
-#bp-web-widget [contenteditable="true"],
-#bp-web-widget iframe {
-  caret-color: auto !important;
-}
-#bp-web-widget:focus,
-#bp-web-widget *:focus {
-  outline: none !important;
-}
-@media (max-width: 640px) {
-  #bp-web-widget {
-    bottom: calc(12px + env(safe-area-inset-bottom, 0px)) !important;
-    right: 12px !important;
-  }
-  /* Botpress chat window takes full width on mobile when opened */
-  #bp-web-widget iframe {
-    max-height: calc(100vh - 80px) !important;
-    max-height: calc(100dvh - 80px) !important;
-  }
 }
 
 /* Reduced motion */
