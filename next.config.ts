@@ -15,6 +15,16 @@ const nextConfig: NextConfig = {
     return [
       { source: "/sitemap.xml", headers: [{ key: "Cache-Control", value: "public, max-age=3600, s-maxage=3600" }] },
       { source: "/robots.txt", headers: [{ key: "Cache-Control", value: "public, max-age=86400" }] },
+      {
+        source: "/api/:path*",
+        headers: [
+          { key: "Access-Control-Allow-Origin", value: process.env.BOTPRESS_ALLOWED_ORIGIN?.split(",")[0]?.trim() || "https://cdn.botpress.cloud" },
+          { key: "Access-Control-Allow-Methods", value: "GET,POST,OPTIONS" },
+          { key: "Access-Control-Allow-Headers", value: "Authorization, Content-Type" },
+          { key: "Access-Control-Max-Age", value: "86400" },
+          { key: "Vary", value: "Origin" },
+        ],
+      },
     ];
   },
 };
