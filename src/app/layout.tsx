@@ -86,7 +86,22 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <p className="text-[10px] tracking-[0.2em] text-[#FFD60A]/50 -mt-0.5">AGOMON</p>
               </div>
             </Link>
-            <HeaderAuth />
+            <div className="flex items-center gap-2 md:gap-3">
+              <a
+                href="https://www.instagram.com/agomon.pujo26/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Agomon on Instagram"
+                className="h-9 w-9 md:h-10 md:w-10 rounded-full border border-[#FFD60A]/20 bg-[#0B1220] flex items-center justify-center text-[#FFD60A] hover:bg-[#FFD60A] hover:text-[#020617] hover:border-[#FFD60A] hover:shadow-[0_0_14px_rgba(255,214,10,0.35)] hover:scale-[1.02] active:scale-[0.96] transition"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden xmlns="http://www.w3.org/2000/svg">
+                  <rect x="2" y="2" width="20" height="20" rx="6" stroke="currentColor" strokeWidth="1.6" />
+                  <circle cx="12" cy="12" r="5" stroke="currentColor" strokeWidth="1.6" />
+                  <circle cx="18" cy="6" r="1.2" fill="currentColor" />
+                </svg>
+              </a>
+              <HeaderAuth />
+            </div>
           </div>
         </header>
         <main className="flex-1 max-w-5xl mx-auto w-full px-4 py-4">{children}</main>

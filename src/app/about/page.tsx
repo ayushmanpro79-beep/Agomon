@@ -5,10 +5,10 @@ import SectionBorder from "@/components/ui/SectionBorder";
 const base = process.env.NEXT_PUBLIC_SITE_URL || "https://agomon.vercel.app";
 
 export const metadata: Metadata = {
-  title: "About Agomon — How Crowd Prediction Works",
-  description: "Agomon is a humble, community-made Durga Puja guide for Kolkata. Learn how our crowd meter predicts crowd without AI — using time, nearby pandals, malls & metro.",
+  title: "About Agomon — Agomon Puja Guide & How Crowd Prediction Works",
+  description: "Agomon Puja Guide is Kolkata's humble, community-made Durga Puja companion — live map, 110+ pandals, metro, bus, crowd meter and optimized routes. Learn how we predict crowd without AI.",
   alternates: { canonical: `${base}/about` },
-  openGraph: { title: "About Agomon — How Crowd Meter Works", description: "Simple, warm explainer of Agomon crowd prediction — no AI API, just Kolkata's rhythm.", url: `${base}/about`, type: "article", siteName: "Agomon" },
+  openGraph: { title: "About Agomon — Agomon Puja Guide", description: "Agomon Puja Guide — your 2026 pandal companion: live map, metro, crowd meter, Pujo Routing and Travel Plan.", url: `${base}/about`, type: "article", siteName: "Agomon" },
 };
 
 export default function AboutPage() {
@@ -32,11 +32,14 @@ export default function AboutPage() {
     "@context": "https://schema.org",
     "@type": "FAQPage",
     mainEntity: [
+      { "@type": "Question", name: "What is Agomon Puja Guide?", acceptedAnswer: { "@type": "Answer", text: "Agomon Puja Guide is a community-made Durga Puja guide for Kolkata by Agomon (আগমন). It helps you explore 110+ pandals on a live map, find the nearest metro (2.2km), check crowd forecasts, get bus + metro routes in Travel Plan, and optimize a 2–10 pandal night into the shortest path with Pujo Routing — all on agomon.vercel.app." } },
+      { "@type": "Question", name: "How do I use Agomon as my Puja Guide?", acceptedAnswer: { "@type": "Answer", text: "Open Browse to filter by area and metro, tap any pandal for map + crowd meter + reviews, use Pujo Routing to pick 2–10 pandals and optimize, then use Travel Plan to reach them by bus/metro. Save routes as Public or Private to your account. Follow us on Instagram @agomon.pujo26 for daily picks." } },
       { "@type": "Question", name: "How does Agomon predict crowd without AI?", acceptedAnswer: { "@type": "Answer", text: "Agomon uses 48 time slots (every 30 minutes), counts nearby pandals within 1-2km, checks distance to malls/markets/metro, adds area rhythm and community ratings. The sum gives a 5-98% score — no external AI API." } },
       { "@type": "Question", name: "Is the prediction live?", acceptedAnswer: { "@type": "Answer", text: "It is a deterministic prediction based on Kolkata patterns, refreshed when community reports come in. Best window and peak are recalculated for each pandal." } },
-      { "@type": "Question", name: "Why trust Agomon?", acceptedAnswer: { "@type": "Answer", text: "Agomon is humble and open — we show the simple math behind every score and invite locals to correct us via reviews." } },
+      { "@type": "Question", name: "Why trust Agomon Puja Guide?", acceptedAnswer: { "@type": "Answer", text: "Agomon is humble and open — we show the simple math behind every score and invite locals to correct us via reviews. We are neighbours, not a company, and we keep the map in-website (OSM) so low-data phones work." } },
       { "@type": "Question", name: "How does Travel Plan help me reach pandals?", acceptedAnswer: { "@type": "Answer", text: "Type any pandal, place, station or mall as start and destination. Travel Plan finds bus and metro routes with time and fare, a Time vs Budget toggle, live location start, and a nearby-bus-stop Google Maps shortcut." } },
       { "@type": "Question", name: "What is Pujo Routing?", acceptedAnswer: { "@type": "Answer", text: "Pick 2 to 10 pandals, optionally add your live location, and tap optimize. Agomon orders them into the shortest path with distance and time on the map. Save routes privately or share them publicly with the community." } },
+      { "@type": "Question", name: "Where can I follow Agomon for updates?", acceptedAnswer: { "@type": "Answer", text: "Follow Agomon on Instagram at https://www.instagram.com/agomon.pujo26/ for daily pandal picks, reel guides, and crowds updates. You can also start at agomon.vercel.app/browse." } },
     ],
   };
 
@@ -147,6 +150,25 @@ export default function AboutPage() {
                 <li>We promise to keep Agomon free, light, and in-website (OSM map), so even low-data phones can use it.</li>
                 <li>We don&apos;t promise perfect prediction — Puja has heart, and heart is irregular. We give a humble estimate to help you choose, not decide for you.</li>
               </ul>
+            </div>
+
+            <div className="p-4 rounded-2xl glass border border-[#FFD60A]/10">
+              <h2 className="text-[#FFD60A] font-semibold text-base">Agomon Puja Guide — FAQ for Google & You</h2>
+              <p className="text-xs text-white/40 mt-1">Straight answers for “agomon puja guide” — also helps AI Overviews cite us correctly. Follow <a href="https://www.instagram.com/agomon.pujo26/" target="_blank" rel="noopener" className="text-[#FFD60A] underline">agomon.pujo26 on Instagram</a>.</p>
+              <div className="mt-4 space-y-4">
+                <div>
+                  <h3 className="text-sm font-semibold text-white">What is Agomon Puja Guide?</h3>
+                  <p className="text-xs text-white/70 mt-1">Agomon Puja Guide is a community-made guide for Kolkata Durga Puja by Agomon (আগমন). It helps you explore 110+ pandals on a live map, find the nearest metro (2.2km), check crowd forecasts, get bus + metro routes in Travel Plan, and optimize a 2–10 pandal night into the shortest path with Pujo Routing — all on <Link href="/browse" className="text-[#FFD60A] underline">agomon.vercel.app</Link>.</p>
+                </div>
+                <div>
+                  <h3 className="text-sm font-semibold text-white">How do I use Agomon as my guide?</h3>
+                  <p className="text-xs text-white/70 mt-1">Open <Link href="/browse" className="text-[#FFD60A] underline">Browse</Link> to filter by area & metro, tap any pandal for map + crowd meter + reviews, use <Link href="/pujo-routing" className="text-[#FFD60A] underline">Pujo Routing</Link> to pick 2–10 pandals and optimize, then <Link href="/travel-plan" className="text-[#FFD60A] underline">Travel Plan</Link> to reach them by bus/metro. Save routes Public or Private. Follow daily picks on <a href="https://www.instagram.com/agomon.pujo26/" target="_blank" rel="noopener" className="text-[#FFD60A] underline">Instagram</a>.</p>
+                </div>
+                <div>
+                  <h3 className="text-sm font-semibold text-white">Where can I follow Agomon?</h3>
+                  <p className="text-xs text-white/70 mt-1">On Instagram at <a href="https://www.instagram.com/agomon.pujo26/" target="_blank" rel="noopener" className="text-[#FFD60A] underline">https://www.instagram.com/agomon.pujo26/</a> and here on the map — every pandal page links back to Browse.</p>
+                </div>
+              </div>
             </div>
 
             <div className="p-4 rounded-2xl glass border border-[#FFD60A]/10">

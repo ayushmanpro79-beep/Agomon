@@ -1,103 +1,108 @@
 # Agomon — আগমন | Explore Various Pandals in Kolkata 2026
 
-Community platform for Kolkata Durga Puja — live map, crowd prediction and shortest bus + metro routing. Built for `https://agomon.vercel.app` (Vercel).
+**Your Durga Pujo superpower.** Discover 110+ pandals on a live map, hop smarter, and never miss the magic.
+
+**Live:** **https://agomon.vercel.app** — open on phone or desktop
 
 ![Agomon Logo](public/agomon-logo.png)
 
-## Features
+---
 
-### 1. Explore Various Pandals
-- **Home** (`src/app/page.tsx:27`) — welcome + Durga eyes animation + blog
-- **Browse** (`src/app/browse/page.tsx:7` + `BrowseClient.tsx:27`) — filter by 6 areas (`South Kolkata`, `North Kolkata` etc., `supabase/schema.sql:14`), search via `src/lib/searchEngine.ts:168` (OSM `railway=station|halt` 38/40 verified Shahid Khudiram→Noapara + `place=suburb` 3km fallback), metro dropdown within **2.2km** (`src/lib/geo.ts:49`)
-- **Pandal Detail** (`src/app/pandal/[slug]/page.tsx:13` SSG + `PandalDetailClient.tsx:60`) — OSM MapLibre map (`src/components/map/PandalMap.tsx:31`), OSRM routing, `metrosWithinKm(2.2)` pins, `CrowdMeter` + `CrowdSummary`
+## Why Agomon?
 
-### 2. Crowd Meter & Summary (No AI API)
-- `src/lib/crowd.ts:120` `predictCrowd()` — 48×30min slots: `timeCurve` (Peak 5-8PM 1.0, Lunch dip 12-2PM 0.68) + `clusterScore` (nearby pandals ≤2km) + `landmarkScore` (malls `South City` etc. + `KOLKATA_METROS`) + `urbanDensity` + `ratingNorm`. No external AI.
-- `src/components/pandal/CrowdMeter.tsx:31` — 48-bar gradient graph
-- `src/components/pandal/CrowdSummary.tsx:14` — deterministic text `Current High 78% / Best 4:30 AM Low / Peak 7:30 PM` + trend, placed **beneath CrowdMeter, above Top 5** (`PandalDetailClient.tsx:102`)
+Kolkata has 45+ legendary pujas in South alone — plus North, Dumdum, Behala, Central, Salt Lake. Agomon puts them all in your palm: searchable, sortable, routable, and crowd-aware. Built for pandal-hoppers, families, photographers, and first-timers.
 
-### 3. Travel Plan — Bus + Metro Router
-- Route `src/app/travel-plan/page.tsx:1` + `TravelPlanClient.tsx:12` (no framed map) — port of `Akash190104/kolkata-travel-router` (`data/busdata.json` 1919 routes, 2233 stops + `Kolkata_Metro_Bus_Connections.txt`) via `src/lib/travelRouter.ts:6` `findRoutes()` (direct/one-change/two-change, `directional`, `scopeCost`)
-- Free-text resolution: `resolveToStop()` in `TravelPlanClient.tsx:69` maps pandal/suburb/area/station/landmark/mall input to the nearest `HUB` bus stop — exact stop match → `busdata.aliases` → pandal lat/lon to nearest geocoded stop via `haversineKm` (&lt;5km) → area hub fallback (`Tollygunge`/`Shyambazar`/`Esplanade`/`Dum Dum`/`Behala Chowrasta`/`Karunamoyee`) → `areaHints` table
-- **Time vs Budget toggle** — both cards show `⏱ time + ₹ fare`; Time sorts by `timeMin` (metro boosted if `predictCrowd >= 68` from `src/lib/crowd.ts`), Budget sorts by `fare` (`data/busRates.json` stage `0-4km 7…>24 +1/4km` + `data/metroRates.json` `1-2 stn 5…21+ 30`); bus timings parsed from `raw_busrepo_routes*.js` (`firstBus`/`lastBus` where not `Coming Soon`)
-- **Nearest bus depot:** `📍 Use my location` (geolocation → nearest stop resolution) + `🚌 Nearby Bus Stop in Google Maps` → `https://www.google.com/maps/search/bus+stop/@<lat>,<lng>,17z`
-- Suggestion index unions pandal names + areas + `STATIONS` + `KOLKATA_METROS` + depot list + `availableStops()` (`TravelPlanClient.tsx:27`)
-- Credit on page: **Bus graph by [Akash190104/kolkata-travel-router](https://github.com/Akash190104/kolkata-travel-router)** (name + link, no pic)
+---
 
-### 4. Pujo Routing — Multi-Pandal Optimizer + Community Feed
-- Feed `src/app/pujo-routing/page.tsx:17` (ISR `revalidate = 60`) — public routes from Supabase `puja_routes` (`id,title,description,username,ordered_slugs,distance_m,duration_s,is_public`), empty-state CTA when none; detail `src/app/pujo-routing/[id]/page.tsx:1`, creator `src/app/pujo-routing/create/page.tsx:1`
-- Creator `src/components/pujo-routing/PujoRouteCreator.tsx:12` — pick 2–10 pandals (area + text filter, max-60 list), optional live GPS start (`useLive`), `getOptimizedRoute()` from `src/lib/pujoRouting.ts` (OSRM Trip with `fallbackNearestOrder` on failure), result renders `PandalMap` route GeoJSON + distance/duration; save to `puja_routes` with `is_public` flag (graceful local-only mode when table/migration missing)
-- Blends OSRM Trip routing (PUJO-APP by anujeetverma — MIT) with Agomon MapLibre overlay; floating `+` CTA for creation
+## Features — What You Can Do
 
-### 5. Top Places & Community
-- `src/components/pandal/LandmarkList.tsx:23` — Top 5 malls/markets near pandal (2.2km)
-- `ReviewSection.tsx:27` — Supabase `profiles` + `reviews` with `AggregateRating`
+### 🪔 Hero & Discovery
+- Gorgeous welcome hero with Durga eyes, Dhak, and Diya flicker — built for *Shubho Sharodiya*.
+- Tap **Browse Pandals 🪔** to dive in. **Not logged in?** A glass pill **Login / Sign Up** appears right below — one tap to start saving.
+- Gallery highlights and blog stories for the festive mood.
 
-### 6. SEO (Vercel)
-- `src/app/layout.tsx:11` `metadataBase https://agomon.vercel.app`, `title.template`, `openGraph`, `twitter`, `robots`
-- `src/app/sitemap.ts:6` dynamic ( `supabase pandals` → 50× `/pandal/[slug]` + `/` `/browse` `/travel-plan` `/about`), `src/app/robots.ts:4`, `next.config.ts:6` `301 /map→/browse`, `/about` `AboutPage` + `FAQPage` JSON-LD (`src/app/about/page.tsx:6`), 62 pages SSG
+### 🗺️ Browse — Explore Various Pandals
+- **Filter by area:** All, Nearby me (3 km via GPS), North Kolkata, Dumdum, South Kolkata, West Kolkata & Behala, Central Kolkata, Salt Lake & Rajarhat.
+- **Smart Search:** Finds *Sreebhumi = Shreebhumi = Sribhumi*, stations, suburbs — powered by OSM. Try “Golpark, Chetla, Sealdah”.
+- **Metro dropdown (2.2 km):** Tap the **arrow on the active pill (▾/▴)** to see nearest metros with live counts. Stays open so you can switch metros quickly — **blank taps never close it**. Smooth height push slides the pandal cards down with a soft blur.
+- **Map:** Live MapLibre OSM, yellow diya pins, “M” metros, every card is tappable.
 
-## Tech Stack / Dependencies
+### 🛣️ Pujo Routing — Your Puja Hop, Optimized
+- Pick **2–10 pandals** (optionally include your live location as the fixed start).
+- Hit **Optimize** — we TSP-sort via road geometry and show distance, duration, and the route line on the map.
+- **One-tap actions:** **Open in Google Maps** (full route + per-segment links) and **Save as Public or Private** to your account. Public routes appear in the community feed; Private stays yours.
+- Beautiful feed with distance, duration, and Admin Suggested / AI badges.
 
-| Package | Version | Use |
-|---|---|---|
-| `next` | 16.3.3 | App Router, SSG `generateStaticParams`, `metadata` |
-| `react` / `react-dom` | 19.2.8 | UI |
-| `@supabase/supabase-js` | ^2.112.4 | `pandals`/`profiles`/`reviews` (`.env.local:1`) |
-| `maplibre-gl` | ^6.6.0 | OSM tiles `tile.openstreetmap.org` + `PandalMap` |
-| `fuse.js` | ^7.5.0 | Fuzzy `pandal` + `STATIONS` search |
-| `animejs` | ^4.5.0 | `DurgaEyes` / `Deepak` animations |
-| `tailwindcss` | ^4 | `globals.css` glass theme `#FFD60A`/`#020617` |
-| `typescript` | ^5 | Types |
-| `expo` / `react-native` | ^57 / 0.86 | Android wrapper (`app.json`) |
-| `mapConfig` `VECTOR_STYLE`/`RASTER_STYLE` | — | `tile.openstreetmap.org` raster default |
+### 🚌 Travel Plan — Bus + Metro, Without the Chaos
+- **Free-text from → to:** Type a pandal, mall, or station (“Shyambazar → South City Mall”) — we resolve it to the nearest real bus stop.
+- **1919 routes, 2233 stops** — Direct, 1-change, and 2-change plans ranked by **Time** (metro boosted when crowd is high) or **Budget** (stage fare + metro slabs).
+- **Up to 3 verified plans** per search: boarding stop, destination stop, intermediate stops, bus code / metro, fare (₹), time (min), and Google Transit link. **Never fake** — if no bus exists, we clearly say so.
+- **Use my location:** Jumps to the closest stop; “Nearby Bus Stop in Google Maps” at zoom 17.
 
-**Data:** `data/busdata.json` (port of Bus Repository), `data/Kolkata_Metro_Bus_Connections.txt` (5 metro lines), `data/busRates.json` / `data/metroRates.json` (stage fare), `src/lib/geo.ts` OSM `railway=station|halt` 38/40 verified.
+### 🔥 Crowd Forecast — Know Before You Go
+- **48 × 30-min slots** from 00:00 to 23:30, coloured 5–98%.
+- **Peak 5–8 PM, lunch dip 12–2 PM** — we model cluster (pandals within 2 km), landmarks (South City, Acropolis, Quest…), metro proximity, and rating.
+- See **Current / Best / Worst** window + trend (rising / falling) right under the meter, above Top 5 landmarks.
 
-## Scripts
+### ⭐ Community & Details
+- Each pandal page shows **nearest metros**, **landmarks within 2.2 km**, **address**, **ratings**, and **community reviews** (one per user). Write yours after logging in.
+- **Top 5** malls/markets near the pandal for food & shopping.
 
-- `npm run dev` — Next dev (Turbopack root `next.config.ts:4`)
-- `npm run build` — SSG + `sitemap.xml` / `robots.txt`
-- `node scripts/geocode-stations.mjs` — OSM `railway=station|halt` re-geocode Shahid Khudiram→Noapara
-- `python data/build.py` — rebuild `busdata.json` from `raw_busrepo_routes*.js` (optional)
+### 🔐 Accounts — Email + Google, Your Way
+- **Continue with Google** (white button, 4-color G) or **Gmail + password** (email verification link, check Spam too). Both stay independent — log in either way.
+- **My Account** (`/account`, protected): Large avatar with ✎ editor (up to 5 MB, square), editable unique username, email, and **member since**. Avatar appears **beside the hamburger** on every page (phone + desktop) and links to `/account`.
+- **Security, solved:**
+  - *Email user:* **Change Password** (new + confirm) and **Send reset link** to your Gmail.
+  - *Email user:* **Link Google Account** — one click while logged in (requires *Allowed Manual Linking*).
+  - *Google user:* **Set Password** to enable Email login for your Gmail, and **Link Email** — enter an existing email + its password to verify ownership; we send a confirmation link. Forgot? Reset first, then link.
+- **Header drawer** (`1/3 width slide`): Top profile card (avatar, name, email, **Google • Gmail / Email • Verified** pill) + **My Account** + **Logout** + “Tap avatar to edit”.
 
-## Deploy (Vercel — kept on Vercel)
+### 🤖 Vani — Your Pujo Chatbot
+- Bottom-right on **every page, phone + desktop + Android app**. Powered by Botpress Cloud.
+- Ask in plain words: *“Make a route in South Kolkata for 5 pandals”* — Vani picks random pandals in that area, optimizes the route, and returns the **ordered list + Agomon link + Google Maps link + Save Public/Private buttons**.
+- Ask *“How to go from Dum Dum to Santoshpur?”* — Vani summarizes **bus + metro** with collapsed legs (tap to expand, never crowded).
+- **No blinking cursor** on close — caret is hidden on the bubble shell, kept inside inputs. Positioned at `16px` (desktop) / `safe-area-inset` (mobile) above the footer.
 
-```bash
-vercel deploy --prod
-# env in Vercel dashboard: NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY, NEXT_PUBLIC_SITE_URL=https://agomon.vercel.app
-```
+### ✨ Look & Feel — Untitled Blend + Glass
+- **Fixed backdrop:** Midnight Lapis `#08154D`, Black Current `#071F46`, Dusk Pine `#796B28`, Ink Blue `#05134F` — `135deg in oklab` static gradient, soft radial glows. No wave — calm and readable.
+- **Liquid glass:** More open cards (`blur 18–22px`, softer borders) let the backdrop breathe while keeping yellow `#FFD60A` on navy `#020617` — your festival night.
 
-## License — MIT
+### 🔌 For Builders — Botpress APIs
+- Secure server-side endpoints at `https://agomon.vercel.app/api/*` (`GET /health`, `POST /pujo-routing`, `POST /travel-plan`, `POST /crowd-forecast`) — `Authorization: Bearer BOTPRESS_API_KEY` (never hard-coded), CORS allowlisted, rate-limited, consistent `{success, data/error}` envelope. See `docs/API.md` for curl examples.
 
-Copyright (c) 2026 Agomon (SOUL Productions)
+---
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+## What's New — Kolkata 2026
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+- **Google + Email auth** with linked accounts, profile pics in header, and a dedicated **My Account** hub.
+- **Hero Login pill** — no more hunting for login; it finds you when you need it.
+- **Browse, reborn** — arrow-only metro dropdown, stays open, fluid card push, blur-slide animations.
+- **Vani everywhere** — Botpress chatbot on web + WebView app, caret-fixed, safe-area aware.
+- **Untitled backdrop** — calm Lapis/Pine gradient behind lighter glass — your pandals pop.
+- **Public API** for Vani to call routing, travel, and crowd engines securely.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+---
 
-See [LICENSE](./LICENSE) for the full text.
+## License — MIT (Open, Commercial-Friendly)
 
-Third-party open data used with credit:
-- **Kolkata Travel Router** by [Akash190104](https://github.com/Akash190104/kolkata-travel-router) — bus graph & metro connections (used in `src/lib/travelRouter.ts` and `src/app/travel-plan/`, credited on page).
-- OpenStreetMap © contributors (ODbL) — Nominatim/Overpass `railway=station` geocoding.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
-## Learn More
+**Copyright (c) 2026 Agomon (SOUL Productions)**
 
-- [Next.js Docs](https://nextjs.org/docs)
-- [Supabase Docs](https://supabase.com/docs)
-- [MapLibre GL](https://maplibre.org/)
+**You are free to — for any purpose, including commercial:**
+
+- Use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of this software.
+- Permit others to do the same, as long as you keep the original **LICENSE** and copyright notice in all copies or substantial portions.
+
+This covers all code, styles, and documentation in this repository. Third-party open data remains with its authors (see below).
+
+**The software is provided “as is”, without warranty of any kind.** No liability for the authors — see [`LICENSE`](./LICENSE) for the full MIT text.
+
+**Open data with credit:**
+
+- **Kolkata Travel Router** by [Akash190104](https://github.com/Akash190104/kolkata-travel-router) — bus graph & metro connections.
+- **OpenStreetMap** © contributors (ODbL) — Nominatim / Overpass `railway=station` geocoding.
+- **OSRM** by Project OSRM — trip/route optimization (public demo server).
+
+Keep the notice, share the joy — **Dugga Dugga, Cholo Pujo!**
+
