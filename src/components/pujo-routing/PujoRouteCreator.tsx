@@ -158,11 +158,23 @@ export default function PujoRouteCreator() {
         ← Back to Pujo Routing
       </Link>
       <SectionBorder />
-      <div className="glass-strong rounded-3xl p-4 md:p-6">
-        <p className="text-[#FFD60A]/60 tracking-[0.2em] text-[10px]">PUJO ROUTING • CREATE</p>
-        <h1 className="text-xl md:text-2xl font-bold text-white mt-1">Route Creator</h1>
-        <p className="text-xs text-white/50 mt-1">Pick 2–10 pandals, use live GPS as fixed start (PUJO-APP logic), optimize via OSRM Trip.</p>
-        <p className="text-[11px] text-white/25 mt-1">Credit: Route optimization via OSRM Trip (PUJO-APP by anujeetverma — MIT) blended with Agomon MapLibre & glass.</p>
+      <div className="glass-strong rounded-[24px] p-5 md:p-7 ring-1 ring-[#FFD60A]/10">
+        <div className="flex items-center gap-2">
+          <span className="chip-minimal px-2.5 py-1 text-[#FFD60A] tracking-[0.18em] text-[10px]">PUJO ROUTING</span>
+          <span className="chip-minimal px-2.5 py-1 text-white/40">TSP • OSRM</span>
+        </div>
+        <h1 className="text-xl md:text-[26px] font-bold text-white mt-2.5 tracking-tight text-balance">Create your hop</h1>
+        <p className="text-[13px] text-white/50 mt-1.5 leading-relaxed">Pick 2–10 pandals, optionally pin live GPS as fixed start. We sort the road order.</p>
+        <div className="steps mt-3" aria-label="Progress">
+          <span className={`step-dot ${selected.length >= 2 ? 'done' : 'now'}`}>{selected.length >= 2 ? '✓' : '1'}</span>
+          <span className="text-[11px] text-white/50">Pick</span>
+          <span className={`step-bar ${result ? 'done' : ''}`} />
+          <span className={`step-dot ${result ? 'done' : selected.length >= 2 ? 'now' : ''}`}>{result ? '✓' : '2'}</span>
+          <span className="text-[11px] text-white/50">Optimize</span>
+          <span className={`step-bar ${savedId ? 'done' : ''}`} />
+          <span className={`step-dot ${savedId ? 'done' : ''}`}>3</span>
+          <span className="text-[11px] text-white/50">Go</span>
+        </div>
 
         {/* Live + counts */}
         <div className="mt-4 flex flex-wrap gap-2 items-center">
@@ -173,8 +185,8 @@ export default function PujoRouteCreator() {
 
         {/* Search + area */}
         <div className="mt-4 grid md:grid-cols-[1fr_180px] gap-2">
-          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search pandal or area…" className="w-full px-3 py-2.5 rounded-xl bg-[#020617]/60 border border-[#FFD60A]/10 outline-none text-sm text-white placeholder:text-white/30" />
-          <select value={area} onChange={(e) => setArea(e.target.value)} className="w-full px-3 py-2.5 rounded-xl bg-[#020617]/60 border border-[#FFD60A]/10 text-sm text-white outline-none">
+          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search pandal or area…" className="input-minimal px-3.5 py-3 text-sm" />
+          <select value={area} onChange={(e) => setArea(e.target.value)} className="input-minimal px-3.5 py-3 text-sm">
             {areas.map((a) => <option key={a} value={a} className="bg-[#0B1220]">{a}</option>)}
           </select>
         </div>
@@ -208,14 +220,16 @@ export default function PujoRouteCreator() {
           {filtered.length === 0 && <p className="text-xs text-white/30 p-3 text-center">No pandals match</p>}
         </div>
 
-        <button onClick={optimize} disabled={optimizing || selected.length < 2} className="mt-4 w-full bg-[#FFD60A] disabled:opacity-40 text-[#020617] py-3 rounded-full text-sm font-semibold">{optimizing ? 'Optimizing…' : `Optimize route — ${selected.length} pandals`}</button>
+        <button onClick={optimize} disabled={optimizing || selected.length < 2} className={`btn-primary btn-island group mt-4 w-full py-2 pl-5 pr-2 text-sm min-h-[52px] disabled:opacity-40 ${optimizing ? 'btn-busy' : ''}`}>{optimizing ? 'Optimizing' : `Optimize • ${selected.length} pandals`} <span className="island-arrow">→</span></button>
         {error && <p className="text-xs text-red-400 mt-2">{error}</p>}
 
         {/* Result map + ordered list — Agomon glass + numbered markers */}
         {result && (
           <div className="mt-4">
             <p className="text-xs font-semibold text-[#FFD60A]/80 mb-2">Optimized order {useLive && userLoc && <span className="text-white/40 font-normal">• start fixed at Your Location</span>}</p>
-            <PandalMap pandals={routePandalsForMap as any} userLocation={userLoc} routeGeoJson={result.geojson} metrosToShow={[]} />
+            <div className="bezel"><div className="bezel-inner">
+              <PandalMap pandals={routePandalsForMap as any} userLocation={userLoc} routeGeoJson={result.geojson} metrosToShow={[]} />
+            </div></div>
             <ol className="mt-3 space-y-1.5">
               {orderedForList.map((p: any, i) => (
                 <li key={p.id} className="flex items-center gap-2 text-sm bg-[#020617]/40 border border-[#FFD60A]/10 rounded-xl px-3 py-2">
@@ -237,9 +251,9 @@ export default function PujoRouteCreator() {
                   const base = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${dest}${waypoints ? `&waypoints=${waypoints}` : ''}&travelmode=driving`
                   window.open(base, '_blank')
                 }}
-                className="bg-[#FFD60A] text-[#020617] rounded-xl py-2.5 text-sm font-semibold"
+                className="btn-primary py-2.5 text-[13px]"
               >
-                Open same route in Google Maps →
+                Open in Maps →
               </button>
               <button
                 onClick={() => {
@@ -253,9 +267,9 @@ export default function PujoRouteCreator() {
                   const base = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${dest}${waypoints ? `&waypoints=${waypoints}` : ''}&travelmode=${isWalk ? 'walking' : 'driving'}`
                   window.open(base, '_blank')
                 }}
-                className="bg-[#0B1220] border border-[#FFD60A]/20 text-[#FFD60A] rounded-xl py-2.5 text-sm font-medium"
+                className="btn-ghost py-2.5 text-[13px]"
               >
-                Google Maps (walk/drive auto)
+                Walk / drive
               </button>
             </div>
             <p className="text-[10px] text-white/25 mt-1 text-center">Opens same optimized order in Google Maps — waypoints in exact TSP order from your Agomon map.</p>

@@ -81,10 +81,10 @@ export default function PandalDetailClient({ pandal }: { pandal: Pandal }) {
 
   return (
     <PageTransition>
-      <Link href="/browse" className="inline-flex items-center gap-1 text-sm text-white/40 mb-3">← Back to Browse</Link>
+      <Link href="/browse" className="chip-minimal px-3 py-1.5 text-[#FFD60A] hover:bg-[#FFD60A]/10 transition mb-3 inline-flex">← Browse</Link>
       <FadeUp>
         <SectionBorder />
-        <div className="glass rounded-2xl overflow-hidden">
+        <div className="glass rounded-[20px] overflow-hidden ring-1 ring-[#FFD60A]/10">
           <div className="h-56 md:h-64 bg-[#020617]/60 flex items-center justify-center relative border-b border-[#FFD60A]/10">
             {hasImage ? (
               <Image
@@ -120,20 +120,22 @@ export default function PandalDetailClient({ pandal }: { pandal: Pandal }) {
               <span className="text-white/20">•</span>
               <Link href={`/browse?area=${encodeURIComponent(pandal.area)}`} className="text-[#FFD60A]/60 hover:text-[#FFD60A] underline">More in {pandal.area}</Link>
             </div>
-            <div className="flex items-center gap-3 mt-3 p-3 glass rounded-xl">
-              <div className="text-center">
-                <p className="text-2xl font-bold text-[#FFD60A]">{rating.toFixed(1)}</p>
-                <p className="text-[10px] text-white/30">Rating</p>
+            <div className="flex items-center gap-3 mt-3 p-3.5 glass rounded-2xl">
+              <div className="text-center min-w-[64px]">
+                <p className="text-[26px] leading-none font-bold text-[#FFD60A]">{rating.toFixed(1)}</p>
+                <p className="text-[10px] text-white/35 mt-1 tracking-wide">RATING</p>
               </div>
-              <div className="flex-1 border-l border-[#FFD60A]/10 pl-3">
-                <div className="flex text-[#FFD60A] text-sm">{'★'.repeat(Math.round(rating))}<span className="text-white/15">{'★'.repeat(5 - Math.round(rating))}</span><span className="ml-2 text-xs text-white/50">{rating.toFixed(1)} / 5</span></div>
-                <p className="text-xs text-white/30 mt-1">{pandal.rating_count ?? 0} ratings</p>
+              <div className="flex-1 border-l border-[#FFD60A]/10 pl-3.5">
+                <div className="flex items-center text-[#FFD60A] text-sm leading-none">{'★'.repeat(Math.round(rating))}<span className="text-white/15">{'★'.repeat(5 - Math.round(rating))}</span><span className="ml-2 text-xs text-white/50 font-medium">{rating.toFixed(1)} / 5</span></div>
+                <p className="text-[11px] text-white/35 mt-1.5">{pandal.rating_count ?? 0} ratings • community verified</p>
               </div>
             </div>
             {pandal.latitude && (
               <div className="mt-4">
-                <p className="text-[11px] md:text-xs font-semibold text-[#FFD60A]/80 mb-2 leading-tight">Pandal Map — in-website (OSM light) {routeInfo && <span className="text-white/40 font-normal">• {routeInfo}</span>}</p>
-                <PandalMap pandals={[pandal]} mode="detail" highlightedSlug={pandal.slug} userLocation={userLoc} routeGeoJson={routeGeoJson} metrosToShow={metrosToShow} />
+                <p className="text-[11px] md:text-xs font-semibold text-[#FFD60A]/80 mb-2 leading-tight">Pandal Map — in-website (OSM light) {routeInfo && <span className="text-white/40 font-normal tabular">• {routeInfo}</span>}</p>
+                <div className="bezel"><div className="bezel-inner">
+                  <PandalMap pandals={[pandal]} mode="detail" highlightedSlug={pandal.slug} userLocation={userLoc} routeGeoJson={routeGeoJson} metrosToShow={metrosToShow} />
+                </div></div>
                 <div className="mt-3"><Legend metros={metros} showRoute={!!routeGeoJson} showUser={!!userLoc} /></div>
                 {routeGeoJson && <p className="text-xs text-[#FF1A1A]/70 mt-2">Red line is your in-site route (OSRM {routeInfo?.includes('walk') ? 'foot' : 'driving'} profile)</p>}
                 <NearestMetros latitude={pandal.latitude} longitude={pandal.longitude} userLoc={userLoc} />
@@ -141,10 +143,10 @@ export default function PandalDetailClient({ pandal }: { pandal: Pandal }) {
                 <CrowdSummary pandal={pandal as any} />
                 <LandmarkList pandal={pandal} />
                 <ReviewSection pandalId={pandal.id} />
-                <div className="mt-3 grid grid-cols-2 gap-2">
-                  <Link href="/browse" className="bg-[#0B1220] border border-[#FFD60A]/20 text-[#FFD60A] rounded-xl py-2.5 text-xs md:text-sm font-medium text-center leading-tight">View in Browse Map</Link>
-                  <PressButton className="bg-[#FFD60A] text-[#020617] rounded-xl py-2.5 text-xs md:text-sm font-semibold leading-tight" onClick={() => window.open(`https://www.google.com/maps/dir/?api=1&destination=${pandal.latitude},${pandal.longitude}&travelmode=${routeInfo?.includes('drive') ? 'driving' : 'walking'}`, '_blank')}>
-                    Start in Google Maps
+                <div className="sticky-cta mt-3 grid grid-cols-2 gap-2 glass rounded-2xl p-2 md:p-0 md:bg-transparent md:border-0 md:rounded-none md:shadow-none">
+                  <Link href="/browse" className="btn-ghost py-3 text-xs md:text-sm text-center min-h-[48px]">Browse map</Link>
+                  <PressButton className="btn-primary btn-island group py-2 pl-4 pr-2 text-xs md:text-sm min-h-[48px]" onClick={() => window.open(`https://www.google.com/maps/dir/?api=1&destination=${pandal.latitude},${pandal.longitude}&travelmode=${routeInfo?.includes('drive') ? 'driving' : 'walking'}`, '_blank')}>
+                    Start in Maps <span className="island-arrow">→</span>
                   </PressButton>
                 </div>
                 <p className="text-[11px] text-white/20 mt-2 text-center">In-site red route • OSM in-website • Start opens Google Maps</p>

@@ -130,17 +130,30 @@ export default function TravelPlanClient() {
 
   return (
     <div className="max-w-3xl mx-auto">
-      <div className="glass-strong rounded-3xl p-5 md:p-6">
-        <p className="text-[#FFD60A]/60 tracking-[0.2em] text-[10px]">TRAVEL PLAN • যাত্রা</p>
-        <h1 className="text-xl md:text-2xl font-bold text-white mt-1">Travel Plan — Shortest Bus & Train</h1>
-        <p className="text-xs text-white/50 mt-1">Enter any pandal, suburb, area, station, landmark or mall — we give the fastest route.</p>
+      <div className="glass-strong rounded-[24px] p-5 md:p-7 ring-1 ring-[#FFD60A]/10">
+        <div className="flex items-center gap-2">
+          <span className="chip-minimal px-2.5 py-1 text-[#FFD60A] tracking-[0.18em] text-[10px]">TRAVEL • যাত্রা</span>
+          <span className="chip-minimal px-2.5 py-1 text-white/40">Bus + Metro</span>
+        </div>
+        <h1 className="text-xl md:text-[26px] font-bold text-white mt-2.5 tracking-tight text-balance">Shortest bus & train route</h1>
+        <p className="text-[13px] text-white/50 mt-1.5 leading-relaxed">Type any pandal, suburb, station or mall — we return verified routes only.</p>
+        <div className="steps mt-3" aria-label="Progress">
+          <span className={`step-dot ${start.trim() && dest.trim() ? 'done' : 'now'}`}>{start.trim() && dest.trim() ? '✓' : '1'}</span>
+          <span className="text-[11px] text-white/50">From → To</span>
+          <span className={`step-bar ${plans.length > 0 ? 'done' : ''}`} />
+          <span className={`step-dot ${plans.length > 0 ? 'done' : start.trim() && dest.trim() ? 'now' : ''}`}>{plans.length > 0 ? '✓' : '2'}</span>
+          <span className="text-[11px] text-white/50">Compare</span>
+          <span className="step-bar" />
+          <span className="step-dot">3</span>
+          <span className="text-[11px] text-white/50">Go</span>
+        </div>
 
         {/* Credit — name + link, no profile pic */}
         <p className="text-[11px] text-white/30 mt-2">Bus graph & metro connections by <a href="https://github.com/Akash190104/kolkata-travel-router" target="_blank" rel="noopener" className="text-[#FFD60A]/70 hover:text-[#FFD60A] underline">Akash190104 / kolkata-travel-router</a> — thank you for open data.</p>
 
         {/* Location */}
         <div className="mt-4 flex flex-wrap gap-2 items-center">
-          <button onClick={locate} disabled={locating} className="text-xs bg-[#FFD60A]/10 border border-[#FFD60A]/20 text-[#FFD60A] px-3 py-2 rounded-full">{locating ? 'Locating…' : '📍 Use my location'}</button>
+          <button onClick={locate} disabled={locating} className="btn-ghost text-xs px-3.5 py-2 disabled:opacity-50">{locating ? 'Locating…' : '📍 Use my location'}</button>
           <button
             onClick={() => {
               if (!userLoc) { locate(); return }
@@ -156,9 +169,9 @@ export default function TravelPlanClient() {
                 window.open(`https://www.google.com/maps/search/bus+stop/@${userLoc.lat},${userLoc.lon},16z`, '_blank')
               }
             }}
-            className="text-xs bg-[#0B1220] border border-[#FFD60A]/20 text-[#FFD60A]/80 hover:text-[#FFD60A] px-3 py-2 rounded-full"
+            className="btn-ghost text-xs px-3.5 py-2"
           >
-            🚌 Nearby Bus Stop in Google Maps
+            🚌 Nearby stop
           </button>
           {nearestInfo && <span className="text-xs text-white/40 self-center">Nearest: {nearestInfo}</span>}
         </div>
@@ -166,23 +179,23 @@ export default function TravelPlanClient() {
         {/* Inputs */}
         <div className="grid md:grid-cols-2 gap-3 mt-4">
           <div className="relative">
-            <label className="text-xs text-[#FFD60A]/70">Start</label>
-            <input value={start} onChange={e => setStart(e.target.value)} onFocus={() => setShowStart(true)} onBlur={() => setTimeout(() => setShowStart(false), 180)} placeholder="Chetla Agrani Club, Tollygunge, Sealdah, South City Mall…" className="w-full mt-1 px-3 py-2.5 rounded-xl bg-[#020617]/60 border border-[#FFD60A]/10 outline-none text-sm text-white placeholder:text-white/30 focus:border-[#FFD60A]/30" />
+            <label className="text-[11px] font-medium text-white/50 tracking-wide">START</label>
+            <input value={start} onChange={e => setStart(e.target.value)} onFocus={() => setShowStart(true)} onBlur={() => setTimeout(() => setShowStart(false), 180)} placeholder="Chetla, Tollygunge, Sealdah…" className="input-minimal mt-1.5 px-3.5 py-3 text-sm" />
             {showStart && filteredStart.length > 0 && (
-              <ul className="absolute z-20 mt-1 w-full max-h-44 overflow-y-auto rounded-xl bg-[#0B1220] border border-[#FFD60A]/10 shadow-lg">
+              <ul className="absolute z-20 mt-1.5 w-full max-h-44 overflow-y-auto rounded-2xl bg-[#0B1220]/95 backdrop-blur border border-[#FFD60A]/10 shadow-xl p-1">
                 {filteredStart.map(s => (
-                  <li key={s}><button onMouseDown={e => { e.preventDefault(); setStart(s); setShowStart(false) }} className="w-full text-left px-3 py-2 text-sm text-white/80 hover:bg-[#FFD60A]/10 hover:text-[#FFD60A]">{s}</button></li>
+                  <li key={s}><button onMouseDown={e => { e.preventDefault(); setStart(s); setShowStart(false) }} className="w-full text-left px-3 py-2 rounded-xl text-sm text-white/80 hover:bg-[#FFD60A]/10 hover:text-[#FFD60A] transition">{s}</button></li>
                 ))}
               </ul>
             )}
           </div>
           <div className="relative">
-            <label className="text-xs text-[#FFD60A]/70">Destination</label>
-            <input value={dest} onChange={e => setDest(e.target.value)} onFocus={() => setShowDest(true)} onBlur={() => setTimeout(() => setShowDest(false), 180)} placeholder="Ahiritala Sarbojanin, Shyambazar, Esplanade…" className="w-full mt-1 px-3 py-2.5 rounded-xl bg-[#020617]/60 border border-[#FFD60A]/10 outline-none text-sm text-white placeholder:text-white/30 focus:border-[#FFD60A]/30" />
+            <label className="text-[11px] font-medium text-white/50 tracking-wide">DESTINATION</label>
+            <input value={dest} onChange={e => setDest(e.target.value)} onFocus={() => setShowDest(true)} onBlur={() => setTimeout(() => setShowDest(false), 180)} placeholder="Shyambazar, Esplanade…" className="input-minimal mt-1.5 px-3.5 py-3 text-sm" />
             {showDest && filteredDest.length > 0 && (
-              <ul className="absolute z-20 mt-1 w-full max-h-44 overflow-y-auto rounded-xl bg-[#0B1220] border border-[#FFD60A]/10 shadow-lg">
+              <ul className="absolute z-20 mt-1.5 w-full max-h-44 overflow-y-auto rounded-2xl bg-[#0B1220]/95 backdrop-blur border border-[#FFD60A]/10 shadow-xl p-1">
                 {filteredDest.map(s => (
-                  <li key={s}><button onMouseDown={e => { e.preventDefault(); setDest(s); setShowDest(false) }} className="w-full text-left px-3 py-2 text-sm text-white/80 hover:bg-[#FFD60A]/10 hover:text-[#FFD60A]">{s}</button></li>
+                  <li key={s}><button onMouseDown={e => { e.preventDefault(); setDest(s); setShowDest(false) }} className="w-full text-left px-3 py-2 rounded-xl text-sm text-white/80 hover:bg-[#FFD60A]/10 hover:text-[#FFD60A] transition">{s}</button></li>
                 ))}
               </ul>
             )}
@@ -190,15 +203,15 @@ export default function TravelPlanClient() {
         </div>
 
         {/* Toggle Time vs Budget */}
-        <div className="mt-4 flex items-center gap-2">
+        <div className="mt-4 flex flex-wrap items-center gap-2.5">
           <div className="inline-flex p-1 rounded-full bg-[#020617] border border-[#FFD60A]/10">
-            <button onClick={() => setMode('time')} className={`px-4 py-1.5 rounded-full text-xs font-semibold ${mode==='time'?'bg-[#FFD60A] text-[#020617]':'text-white/60'}`}>⏱ Time</button>
-            <button onClick={() => setMode('budget')} className={`px-4 py-1.5 rounded-full text-xs font-semibold ${mode==='budget'?'bg-[#FFD60A] text-[#020617]':'text-white/60'}`}>₹ Budget</button>
+            <button onClick={() => setMode('time')} className={`px-4 py-1.5 rounded-full text-xs font-semibold transition ${mode==='time'?'bg-[#FFD60A] text-[#020617]':'text-white/60 hover:text-white'}`}>⏱ Time</button>
+            <button onClick={() => setMode('budget')} className={`px-4 py-1.5 rounded-full text-xs font-semibold transition ${mode==='budget'?'bg-[#FFD60A] text-[#020617]':'text-white/60 hover:text-white'}`}>₹ Budget</button>
           </div>
-          <span className="text-[11px] text-white/30">{mode==='time'?'Least time (fare may be higher)':'Lowest fare (time may be higher)'} — both show fare & time</span>
+          <span className="text-[11px] text-white/35">{mode==='time'?'Fastest first':'Cheapest first'} • both show fare & time</span>
         </div>
 
-        <button onClick={handleSearch} className="mt-4 w-full bg-[#FFD60A] text-[#020617] py-3 rounded-full text-sm font-semibold">Find route — Chetla Agrani → Ahiritala example</button>
+        <button onClick={handleSearch} className="btn-primary btn-island group mt-4 w-full py-2 pl-5 pr-2 text-sm min-h-[52px]">Find route <span className="island-arrow">→</span></button>
 
         {crowdInfo && <p className="text-xs text-[#FFD60A]/70 mt-3">{crowdInfo} — if High, metro prioritized.</p>}
 
@@ -206,7 +219,7 @@ export default function TravelPlanClient() {
         <div className="mt-6 space-y-3">
           {result?.error && <p className="text-sm text-red-400">Unknown stop — tried {result.resolvedFrom ? `${result.resolvedFrom.start} → ${result.resolvedFrom.dest}` : ''} (from {result.origin} → {result.dest}). Try bus stop names like Esplanade, Sealdah, Tollygunge, Sovabazar or pandal names auto-mapped.</p>}
           {plans.map((pl: any, i: number) => (
-            <div key={i} className="p-3 md:p-4 rounded-2xl glass border border-[#FFD60A]/10">
+            <div key={i} className="animate-fade-up p-4 rounded-2xl glass card-lift" style={{ animationDelay: `${i * 90}ms` } as any}>
               <div className="flex items-center justify-between gap-2">
                 <span className="text-xs font-semibold text-[#FFD60A]">{pl.kind === 'mixed' ? 'Bus + Train' : pl.kind === 'metro' ? 'Train/Metro only' : 'Bus only'} • {pl.legs.length} leg{pl.legs.length>1?'s':''}</span>
                 <span className="text-xs text-white/40 whitespace-nowrap">⏱ {pl.timeMin} min • ₹{pl.fare}</span>

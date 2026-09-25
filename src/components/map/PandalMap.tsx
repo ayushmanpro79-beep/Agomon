@@ -156,5 +156,5 @@ export default function PandalMap({ pandals, mode = 'browse', highlightedSlug, u
     else map.once('load', doRoute)
   }, [routeGeoJson])
 
-  return <div ref={mapRef} className="w-full h-[60vh] rounded-xl overflow-hidden border border-[#FFD60A]/10 bg-[#0B1220]" />
+  return <div ref={mapRef} className="w-full h-[52vh] md:h-[60vh] rounded-[14px] overflow-hidden border border-[#FFD60A]/10 bg-[#0B1220]" />
 }

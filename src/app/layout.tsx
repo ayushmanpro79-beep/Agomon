@@ -77,24 +77,29 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <RegisterSW />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteLd) }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgLd) }} />
-        <header className="sticky top-0 z-50 glass-strong !rounded-none !border-x-0 !border-t-0 border-b border-[#FFD60A]/10">
-          <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-2">
-              <span className="text-[#FFD60A] text-xl">◆</span>
-              <div>
-                <h1 className="font-bold text-[#FFD60A] leading-none tracking-wide">আগমন</h1>
-                <p className="text-[10px] tracking-[0.2em] text-[#FFD60A]/50 -mt-0.5">AGOMON</p>
+        <header className="sticky top-0 z-50 glass-strong !rounded-none !border-x-0 !border-t-0 border-b border-[#FFD60A]/10 backdrop-blur-xl">
+          <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between gap-3">
+            <Link href="/" className="flex items-center gap-2.5 group shrink-0">
+              <span className="relative flex h-7 w-7 items-center justify-center rounded-full border border-[#FFD60A]/25 bg-[#FFD60A]/10 text-[#FFD60A] text-xs transition group-hover:bg-[#FFD60A] group-hover:text-[#020617]">◆<span className="pulse-dot absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-[#FFD60A] ring-2 ring-[#020617]" /></span>
+              <div className="leading-none">
+                <h1 className="font-bold text-[#FFD60A] tracking-wide text-[15px]">আগমন</h1>
+                <p className="text-[9px] tracking-[0.28em] text-[#FFD60A]/50 mt-0.5">AGOMON</p>
               </div>
             </Link>
-            <div className="flex items-center gap-2 md:gap-3">
+            <nav className="hidden md:flex items-center gap-1 text-[13px] font-medium" aria-label="Primary">
+              <Link href="/browse" className="px-3 py-1.5 rounded-full text-[#FFF8E1]/70 hover:text-[#FFD60A] hover:bg-[#FFD60A]/10 transition">Browse</Link>
+              <Link href="/pujo-routing" className="px-3 py-1.5 rounded-full text-[#FFF8E1]/70 hover:text-[#FFD60A] hover:bg-[#FFD60A]/10 transition">Routes</Link>
+              <Link href="/travel-plan" className="px-3 py-1.5 rounded-full text-[#FFF8E1]/70 hover:text-[#FFD60A] hover:bg-[#FFD60A]/10 transition">Travel</Link>
+            </nav>
+            <div className="flex items-center gap-2">
               <a
                 href="https://www.instagram.com/agomon.pujo26/"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Agomon on Instagram"
-                className="h-9 w-9 md:h-10 md:w-10 rounded-full border border-[#FFD60A]/20 bg-[#0B1220] flex items-center justify-center text-[#FFD60A] hover:bg-[#FFD60A] hover:text-[#020617] hover:border-[#FFD60A] hover:shadow-[0_0_14px_rgba(255,214,10,0.35)] hover:scale-[1.02] active:scale-[0.96] transition"
+                className="h-9 w-9 rounded-full border border-[#FFD60A]/20 bg-[#0B1220] flex items-center justify-center text-[#FFD60A] hover:bg-[#FFD60A] hover:text-[#020617] hover:border-[#FFD60A] transition active:scale-95"
               >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden xmlns="http://www.w3.org/2000/svg">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden xmlns="http://www.w3.org/2000/svg">
                   <rect x="2" y="2" width="20" height="20" rx="6" stroke="currentColor" strokeWidth="1.6" />
                   <circle cx="12" cy="12" r="5" stroke="currentColor" strokeWidth="1.6" />
                   <circle cx="18" cy="6" r="1.2" fill="currentColor" />
@@ -103,18 +108,36 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <HeaderAuth />
             </div>
           </div>
+          <div className="md:hidden border-t border-[#FFD60A]/10">
+            <div className="max-w-5xl mx-auto px-4 py-1.5 flex items-center gap-1 text-xs font-medium overflow-x-auto scrollbar-hide">
+              <Link href="/browse" className="px-3 py-1.5 rounded-full text-[#FFF8E1]/70 hover:text-[#FFD60A] whitespace-nowrap">Browse</Link>
+              <Link href="/pujo-routing" className="px-3 py-1.5 rounded-full text-[#FFF8E1]/70 hover:text-[#FFD60A] whitespace-nowrap">Routes</Link>
+              <Link href="/travel-plan" className="px-3 py-1.5 rounded-full text-[#FFF8E1]/70 hover:text-[#FFD60A] whitespace-nowrap">Travel</Link>
+            </div>
+          </div>
         </header>
-        <main className="flex-1 max-w-5xl mx-auto w-full px-4 py-4">{children}</main>
-        <footer className="py-6 flex flex-col items-center gap-2 text-center text-xs text-[#FFD60A]/30">
-          <span>Agomon — Explore Various Pandals in Kolkata • 2026</span>
-          <Image
-            src="/soul-productions.png"
-            alt="SOUL Productions"
-            width={64}
-            height={28}
-            className="h-7 w-auto object-contain opacity-80"
-            title="SOUL Productions"
-          />
+        <main className="flex-1 max-w-5xl mx-auto w-full px-4 py-5 md:py-6">{children}</main>
+        <footer className="mt-8 border-t border-[#FFD60A]/10 py-6">
+          <div className="max-w-5xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-3 text-center md:text-left">
+            <div className="flex items-center gap-2">
+              <span className="text-[#FFD60A] text-sm">◆</span>
+              <p className="text-xs text-[#FFD60A]/40">Agomon — Explore Various Pandals in Kolkata • 2026</p>
+            </div>
+            <div className="flex items-center gap-4 text-[11px] text-[#FFF8E1]/40">
+              <Link href="/browse" className="hover:text-[#FFD60A] transition">Browse</Link>
+              <Link href="/pujo-routing" className="hover:text-[#FFD60A] transition">Routing</Link>
+              <Link href="/travel-plan" className="hover:text-[#FFD60A] transition">Travel</Link>
+              <Link href="/about" className="hover:text-[#FFD60A] transition">About</Link>
+            </div>
+            <Image
+              src="/soul-productions.png"
+              alt="SOUL Productions"
+              width={64}
+              height={28}
+              className="h-6 w-auto object-contain opacity-70"
+              title="SOUL Productions"
+            />
+          </div>
         </footer>
         {/* Botpress Chatbot Vani — bottom corner every page, all devices */}
         <Script src="https://cdn.botpress.cloud/webchat/v5.0/inject.js" strategy="afterInteractive" />

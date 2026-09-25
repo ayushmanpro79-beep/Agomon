@@ -41,6 +41,17 @@ export default function BrowseClient({ initialPandals }: { initialPandals?: Pand
     load()
   }, [initialPandals])
 
+  // Deep-link: /browse?area=South%20Kolkata preselects the filter (ticker + detail "More in area")
+  useEffect(() => {
+    try {
+      const area = new URLSearchParams(window.location.search).get('area')
+      if (area && AREAS.includes(area)) {
+        setFilter(area)
+        if (area !== 'All') setShowMetroDropdown(true)
+      }
+    } catch {}
+  }, [])
+
   const [nearbyLoc, setNearbyLoc] = useState<{ lat: number; lon: number } | null>(null)
   const [nearbyErr, setNearbyErr] = useState('')
   const [refreshing, setRefreshing] = useState(false)
@@ -188,22 +199,26 @@ export default function BrowseClient({ initialPandals }: { initialPandals?: Pand
   return (
     <PageTransition>
       <FadeUp>
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-3">
-          <h1 className="font-bold text-[#FFD60A] text-sm md:text-base leading-tight">Browse — Explore Various Pandals in Kolkata</h1>
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2.5 mb-3">
+          <div className="flex items-center gap-2.5">
+            <h1 className="font-bold text-white text-base md:text-lg leading-tight tracking-tight">Browse pandals</h1>
+            <span className="chip-minimal px-2.5 py-1 text-[#FFD60A]">{filteredBySearch.length || allPandals.length} live</span>
+          </div>
           <div className="flex items-center gap-2 self-start md:self-auto">
-            <button onClick={refresh} disabled={refreshing} className="text-xs bg-[#0B1220] border border-[#FFD60A]/20 text-[#FFD60A] px-3 py-1.5 rounded-full font-semibold disabled:opacity-50">
+            <button onClick={refresh} disabled={refreshing} className="btn-ghost text-xs px-3.5 py-2 disabled:opacity-50">
               {refreshing ? 'Refreshing…' : '↻ Refresh'}
             </button>
-            <Link href="/" className="text-xs bg-[#FFD60A] text-[#020617] px-3 py-1.5 rounded-full font-semibold">Welcome</Link>
+            <Link href="/" className="btn-primary text-xs px-3.5 py-2">Welcome</Link>
           </div>
         </div>
-        {lastRefreshed && <p className="text-[11px] text-white/30 mb-2">Updated just now ({lastRefreshed}) • {allPandals.length} pandals loaded — new admin adds appear here</p>}
-        {refreshErr && <p className="text-[11px] text-red-400 mb-2">{refreshErr}</p>}
+        <p className="text-[11px] text-white/35">Explore Various Pandals in Kolkata • OSM map • Metro nearby</p>
+        {lastRefreshed && <p className="text-[11px] text-white/30 mt-1">Updated {lastRefreshed} • {allPandals.length} pandals loaded</p>}
+        {refreshErr && <p className="text-[11px] text-red-400 mt-1">{refreshErr}</p>}
       </FadeUp>
 
       <FadeUp delay={80}>
         <SectionBorder />
-        <div className="glass rounded-2xl overflow-hidden p-1">
+        <div className="glass rounded-[20px] overflow-hidden p-1 ring-1 ring-[#FFD60A]/10">
             <PandalMap
               pandals={filteredBySearch}
               mode="browse"
@@ -213,28 +228,28 @@ export default function BrowseClient({ initialPandals }: { initialPandals?: Pand
             />
           </div>
         <SectionBorder className="mt-2 rotate-180" />
-        <p className="text-xs text-white/30 mt-2 text-center">Map shows Kolkata + {filteredBySearch.length} pandals • {metrosToShow.length} metros • OSM in-website</p>
+        <p className="text-[11px] text-white/30 mt-2 text-center">{filteredBySearch.length} pandals • {metrosToShow.length} metros • OSM in-website</p>
       </FadeUp>
 
       <FadeUp delay={100}>
         <SectionBorder />
         <div className="glass rounded-2xl p-2.5 mt-4">
           <div className="relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#FFD60A]/40 text-sm">⌕</span>
+            <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#FFD60A]/40 text-[15px]">⌕</span>
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search: golpark, chtla, Sealdah, south kolkata, tollygunge..."
-              className="w-full pl-9 pr-9 py-2.5 rounded-xl bg-[#020617]/60 backdrop-blur border border-[#FFD60A]/10 outline-none text-sm text-white placeholder:text-white/30 focus:border-[#FFD60A]/30 focus:bg-[#020617]/80 transition"
+              placeholder="Search pandal, metro, area — try “chetla”, “Sealdah”…"
+              className="input-minimal pl-10 pr-10 py-3 text-sm"
             />
             {query && (
-              <button onClick={() => setQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-[#FFD60A] text-sm">✕</button>
+              <button onClick={() => setQuery('')} aria-label="Clear search" className="absolute right-3 top-1/2 -translate-y-1/2 h-7 w-7 rounded-full bg-white/5 text-white/50 hover:text-[#FFD60A] hover:bg-[#FFD60A]/10 text-xs transition">✕</button>
             )}
           </div>
           {searchMeta && <p className="text-[11px] text-[#FFD60A]/70 mt-2">{searchMeta} {accuracy && <span className="text-white/40">• {accuracy}% match</span>}</p>}
           {accuracy && (
-            <div className="mt-1.5 h-1 w-full bg-[#020617] rounded-full overflow-hidden">
-              <div className="h-full bg-gradient-to-r from-[#FF1A1A] via-[#FFD60A] to-[#22c55e]" style={{ width: `${accuracy}%` }} />
+            <div className="mt-1.5 h-1 w-full bg-white/5 rounded-full overflow-hidden">
+              <div className="h-full bg-[#FFD60A] rounded-full transition-all duration-500" style={{ width: `${accuracy}%` }} />
             </div>
           )}
         </div>
@@ -316,19 +331,42 @@ export default function BrowseClient({ initialPandals }: { initialPandals?: Pand
       </FadeUp>
 
       <div className={`mt-4 pandal-shift ${metroMenuOpen ? 'shifted' : ''}`}>
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-1 mb-2">
-          <h2 className="font-semibold text-sm text-[#FFD60A] leading-tight break-words">
-            {query ? (searchMeta || `Search: "${query}"`) : selectedMetro !== 'All' ? `Near ${KOLKATA_METROS.find((m) => m.id === selectedMetro)?.name} (2.2km)` : filter === 'Nearby me' ? `Nearby me • 3 km` : `All Pandals • ${filter}`} <span className="text-white/30 font-normal">• {filteredBySearch.length}</span>
+        <div className="flex items-center justify-between gap-2 mb-2.5">
+          <h2 className="font-semibold text-sm text-white leading-tight truncate">
+            {query ? (searchMeta || `“${query}”`) : selectedMetro !== 'All' ? `Near ${KOLKATA_METROS.find((m) => m.id === selectedMetro)?.name}` : filter === 'Nearby me' ? `Nearby • 3 km` : filter} <span className="text-white/30 font-normal tabular">• {filteredBySearch.length}</span>
           </h2>
-          {(selectedMetro !== 'All' || query) && <button onClick={() => { setSelectedMetro('All'); setQuery('') }} className="text-xs text-[#FFD60A] underline self-start md:self-auto">Clear</button>}
+          {(selectedMetro !== 'All' || query) && <button onClick={() => { setSelectedMetro('All'); setQuery('') }} className="chip-minimal px-3 py-1.5 text-[#FFD60A] hover:bg-[#FFD60A]/10 transition shrink-0">Clear ✕</button>}
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-3">
-          {filteredBySearch.map((p) => (
-            <PandalCard key={p.id} pandal={p} />
-          ))}
-        </div>
-        {filteredBySearch.length === 0 && <p className="text-xs text-white/30 text-center py-10">No pandals found{query ? ` for "${query}"` : ''}</p>}
+        {allPandals.length === 0 ? (
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-2.5 md:gap-3" aria-label="Loading pandals">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="glass skeleton-card p-0">
+                <div className="skeleton sk-img" />
+                <div className="p-3 space-y-2">
+                  <div className="skeleton sk-line w-3/4" />
+                  <div className="skeleton sk-line w-1/2" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div key={`${filter}-${selectedMetro}-${query}`} className="stagger grid grid-cols-2 md:grid-cols-3 gap-2.5 md:gap-3">
+            {filteredBySearch.map((p, i) => (
+              <div key={p.id} style={{ animationDelay: `${Math.min(i, 11) * 45}ms` }}>
+                <PandalCard pandal={p} />
+              </div>
+            ))}
+          </div>
+        )}
+        {allPandals.length > 0 && filteredBySearch.length === 0 && (
+          <div className="glass rounded-2xl text-center py-10 px-6">
+            <p className="text-2xl" aria-hidden>🪔</p>
+            <p className="text-sm text-white/60 mt-2">No pandals found{query ? ` for “${query}”` : ''}</p>
+            <p className="text-xs text-white/30 mt-1">Try a metro, area or landmark instead.</p>
+            <button onClick={() => { setSelectedMetro('All'); setQuery(''); setFilter('All') }} className="btn-ghost text-xs px-4 py-2 mt-4 min-h-[44px]">Reset filters</button>
+          </div>
+        )}
       </div>
     </PageTransition>
   )
