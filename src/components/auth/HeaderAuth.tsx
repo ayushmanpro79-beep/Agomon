@@ -25,10 +25,30 @@ export default function HeaderAuth() {
     return () => sub.subscription.unsubscribe()
   }, [])
 
+  const [lottieOk, setLottieOk] = useState(true)
+
   useEffect(() => {
-    if (!lottieRef.current) return
-    if (open) lottieRef.current.playSegments([10, 60], true)
-    else lottieRef.current.playSegments([85, 136], true)
+    try {
+      const anim = lottieRef.current
+      if (!anim || typeof anim.playSegments !== 'function') return
+      if (open) anim.playSegments([10, 60], true)
+      else anim.playSegments([85, 136], true)
+    } catch {
+      setLottieOk(false)
+    }
+  }, [open])
+
+  // Escape to close + lock body scroll while drawer is open (mobile)
+  useEffect(() => {
+    if (!open) return
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(false) }
+    document.addEventListener('keydown', onKey)
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.removeEventListener('keydown', onKey)
+      document.body.style.overflow = prev
+    }
   }, [open])
 
   const logout = async () => {
@@ -77,15 +97,29 @@ export default function HeaderAuth() {
             <span className="sm:hidden text-[#FFD60A]/60 text-xs max-w-[90px] truncate">{displayName}</span>
           </Link>
         )}
-        <button aria-label="Menu" aria-expanded={open} onClick={() => setOpen(v => !v)} className="h-9 w-9 md:h-10 md:w-10 rounded-full border border-[#FFD60A]/20 bg-[#0B1220] flex items-center justify-center overflow-hidden hover:border-[#FFD60A]/30 transition">
-          <Lottie lottieRef={lottieRef} src={menuAnim as any} autoplay={false} loop={false} style={{ width: 36, height: 36 } as any} />
+        <button aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open} onClick={() => setOpen(v => !v)} className="relative h-11 w-11 md:h-10 md:w-10 rounded-full border border-[#FFD60A]/20 bg-[#0B1220] flex items-center justify-center overflow-hidden hover:border-[#FFD60A]/40 hover:bg-[#FFD60A]/10 active:scale-95 transition">
+          {/* CSS hamburger → X fallback (shown if the Lottie fails to drive) */}
+          {!lottieOk && (
+            <span className="absolute flex flex-col items-center justify-center gap-[5px]" aria-hidden>
+              <span className={`block h-[2px] w-5 rounded-full bg-[#FFD60A] transition-all duration-300 ${open ? 'translate-y-[7px] rotate-45' : ''}`} />
+              <span className={`block h-[2px] w-5 rounded-full bg-[#FFD60A] transition-all duration-300 ${open ? 'opacity-0' : ''}`} />
+              <span className={`block h-[2px] w-5 rounded-full bg-[#FFD60A] transition-all duration-300 ${open ? '-translate-y-[7px] -rotate-45' : ''}`} />
+            </span>
+          )}
+          {lottieOk && (
+            <Lottie lottieRef={lottieRef} src={menuAnim as any} autoplay={false} loop={false} style={{ width: 26, height: 26, background: 'transparent' } as any} className="relative" />
+          )}
         </button>
       </div>
 
-      {/* Backdrop */}
-      <button aria-label="Close menu" onClick={close} className={`fixed inset-0 bg-[#020617]/70 backdrop-blur-sm z-40 transition-opacity duration-300 ${open ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} />
-      {/* Drawer — 1/3 width, slide animation, PC + Mobile */}
-      <div className={`fixed inset-y-0 right-0 w-[33%] min-w-[160px] max-w-[260px] md:max-w-[320px] bg-[#020617] border-l border-[#FFD60A]/20 p-4 pt-16 z-50 flex flex-col gap-3 overflow-y-auto shadow-[-12px_0_32px_rgba(0,0,0,0.6)] transition-transform duration-300 ease-out will-change-transform ${open ? 'translate-x-0' : 'translate-x-full'}`}>
+      {/* Backdrop — above sticky header so the drawer reads as a proper overlay */}
+      <button aria-label="Close menu" onClick={close} tabIndex={open ? 0 : -1} className={`fixed inset-0 bg-[#020617]/70 backdrop-blur-sm z-[60] transition-opacity duration-300 ${open ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} />
+      {/* Drawer — above header + backdrop, own close button, PC + Mobile */}
+      <div role="dialog" aria-modal="true" aria-label="Site menu" className={`fixed inset-y-0 right-0 w-[78vw] min-w-[220px] max-w-[320px] md:w-[33%] md:min-w-[160px] bg-[#020617] border-l border-[#FFD60A]/20 p-4 pt-4 z-[70] flex flex-col gap-2.5 overflow-y-auto shadow-[-12px_0_32px_rgba(0,0,0,0.6)] transition-transform duration-300 ease-out will-change-transform ${open ? 'translate-x-0' : 'translate-x-full'}`}>
+        <div className="flex items-center justify-between mb-1">
+          <span className="text-[11px] tracking-[0.22em] text-[#FFD60A]/60 font-semibold">MENU</span>
+          <button onClick={close} aria-label="Close menu" className="h-11 w-11 -mr-1 rounded-full text-[#FFD60A] hover:bg-[#FFD60A]/10 active:scale-95 transition text-lg leading-none">✕</button>
+        </div>
         {user && (
           <div className="mb-1 p-3 rounded-2xl bg-[#0B1220] border border-[#FFD60A]/10 flex items-center gap-3">
             <div className="h-10 w-10 rounded-full overflow-hidden border border-[#FFD60A]/20 bg-[#020617] shrink-0 flex items-center justify-center">
