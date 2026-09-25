@@ -51,6 +51,23 @@ export default function HeaderAuth() {
     }
   }, [open])
 
+  // Measure the live header height so the drawer/backdrop always start
+  // exactly beneath it — no hardcoded px, survives nav/font changes
+  const [headerH, setHeaderH] = useState<number | null>(null)
+  useEffect(() => {
+    const header = document.getElementById('agomon-header')
+    if (!header) return
+    const update = () => setHeaderH(header.offsetHeight)
+    update()
+    const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(update) : null
+    if (ro) ro.observe(header)
+    window.addEventListener('resize', update)
+    return () => {
+      if (ro) ro.disconnect()
+      window.removeEventListener('resize', update)
+    }
+  }, [])
+
   const logout = async () => {
     await supabase.auth.signOut()
     window.location.reload()
@@ -112,10 +129,10 @@ export default function HeaderAuth() {
         </button>
       </div>
 
-      {/* Backdrop — above sticky header so the drawer reads as a proper overlay */}
-      <button aria-label="Close menu" onClick={close} tabIndex={open ? 0 : -1} className={`fixed inset-0 bg-[#020617]/70 backdrop-blur-sm z-[60] transition-opacity duration-300 ${open ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} />
-      {/* Drawer — above header + backdrop, own close button, PC + Mobile */}
-      <div role="dialog" aria-modal="true" aria-label="Site menu" className={`fixed inset-y-0 right-0 w-[78vw] min-w-[220px] max-w-[320px] md:w-[33%] md:min-w-[160px] bg-[#020617] border-l border-[#FFD60A]/20 p-4 pt-4 z-[70] flex flex-col gap-2.5 overflow-y-auto shadow-[-12px_0_32px_rgba(0,0,0,0.6)] transition-transform duration-300 ease-out will-change-transform ${open ? 'translate-x-0' : 'translate-x-full'}`}>
+      {/* Backdrop — covers page content only, stays beneath the sticky header */}
+      <button aria-label="Close menu" onClick={close} tabIndex={open ? 0 : -1} style={headerH ? { top: headerH } : undefined} className={`fixed inset-x-0 bottom-0 top-14 bg-[#020617]/70 backdrop-blur-sm z-30 transition-opacity duration-300 ${open ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} />
+      {/* Drawer — slides in beneath the header, never overlaps header icons, PC + Mobile */}
+      <div role="dialog" aria-modal="true" aria-label="Site menu" style={headerH ? { top: headerH } : undefined} className={`fixed right-0 bottom-0 top-14 w-[78vw] min-w-[220px] max-w-[320px] md:w-[33%] md:min-w-[160px] bg-[#020617] border-l border-t border-[#FFD60A]/20 p-4 pt-4 z-40 flex flex-col gap-2.5 overflow-y-auto shadow-[-12px_0_32px_rgba(0,0,0,0.6)] transition-transform duration-300 ease-out will-change-transform ${open ? 'translate-x-0' : 'translate-x-full'}`}>
         <div className="flex items-center justify-between mb-1">
           <span className="text-[11px] tracking-[0.22em] text-[#FFD60A]/60 font-semibold">MENU</span>
           <button onClick={close} aria-label="Close menu" className="h-11 w-11 -mr-1 rounded-full text-[#FFD60A] hover:bg-[#FFD60A]/10 active:scale-95 transition text-lg leading-none">✕</button>

@@ -77,7 +77,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <RegisterSW />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteLd) }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgLd) }} />
-        <header className="sticky top-0 z-50 glass-strong !rounded-none !border-x-0 !border-t-0 border-b border-[#FFD60A]/10 backdrop-blur-xl">
+        <header id="agomon-header" className="sticky top-0 z-50 glass-strong !rounded-none !border-x-0 !border-t-0 border-b border-[#FFD60A]/10 backdrop-blur-xl">
           <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between gap-3">
             <Link href="/" className="flex items-center gap-2.5 group shrink-0">
               <span className="relative flex h-7 w-7 items-center justify-center rounded-full border border-[#FFD60A]/25 bg-[#FFD60A]/10 text-[#FFD60A] text-xs transition group-hover:bg-[#FFD60A] group-hover:text-[#020617]">◆<span className="pulse-dot absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-[#FFD60A] ring-2 ring-[#020617]" /></span>
@@ -86,10 +86,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <p className="text-[9px] tracking-[0.28em] text-[#FFD60A]/50 mt-0.5">AGOMON</p>
               </div>
             </Link>
-            <nav className="hidden md:flex items-center gap-1 text-[13px] font-medium" aria-label="Primary">
-              <Link href="/browse" className="px-3 py-1.5 rounded-full text-[#FFF8E1]/70 hover:text-[#FFD60A] hover:bg-[#FFD60A]/10 transition">Browse</Link>
-              <Link href="/pujo-routing" className="px-3 py-1.5 rounded-full text-[#FFF8E1]/70 hover:text-[#FFD60A] hover:bg-[#FFD60A]/10 transition">Routes</Link>
-              <Link href="/travel-plan" className="px-3 py-1.5 rounded-full text-[#FFF8E1]/70 hover:text-[#FFD60A] hover:bg-[#FFD60A]/10 transition">Travel</Link>
+            <nav className="hidden md:flex items-center gap-1.5" aria-label="Primary">
+              <Link href="/browse" className="link-btn">Browse</Link>
+              <Link href="/pujo-routing" className="link-btn">Routes</Link>
+              <Link href="/travel-plan" className="link-btn">Travel</Link>
             </nav>
             <div className="flex items-center gap-2">
               <a
@@ -109,10 +109,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </div>
           </div>
           <div className="md:hidden border-t border-[#FFD60A]/10">
-            <div className="max-w-5xl mx-auto px-4 py-1.5 flex items-center gap-1 text-xs font-medium overflow-x-auto scrollbar-hide">
-              <Link href="/browse" className="px-3 py-1.5 rounded-full text-[#FFF8E1]/70 hover:text-[#FFD60A] whitespace-nowrap">Browse</Link>
-              <Link href="/pujo-routing" className="px-3 py-1.5 rounded-full text-[#FFF8E1]/70 hover:text-[#FFD60A] whitespace-nowrap">Routes</Link>
-              <Link href="/travel-plan" className="px-3 py-1.5 rounded-full text-[#FFF8E1]/70 hover:text-[#FFD60A] whitespace-nowrap">Travel</Link>
+            <div className="max-w-5xl mx-auto px-4 py-2 flex items-center gap-1.5 overflow-x-auto scrollbar-hide">
+              <Link href="/browse" className="link-btn whitespace-nowrap">Browse</Link>
+              <Link href="/pujo-routing" className="link-btn whitespace-nowrap">Routes</Link>
+              <Link href="/travel-plan" className="link-btn whitespace-nowrap">Travel</Link>
             </div>
           </div>
         </header>
@@ -123,20 +123,28 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <span className="text-[#FFD60A] text-sm">◆</span>
               <p className="text-xs text-[#FFD60A]/40">Agomon — Explore Various Pandals in Kolkata • 2026</p>
             </div>
-            <div className="flex items-center gap-4 text-[11px] text-[#FFF8E1]/40">
-              <Link href="/browse" className="hover:text-[#FFD60A] transition">Browse</Link>
-              <Link href="/pujo-routing" className="hover:text-[#FFD60A] transition">Routing</Link>
-              <Link href="/travel-plan" className="hover:text-[#FFD60A] transition">Travel</Link>
-              <Link href="/about" className="hover:text-[#FFD60A] transition">About</Link>
+            <div className="flex items-center gap-1 text-[11px] text-[#FFF8E1]/40">
+              <Link href="/browse" className="link-glow">Browse</Link>
+              <Link href="/pujo-routing" className="link-glow">Routing</Link>
+              <Link href="/travel-plan" className="link-glow">Travel</Link>
+              <Link href="/about" className="link-glow">About</Link>
             </div>
-            <Image
-              src="/soul-productions.png"
-              alt="SOUL Productions"
-              width={64}
-              height={28}
-              className="h-6 w-auto object-contain opacity-70"
-              title="SOUL Productions"
-            />
+            <a
+              href="https://soulproductions2-com.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="SOUL Productions — visit site"
+              className="rounded-xl transition hover:opacity-100 active:scale-95"
+            >
+              <Image
+                src="/soul-productions.png"
+                alt="SOUL Productions"
+                width={128}
+                height={56}
+                className="h-12 w-auto object-contain opacity-80 hover:opacity-100 transition"
+                title="SOUL Productions — visit site"
+              />
+            </a>
           </div>
         </footer>
         {/* Botpress Chatbot Vani — bottom corner every page, all devices */}
