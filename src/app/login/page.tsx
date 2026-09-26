@@ -110,9 +110,10 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-[60vh] flex items-center justify-center py-8">
-      <div className="bg-[#0B1220] border border-[#FFD60A]/10 rounded-2xl p-6 w-full max-w-sm">
-        <h1 className="font-bold text-[#FFD60A] text-lg">Welcome to Agomon</h1>
-        <p className="text-xs text-white/40 mb-4">{mode === 'login' ? 'Login with Gmail + password' : 'Create account — Gmail will be verified via link'}</p>
+      <div className="animate-fade-up glass rounded-[20px] p-6 w-full max-w-sm">
+        <p className="chip-minimal px-2.5 py-1 text-[#FFD60A] tracking-[0.18em] text-[10px] w-max">ACCOUNT</p>
+        <h1 className="font-bold text-white text-xl mt-2 tracking-tight">Welcome to Agomon</h1>
+        <p className="text-xs text-white/40 mt-1 mb-4">{mode === 'login' ? 'Login with Gmail + password' : 'Create account — Gmail will be verified via link'}</p>
 
         <button
           onClick={handleGoogle}
@@ -135,16 +136,16 @@ export default function LoginPage() {
           <div className="h-px flex-1 bg-[#FFD60A]/10" />
         </div>
 
-        <div className="flex gap-2 mb-4">
-          <button onClick={() => { setMode('login'); setErr(''); setMsg('') }} className={`flex-1 py-2 rounded-xl text-xs font-semibold ${mode==='login'?'bg-[#FFD60A] text-[#020617]':'bg-[#020617] text-white/50 border border-[#FFD60A]/10'}`}>Login</button>
-          <button onClick={() => { setMode('signup'); setErr(''); setMsg('') }} className={`flex-1 py-2 rounded-xl text-xs font-semibold ${mode==='signup'?'bg-[#FFD60A] text-[#020617]':'bg-[#020617] text-white/50 border border-[#FFD60A]/10'}`}>Sign Up</button>
+        <div className="inline-flex w-full p-1 rounded-full bg-[#020617] border border-[#FFD60A]/10 mb-4">
+          <button onClick={() => { setMode('login'); setErr(''); setMsg('') }} className={`flex-1 py-2 rounded-full text-xs font-semibold transition active:scale-95 ${mode==='login'?'bg-[#FFD60A] text-[#020617]':'text-white/60 hover:text-white'}`}>Login</button>
+          <button onClick={() => { setMode('signup'); setErr(''); setMsg('') }} className={`flex-1 py-2 rounded-full text-xs font-semibold transition active:scale-95 ${mode==='signup'?'bg-[#FFD60A] text-[#020617]':'text-white/60 hover:text-white'}`}>Sign Up</button>
         </div>
 
         {mode==='signup' && (
-          <input value={username} onChange={e=>setUsername(e.target.value)} placeholder="Unique username" className="w-full mb-3 px-3 py-2.5 rounded-xl bg-[#020617] border border-[#FFD60A]/10 outline-none text-sm text-white placeholder:text-white/30 focus:border-[#FFD60A]/30" />
+          <input value={username} onChange={e=>setUsername(e.target.value)} placeholder="Unique username" className="input-minimal mb-3 px-3.5 py-3 text-sm" />
         )}
-        <input value={email} onChange={e=>setEmail(e.target.value)} placeholder="Gmail address" type="email" className="w-full mb-3 px-3 py-2.5 rounded-xl bg-[#020617] border border-[#FFD60A]/10 outline-none text-sm text-white placeholder:text-white/30 focus:border-[#FFD60A]/30" />
-        <input value={password} onChange={e=>setPassword(e.target.value)} placeholder="Password (min 6 chars)" type="password" className="w-full mb-3 px-3 py-2.5 rounded-xl bg-[#020617] border border-[#FFD60A]/10 outline-none text-sm text-white placeholder:text-white/30 focus:border-[#FFD60A]/30" />
+        <input value={email} onChange={e=>setEmail(e.target.value)} placeholder="Gmail address" type="email" className="input-minimal mb-3 px-3.5 py-3 text-sm" />
+        <input value={password} onChange={e=>setPassword(e.target.value)} placeholder="Password (min 6 chars)" type="password" className="input-minimal mb-3 px-3.5 py-3 text-sm" />
 
         {mode==='login' && (
           <div className="flex justify-end mb-3">
@@ -155,16 +156,16 @@ export default function LoginPage() {
           <div className="mb-3 p-3 rounded-xl bg-[#020617] border border-[#FFD60A]/10">
             <p className="text-xs text-white/60 mb-2">Enter Gmail to get reset link</p>
             <div className="flex gap-2">
-              <button onClick={handleForgot} disabled={loading} className="bg-[#FFD60A] text-[#020617] px-4 py-2 rounded-xl text-xs font-semibold disabled:opacity-50">Send reset link</button>
-              <button onClick={() => setForgotOpen(false)} className="px-3 py-2 rounded-xl border border-[#FFD60A]/10 text-white/60 text-xs">Cancel</button>
+              <button onClick={handleForgot} disabled={loading} className="btn-primary px-4 py-2 text-xs min-h-[44px] disabled:opacity-50">Send reset link</button>
+              <button onClick={() => setForgotOpen(false)} className="btn-ghost px-4 py-2 text-xs min-h-[44px]">Cancel</button>
             </div>
           </div>
         )}
         {isRecovery && (
           <div className="mb-3 p-3 rounded-xl bg-[#020617] border border-[#FFD60A]/20">
             <p className="text-xs text-[#FFD60A] mb-2">Set new password</p>
-            <input value={resetPass} onChange={e=>setResetPass(e.target.value)} placeholder="New password (min 6 chars)" type="password" className="w-full mb-2 px-3 py-2.5 rounded-xl bg-[#0B1220] border border-[#FFD60A]/10 outline-none text-sm text-white placeholder:text-white/30" />
-            <button onClick={handleUpdatePassword} disabled={loading} className="w-full bg-[#FFD60A] text-[#020617] py-2 rounded-xl text-xs font-semibold disabled:opacity-50">Update password</button>
+            <input value={resetPass} onChange={e=>setResetPass(e.target.value)} placeholder="New password (min 6 chars)" type="password" className="input-minimal mb-2 px-3.5 py-3 text-sm" />
+            <button onClick={handleUpdatePassword} disabled={loading} className="btn-primary w-full py-2.5 text-xs min-h-[44px] disabled:opacity-50">Update password</button>
           </div>
         )}
 
@@ -174,13 +175,13 @@ export default function LoginPage() {
         <button
           onClick={mode==='login'?handleLogin:handleSignup}
           disabled={loading}
-          className="w-full bg-[#FFD60A] text-[#020617] py-2.5 rounded-xl text-sm font-semibold disabled:opacity-50"
+          className={`btn-primary w-full py-3 text-sm min-h-[48px] disabled:opacity-50 ${loading ? 'btn-busy' : ''}`}
         >
-          {loading ? 'Please wait...' : mode==='login'?'Login':'Create account'}
+          {loading ? 'Please wait' : mode==='login'?'Login':'Create account'}
         </button>
 
         <p className="text-[11px] text-white/20 mt-3 text-center">By continuing you agree to Agomon Terms. Gmail verification via link sent to your inbox.</p>
-        <Link href="/" className="block text-center text-xs text-[#FFD60A]/60 mt-3 underline">Back to Home</Link>
+        <Link href="/" className="link-glow block text-center text-xs text-[#FFD60A]/60 mt-3 mx-auto w-max">Back to Home</Link>
       </div>
     </div>
   )

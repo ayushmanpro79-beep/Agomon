@@ -72,8 +72,8 @@ export default function CrowdSummary({ pandal }: Props) {
   return (
     <div className="mt-3 glass-strong rounded-2xl p-4 border border-[#FFD60A]/10">
       <div className="flex items-center justify-between mb-2">
-        <h3 className="text-sm font-semibold text-[#FFD60A]">Crowd Summary — deterministic</h3>
-        <span className="text-[10px] px-2 py-1 rounded-full bg-[#020617] border border-[#FFD60A]/10 text-white/40">No AI • 48×30min model</span>
+        <h3 className="text-sm font-semibold text-white tracking-tight">Crowd summary</h3>
+        <span className="chip-minimal px-2 py-1 text-white/40">48 × 30 min</span>
       </div>
 
       {/* Current */}

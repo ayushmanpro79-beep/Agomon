@@ -84,10 +84,10 @@ export default function InstallButton() {
     <div className="flex flex-col items-center mt-3">
       <button
         onClick={handleInstall}
-        className="inline-flex items-center gap-2 glass border border-[#FFD60A]/20 text-[#FFD60A] px-8 py-3 rounded-full text-sm font-semibold hover:border-[#FFD60A]/35 hover:bg-[#FFD60A]/10 transition pc-btn"
+        className="btn-ghost btn-island group px-8 py-2 text-sm min-h-[48px]"
         aria-label="Install Agomon app"
       >
-        <span aria-hidden>📲</span> Install Agomon
+        Install Agomon <span className="island-arrow">→</span>
       </button>
       <p className="text-[10px] text-white/25 mt-1.5">No Play Store needed • safe & light</p>
 
@@ -96,7 +96,7 @@ export default function InstallButton() {
           <p className="text-xs font-semibold text-white">iPhone — Add to Home Screen:</p>
           <ol className="list-decimal pl-5 text-[12px] text-white/70 mt-1.5 space-y-0.5">
             <li>
-              Tap <span className="text-white">Share</span> <span aria-hidden>⬆️</span> at the bottom
+              Tap <span className="text-white">Share</span> <span aria-hidden>↑</span> at the bottom
             </li>
             <li>
               Tap <span className="text-white">Add to Home Screen</span> → <span className="text-white">Add</span>

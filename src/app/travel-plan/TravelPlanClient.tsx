@@ -153,7 +153,7 @@ export default function TravelPlanClient() {
 
         {/* Location */}
         <div className="mt-4 flex flex-wrap gap-2 items-center">
-          <button onClick={locate} disabled={locating} className="btn-ghost text-xs px-3.5 py-2 disabled:opacity-50">{locating ? 'Locating…' : '📍 Use my location'}</button>
+          <button onClick={locate} disabled={locating} className="btn-ghost text-xs px-3.5 py-2 disabled:opacity-50">{locating ? 'Locating…' : 'Use my location'}</button>
           <button
             onClick={() => {
               if (!userLoc) { locate(); return }
@@ -171,7 +171,7 @@ export default function TravelPlanClient() {
             }}
             className="btn-ghost text-xs px-3.5 py-2"
           >
-            🚌 Nearby stop
+            Nearby stop
           </button>
           {nearestInfo && <span className="text-xs text-white/40 self-center">Nearest: {nearestInfo}</span>}
         </div>
@@ -205,8 +205,8 @@ export default function TravelPlanClient() {
         {/* Toggle Time vs Budget */}
         <div className="mt-4 flex flex-wrap items-center gap-2.5">
           <div className="inline-flex p-1 rounded-full bg-[#020617] border border-[#FFD60A]/10">
-            <button onClick={() => setMode('time')} className={`px-4 py-1.5 rounded-full text-xs font-semibold transition ${mode==='time'?'bg-[#FFD60A] text-[#020617]':'text-white/60 hover:text-white'}`}>⏱ Time</button>
-            <button onClick={() => setMode('budget')} className={`px-4 py-1.5 rounded-full text-xs font-semibold transition ${mode==='budget'?'bg-[#FFD60A] text-[#020617]':'text-white/60 hover:text-white'}`}>₹ Budget</button>
+            <button onClick={() => setMode('time')} className={`px-4 py-1.5 rounded-full text-xs font-semibold transition active:scale-95 ${mode==='time'?'bg-[#FFD60A] text-[#020617]':'text-white/60 hover:text-white'}`}>Time</button>
+            <button onClick={() => setMode('budget')} className={`px-4 py-1.5 rounded-full text-xs font-semibold transition active:scale-95 ${mode==='budget'?'bg-[#FFD60A] text-[#020617]':'text-white/60 hover:text-white'}`}>₹ Budget</button>
           </div>
           <span className="text-[11px] text-white/35">{mode==='time'?'Fastest first':'Cheapest first'} • both show fare & time</span>
         </div>
@@ -222,7 +222,7 @@ export default function TravelPlanClient() {
             <div key={i} className="animate-fade-up p-4 rounded-2xl glass card-lift" style={{ animationDelay: `${i * 90}ms` } as any}>
               <div className="flex items-center justify-between gap-2">
                 <span className="text-xs font-semibold text-[#FFD60A]">{pl.kind === 'mixed' ? 'Bus + Train' : pl.kind === 'metro' ? 'Train/Metro only' : 'Bus only'} • {pl.legs.length} leg{pl.legs.length>1?'s':''}</span>
-                <span className="text-xs text-white/40 whitespace-nowrap">⏱ {pl.timeMin} min • ₹{pl.fare}</span>
+                <span className="text-xs text-white/40 whitespace-nowrap tabular">{pl.timeMin} min • ₹{pl.fare}</span>
               </div>
               <div className="mt-2 space-y-2.5">
                 {pl.legs.map((leg: any, j: number) => (

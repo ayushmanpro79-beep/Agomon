@@ -178,7 +178,7 @@ export default function PujoRouteCreator() {
 
         {/* Live + counts */}
         <div className="mt-4 flex flex-wrap gap-2 items-center">
-          <button onClick={locate} disabled={locating} className={`text-xs px-3 py-2 rounded-full border ${useLive ? 'bg-[#FFD60A] text-[#020617] border-[#FFD60A]' : 'bg-[#FFD60A]/10 border-[#FFD60A]/20 text-[#FFD60A]'}`}>{locating ? 'Locating…' : useLive && userLoc ? `📍 Using live (${userLoc.lat.toFixed(3)}, ${userLoc.lon.toFixed(3)})` : '📍 Use my location as start'}</button>
+          <button onClick={locate} disabled={locating} className={`text-xs px-3.5 py-2 rounded-full border min-h-[44px] transition active:scale-95 disabled:opacity-50 ${useLive ? 'bg-[#FFD60A] text-[#020617] border-[#FFD60A] font-semibold' : 'bg-[#FFD60A]/10 border-[#FFD60A]/20 text-[#FFD60A] hover:bg-[#FFD60A]/15'}`}>{locating ? 'Locating' : useLive && userLoc ? `Live (${userLoc.lat.toFixed(3)}, ${userLoc.lon.toFixed(3)})` : 'Use my location as start'}</button>
           <span className="text-xs text-white/40">{selected.length}/10 selected {result ? `• ${(result.distance / 1000).toFixed(1)} km • ${Math.round(result.duration / 60)} min` : ''}</span>
           {selected.length > 0 && <button onClick={() => { setSelected([]); setResult(null) }} className="text-xs text-white/40 underline">Clear</button>}
         </div>

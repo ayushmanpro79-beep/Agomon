@@ -46,16 +46,17 @@ export default function AdminPage() {
   if (!authed) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
-        <div className="bg-[#0B1220] border border-[#FFD60A]/10 rounded-2xl p-6 w-full max-w-sm">
-          <h1 className="font-bold text-[#FFD60A] mb-1">Admin — Agomon</h1>
-          <p className="text-xs text-white/40 mb-4">Enter password to manage map mode</p>
+        <div className="animate-fade-up glass rounded-[20px] p-6 w-full max-w-sm">
+          <p className="chip-minimal px-2.5 py-1 text-[#FFD60A] tracking-[0.18em] text-[10px] w-max">ADMIN</p>
+          <h1 className="font-bold text-white text-lg mt-2 tracking-tight">Admin — Agomon</h1>
+          <p className="text-xs text-white/40 mt-1 mb-4">Enter password to manage map mode</p>
           <input
             type="password"
             value={pw}
             onChange={(e) => setPw(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && login()}
             placeholder="Password"
-            className="w-full px-3 py-2.5 rounded-xl bg-[#020617] border border-[#FFD60A]/10 outline-none text-sm text-white placeholder:text-white/30 focus:border-[#FFD60A]/30"
+            className="input-minimal px-3.5 py-3 text-sm"
           />
           {err && <p className="text-xs text-red-400 mt-2">{err}</p>}
           <button onClick={login} className="w-full mt-3 bg-[#FFD60A] text-[#020617] py-2.5 rounded-xl text-sm font-semibold">Login</button>

@@ -196,7 +196,7 @@ export default function AccountPage() {
 
   return (
     <div className="max-w-3xl mx-auto py-6">
-      <div className="glass-strong rounded-3xl p-6 md:p-8 border border-[#FFD60A]/10">
+      <div className="animate-fade-up glass-strong rounded-[24px] p-6 md:p-8 ring-1 ring-[#FFD60A]/10">
         <div className="flex items-center gap-4 mb-6">
           <div className="relative group">
             <div className="h-20 w-20 md:h-24 md:w-24 rounded-full overflow-hidden border-2 border-[#FFD60A]/30 bg-[#020617] flex items-center justify-center">
@@ -230,9 +230,9 @@ export default function AccountPage() {
         <div className="grid md:grid-cols-2 gap-4">
           <div className="p-4 rounded-2xl bg-[#020617]/40 border border-[#FFD60A]/10">
             <label className="text-xs text-[#FFD60A]/60">Username</label>
-            <input value={editUsername} onChange={e=>setEditUsername(e.target.value)} className="mt-1 w-full px-3 py-2.5 rounded-xl bg-[#020617] border border-[#FFD60A]/10 outline-none text-sm text-white placeholder:text-white/30 focus:border-[#FFD60A]/30" />
-            <button onClick={handleUsernameSave} disabled={saving} className="mt-3 w-full bg-[#FFD60A] text-[#020617] py-2 rounded-xl text-xs font-semibold disabled:opacity-50">
-              {saving ? 'Saving...' : 'Save username'}
+            <input value={editUsername} onChange={e=>setEditUsername(e.target.value)} className="input-minimal mt-1.5 px-3.5 py-3 text-sm" />
+            <button onClick={handleUsernameSave} disabled={saving} className="btn-primary mt-3 w-full py-2.5 text-xs min-h-[44px] disabled:opacity-50">
+              {saving ? 'Saving' : 'Save username'}
             </button>
           </div>
           <div className="p-4 rounded-2xl bg-[#020617]/40 border border-[#FFD60A]/10">
@@ -240,8 +240,8 @@ export default function AccountPage() {
             <p className="mt-1 text-sm text-white break-all">{email}</p>
             <p className="text-[11px] text-white/30 mt-1">Email cannot be changed. {provider==='google' ? 'Google accounts use Gmail.' : 'Verification via Gmail link.'}</p>
             <div className="mt-3 flex gap-2">
-              <Link href="/login" className="flex-1 text-center py-2 rounded-xl border border-[#FFD60A]/20 text-[#FFD60A] text-xs">Switch account</Link>
-              <button onClick={handleLogout} className="flex-1 py-2 rounded-xl bg-[#0B1220] border border-red-500/20 text-red-400 text-xs">Logout</button>
+              <Link href="/login" className="btn-ghost flex-1 py-2 text-xs min-h-[44px]">Switch account</Link>
+              <button onClick={handleLogout} className="flex-1 py-2 rounded-full bg-[#0B1220] border border-red-500/20 text-red-400 text-xs min-h-[44px] transition hover:bg-red-500/10 active:scale-95">Logout</button>
             </div>
           </div>
         </div>
@@ -252,10 +252,10 @@ export default function AccountPage() {
           <div className="p-4 rounded-2xl bg-[#020617]/40 border border-[#FFD60A]/10">
             <h3 className="text-xs font-semibold text-[#FFD60A]">{provider==='google' ? 'Set Password (enable Email login)' : 'Change Password'}</h3>
             <p className="text-[11px] text-white/30 mt-1">{provider==='google' ? 'Set a password for your Gmail so you can also login with email + password.' : 'Update your password while logged in.'}</p>
-            <input value={newPass} onChange={e=>setNewPass(e.target.value)} placeholder={provider==='google' ? 'New password (min 6)' : 'New password'} type="password" className="mt-3 w-full px-3 py-2 rounded-xl bg-[#020617] border border-[#FFD60A]/10 outline-none text-sm text-white placeholder:text-white/30" />
-            <input value={confirmPass} onChange={e=>setConfirmPass(e.target.value)} placeholder="Confirm password" type="password" className="mt-2 w-full px-3 py-2 rounded-xl bg-[#020617] border border-[#FFD60A]/10 outline-none text-sm text-white placeholder:text-white/30" />
-            <button onClick={handleChangePassword} disabled={passSaving} className="mt-3 w-full bg-[#FFD60A] text-[#020617] py-2 rounded-xl text-xs font-semibold disabled:opacity-50">{passSaving ? 'Saving...' : provider==='google' ? 'Set password' : 'Update password'}</button>
-            <button onClick={handleSendReset} className="mt-2 w-full py-2 rounded-xl border border-[#FFD60A]/20 text-[#FFD60A] text-xs">Send reset link to {email}</button>
+            <input value={newPass} onChange={e=>setNewPass(e.target.value)} placeholder={provider==='google' ? 'New password (min 6)' : 'New password'} type="password" className="input-minimal mt-3 px-3.5 py-3 text-sm" />
+            <input value={confirmPass} onChange={e=>setConfirmPass(e.target.value)} placeholder="Confirm password" type="password" className="input-minimal mt-2 px-3.5 py-3 text-sm" />
+            <button onClick={handleChangePassword} disabled={passSaving} className="btn-primary mt-3 w-full py-2.5 text-xs min-h-[44px] disabled:opacity-50">{passSaving ? 'Saving' : provider==='google' ? 'Set password' : 'Update password'}</button>
+            <button onClick={handleSendReset} className="btn-ghost mt-2 w-full py-2.5 text-xs min-h-[44px]">Send reset link</button>
             {passErr && <p className="mt-2 text-xs text-red-400">{passErr}</p>}
             {passMsg && <p className="mt-2 text-xs text-emerald-400">{passMsg}</p>}
           </div>
@@ -277,9 +277,9 @@ export default function AccountPage() {
             <div className="p-4 rounded-2xl bg-[#020617]/40 border border-white/10">
               <h3 className="text-xs font-semibold text-white">Link Email to Google Account</h3>
               <p className="text-[11px] text-white/30 mt-1">Enter an existing email + its password to verify ownership. Confirmation link will be sent.</p>
-              <input value={linkEmail} onChange={e=>setLinkEmail(e.target.value)} placeholder="Email to link (Gmail)" type="email" className="mt-3 w-full px-3 py-2 rounded-xl bg-[#020617] border border-[#FFD60A]/10 outline-none text-sm text-white placeholder:text-white/30" />
-              <input value={linkPassword} onChange={e=>setLinkPassword(e.target.value)} placeholder="Password for that email" type="password" className="mt-2 w-full px-3 py-2 rounded-xl bg-[#020617] border border-[#FFD60A]/10 outline-none text-sm text-white placeholder:text-white/30" />
-              <button onClick={handleLinkEmail} disabled={linking} className="mt-3 w-full bg-white text-[#020617] py-2 rounded-xl text-xs font-semibold disabled:opacity-50">{linking ? 'Linking...' : 'Verify & Send confirmation'}</button>
+              <input value={linkEmail} onChange={e=>setLinkEmail(e.target.value)} placeholder="Email to link (Gmail)" type="email" className="input-minimal mt-3 px-3.5 py-3 text-sm" />
+              <input value={linkPassword} onChange={e=>setLinkPassword(e.target.value)} placeholder="Password for that email" type="password" className="input-minimal mt-2 px-3.5 py-3 text-sm" />
+              <button onClick={handleLinkEmail} disabled={linking} className="mt-3 w-full bg-white text-[#020617] py-2.5 rounded-full text-xs font-semibold min-h-[44px] transition hover:bg-white/90 active:scale-[0.97] disabled:opacity-50">{linking ? 'Linking' : 'Verify and send confirmation'}</button>
               <p className="text-[10px] text-white/20 mt-2">If you forgot password, reset it via <Link href="/login" className="underline text-[#FFD60A]/60">Login → Forgot password</Link> first.</p>
               {linkErr && <p className="mt-2 text-xs text-red-400">{linkErr}</p>}
               {linkMsg && <p className="mt-2 text-xs text-emerald-400">{linkMsg}</p>}
@@ -291,7 +291,7 @@ export default function AccountPage() {
         {msg && <p className="mt-4 text-xs text-emerald-400">{msg}</p>}
 
         <p className="text-[11px] text-white/20 mt-6 text-center">Profile picture up to 5MB. Recommended square image. Google users already have picture from Gmail.</p>
-        <Link href="/" className="block text-center text-xs text-[#FFD60A]/60 mt-3 underline">Back to Home</Link>
+        <Link href="/" className="link-glow block text-center text-xs text-[#FFD60A]/60 mt-3 mx-auto w-max">Back to Home</Link>
       </div>
     </div>
   )

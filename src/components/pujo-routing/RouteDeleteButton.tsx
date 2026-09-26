@@ -28,7 +28,7 @@ export default function RouteDeleteButton({ routeId, ownerId }: { routeId: strin
       disabled={deleting}
       className="inline-flex items-center gap-1.5 text-xs bg-red-500/10 border border-red-500/20 text-red-300 hover:bg-red-500/15 px-3 py-2 rounded-full transition pc-btn disabled:opacity-50"
     >
-      <span aria-hidden>🗑️</span> {deleting ? 'Deleting…' : 'Delete route'}
+      {deleting ? 'Deleting…' : 'Delete route'}
     </button>
   )
 }

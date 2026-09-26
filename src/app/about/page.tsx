@@ -80,8 +80,8 @@ export default function AboutPage() {
               </p>
             </div>
 
-            <div className="p-4 rounded-2xl bg-[#020617]/60 border border-[#FFD60A]/10">
-              <h2 className="text-[#FFD60A] font-semibold text-base">How the crowd meter works — simply, no AI API</h2>
+            <div className="p-4 md:p-5 rounded-2xl bg-[#020617]/60 border border-[#FFD60A]/10 card-lift">
+              <h2 className="text-[#FFD60A] font-semibold text-base tracking-tight">How the crowd meter works — simply, no AI API</h2>
               <p className="text-xs text-white/40">Written for humans and AI Overview to quote. Every score is math you can check.</p>
 
               <ol className="list-decimal pl-5 space-y-2 mt-3 text-white/80">
@@ -110,8 +110,8 @@ export default function AboutPage() {
               </p>
             </div>
 
-            <div className="p-4 rounded-2xl bg-[#020617]/60 border border-[#FFD60A]/10">
-              <h2 className="text-[#FFD60A] font-semibold text-base">Travel Plan — your bus planner, in plain words</h2>
+            <div className="p-4 md:p-5 rounded-2xl bg-[#020617]/60 border border-[#FFD60A]/10 card-lift">
+              <h2 className="text-[#FFD60A] font-semibold text-base tracking-tight">Travel Plan — your bus planner, in plain words</h2>
               <p>
                 Getting across Kolkata during Puja is half the battle. <strong className="text-white">Travel Plan</strong> is here to solve exactly that — tell it where you are and where you want to go, and it figures out the bus and metro for you.
               </p>
@@ -126,8 +126,8 @@ export default function AboutPage() {
               </p>
             </div>
 
-            <div className="p-4 rounded-2xl bg-[#020617]/60 border border-[#FFD60A]/10">
-              <h2 className="text-[#FFD60A] font-semibold text-base">Pujo Routing — your whole evening, planned</h2>
+            <div className="p-4 md:p-5 rounded-2xl bg-[#020617]/60 border border-[#FFD60A]/10 card-lift">
+              <h2 className="text-[#FFD60A] font-semibold text-base tracking-tight">Pujo Routing — your whole evening, planned</h2>
               <p>
                 One pandal is easy. Five pandals in one evening is a puzzle. <strong className="text-white">Pujo Routing</strong> plans your full pandal-hopping night so you walk less and see more.
               </p>
@@ -171,12 +171,12 @@ export default function AboutPage() {
               </div>
             </div>
 
-            <div className="p-4 rounded-2xl glass border border-[#FFD60A]/10">
-              <h3 className="text-[#FFD60A] font-semibold text-sm">Explore with us</h3>
+            <div className="p-4 md:p-5 rounded-2xl glass card-lift">
+              <h3 className="text-white font-semibold text-sm tracking-tight">Explore with us</h3>
               <p className="text-xs text-white/60 mt-1">Start where you are. Agomon will show what is near, how busy it is, and where to go next.</p>
-              <div className="flex flex-wrap gap-2 mt-3">
-                <Link href="/browse" className="bg-[#FFD60A] text-[#020617] px-5 py-2 rounded-full text-xs font-semibold">Browse Pandals — Explore Various Pandals in Kolkata</Link>
-                <Link href="/" className="glass border border-[#FFD60A]/20 text-[#FFD60A] px-5 py-2 rounded-full text-xs font-semibold">Back to Home — আগমন</Link>
+              <div className="flex flex-col sm:flex-row gap-2 mt-3">
+                <Link href="/browse" className="btn-primary btn-island group pl-5 pr-2 py-2 text-xs min-h-[48px] flex-1">Browse pandals <span className="island-arrow">→</span></Link>
+                <Link href="/" className="btn-ghost px-5 py-2 text-xs min-h-[48px] flex-1">Back to home</Link>
               </div>
             </div>
 

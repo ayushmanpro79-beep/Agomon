@@ -28,11 +28,13 @@ export default function PujoRoutingFeed() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <div className="max-w-3xl mx-auto">
         <SectionBorder />
-        <div className="glass-strong rounded-3xl p-5 md:p-6 relative">
-          <p className="text-[#FFD60A]/60 tracking-[0.2em] text-[10px]">PUJO ROUTING • পুজো রুট</p>
-          <h1 className="text-xl md:text-2xl font-bold text-white mt-1">Pujo Routing</h1>
-          <p className="text-xs text-white/50 mt-1">Your private routes by default — toggle to see community public routes. Make yours private or public.</p>
-          <p className="text-[11px] text-white/30 mt-2">Routing via OSRM Trip (PUJO-APP by anujeetverma — MIT) blended with Agomon MapLibre</p>
+        <div className="glass-strong rounded-[24px] p-5 md:p-7 ring-1 ring-[#FFD60A]/10 relative">
+          <div className="flex items-center gap-2">
+            <span className="chip-minimal px-2.5 py-1 text-[#FFD60A] tracking-[0.18em] text-[10px]">PUJO ROUTING</span>
+            <span className="chip-minimal px-2.5 py-1 text-white/40">Community</span>
+          </div>
+          <h1 className="text-xl md:text-[26px] font-bold text-white mt-2.5 tracking-tight text-balance">Hop plans, shared</h1>
+          <p className="text-[13px] text-white/50 mt-1.5 leading-relaxed">Private by default — flip to Public to browse community routes.</p>
 
           <PujoRoutingFeedClient />
         </div>

@@ -69,8 +69,9 @@ export default function GallerySection() {
 
   if (loading) {
     return (
-      <div className="glass rounded-3xl p-6 text-center">
-        <p className="text-xs text-white/40">Loading gallery…</p>
+      <div className="glass rounded-3xl p-6" aria-label="Loading gallery">
+        <div className="skeleton h-56 rounded-2xl" />
+        <div className="skeleton h-3 rounded-full w-1/3 mx-auto mt-4" />
       </div>
     )
   }

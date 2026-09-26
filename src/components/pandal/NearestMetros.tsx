@@ -27,8 +27,11 @@ export default function NearestMetros({ latitude, longitude, userLoc }: Props) {
   }
 
   return (
-    <div className="glass rounded-xl p-3 mt-3">
-      <p className="text-[11px] md:text-xs font-semibold text-[#FFD60A]/80">Nearest Metros <span className="text-white/30 font-normal">• closest first • within 2.2 km</span></p>
+    <div className="glass rounded-2xl p-3.5 mt-3">
+      <div className="flex items-center justify-between">
+        <p className="text-xs font-semibold text-white tracking-tight">Nearest metros</p>
+        <span className="chip-minimal px-2 py-1 text-white/40">2.2 km</span>
+      </div>
       {sorted.length === 0 && (
         <p className="text-xs text-white/30 mt-2">
           No metro within 2.2 km — <Link href="/travel-plan" className="text-[#FFD60A] underline">check Travel Plan for buses</Link>.
@@ -36,7 +39,7 @@ export default function NearestMetros({ latitude, longitude, userLoc }: Props) {
       )}
       <div className="grid gap-1.5 mt-2">
         {sorted.map((m, i) => (
-          <div key={m.id} className="flex items-center gap-2.5 px-2.5 py-2 rounded-lg bg-[#020617]/60 border border-[#FFD60A]/5">
+          <div key={m.id} className="card-lift flex items-center gap-2.5 px-2.5 py-2 rounded-xl bg-[#020617]/60 border border-[#FFD60A]/5">
             <span className="w-6 h-6 rounded bg-[#0B1220] border border-[#FFD60A] flex items-center justify-center text-[10px] font-bold text-[#FFD60A] shrink-0">M</span>
             <div className="flex-1 min-w-0">
               <p className="text-xs font-medium text-white truncate">
@@ -48,9 +51,9 @@ export default function NearestMetros({ latitude, longitude, userLoc }: Props) {
               href={gmaps(m.lat, m.lon)}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[11px] font-semibold text-[#020617] bg-[#FFD60A] px-3 py-1.5 rounded-full shrink-0"
+              className="text-[11px] font-semibold text-[#020617] bg-[#FFD60A] hover:bg-[#FFE566] px-3.5 py-2 rounded-full shrink-0 min-h-[36px] inline-flex items-center transition hover:shadow-[0_0_14px_rgba(255,214,10,0.4)] active:scale-90"
             >
-              Directions ↗
+              Directions <span aria-hidden>→</span>
             </a>
           </div>
         ))}

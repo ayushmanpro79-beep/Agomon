@@ -164,9 +164,9 @@ export default function PujoRoutingFeedClient() {
         <button
           onClick={handleReload}
           disabled={loading}
-          className="inline-flex items-center gap-1.5 text-xs glass border border-[#FFD60A]/15 text-[#FFD60A] px-3.5 py-2 rounded-full hover:border-[#FFD60A]/30 hover:bg-[#FFD60A]/10 transition disabled:opacity-50 pc-btn"
+          className="btn-ghost text-xs px-4 py-2 min-h-[44px] disabled:opacity-50"
         >
-          <span className={`${loading ? 'animate-spin' : ''} inline-block`}>↻</span> {loading ? 'Loading…' : 'Reload routes'}
+          <span className={`${loading ? 'animate-spin' : ''} inline-block`} aria-hidden>↻</span> {loading ? 'Loading' : 'Reload routes'}
         </button>
       </div>
 
@@ -178,13 +178,12 @@ export default function PujoRoutingFeedClient() {
         </p>
       </div>
 
-      {/* Create button with pop animation */}
+      {/* Create button with island arrow */}
       <Link
         href={createHref}
-        className="mt-4 inline-flex items-center gap-2 bg-[#FFD60A] text-[#020617] px-6 py-2.5 rounded-full text-sm font-semibold hover:bg-[#FFE566] transition pc-btn"
+        className="btn-primary btn-island group mt-4 pl-6 pr-2 py-2 text-sm min-h-[48px]"
       >
-        <span className="w-6 h-6 rounded-full bg-[#020617] text-[#FFD60A] flex items-center justify-center text-sm">+</span>
-        {createLabel}
+        {createLabel} <span className="island-arrow">{user ? '+' : '→'}</span>
       </Link>
       {!user && isPrivate && <p className="text-[11px] text-amber-300/80 mt-2">Login to see your private routes. Public routes are visible to everyone.</p>}
       {user && isPrivate && !loading && routes.length === 0 && !error && (
@@ -199,11 +198,11 @@ export default function PujoRoutingFeedClient() {
       {/* Routes grid */}
       <div className="mt-6">
         {loading ? (
-          <div className="grid gap-3">
+          <div className="grid gap-3" aria-label="Loading routes">
             {[0, 1, 2].map((i) => (
-              <div key={i} className="p-4 rounded-2xl glass border border-[#FFD60A]/10 animate-pulse">
-                <div className="h-4 bg-white/10 rounded w-3/4" />
-                <div className="h-3 bg-white/5 rounded w-1/2 mt-2" />
+              <div key={i} className="p-4 rounded-2xl glass border border-[#FFD60A]/10">
+                <div className="skeleton h-4 rounded-full w-3/4" />
+                <div className="skeleton h-3 rounded-full w-1/2 mt-2" />
               </div>
             ))}
           </div>
@@ -215,9 +214,9 @@ export default function PujoRoutingFeedClient() {
                 <p className="text-xs text-white/40 mt-1">Pick 2–10 pandals, optimize, and save as private.</p>
                 <Link
                   href={user ? '/pujo-routing/create' : '/login'}
-                  className="inline-block mt-3 text-xs border border-[#FFD60A]/20 text-[#FFD60A] px-4 py-2 rounded-full pc-btn"
+                  className="btn-ghost inline-flex mt-3 text-xs px-4 py-2 min-h-[44px]"
                 >
-                  {user ? 'Go to creator →' : 'Login →'}
+                  {user ? 'Go to creator' : 'Login'} <span aria-hidden>→</span>
                 </Link>
               </>
             ) : (
@@ -226,9 +225,9 @@ export default function PujoRoutingFeedClient() {
                 <p className="text-xs text-white/40 mt-1">Pick 2–10 pandals, add live location, optimize. You can keep it private.</p>
                 <Link
                   href={user ? '/pujo-routing/create' : '/login'}
-                  className="inline-block mt-3 text-xs border border-[#FFD60A]/20 text-[#FFD60A] px-4 py-2 rounded-full pc-btn"
+                  className="btn-ghost inline-flex mt-3 text-xs px-4 py-2 min-h-[44px]"
                 >
-                  {user ? 'Go to creator →' : 'Login to create →'}
+                  {user ? 'Go to creator' : 'Login to create'} <span aria-hidden>→</span>
                 </Link>
               </>
             )}
@@ -237,8 +236,8 @@ export default function PujoRoutingFeedClient() {
             </p>
           </div>
         ) : (
-          <div className="grid gap-3">
-            {routes.map((r) => {
+          <div key={tab} className="stagger grid gap-3">
+            {routes.map((r, i) => {
               const displayTitle = formatRouteTitle(r)
               const count = r.ordered_slugs?.length || 0
               const isAdminSuggested = r.username === 'Admin Suggested' || (r as any).is_admin_suggested === true
@@ -247,14 +246,15 @@ export default function PujoRoutingFeedClient() {
               return (
                 <div
                   key={r.id}
-                  className="group relative p-4 rounded-2xl glass border border-[#FFD60A]/10 transition glass-pop hover:border-[#FFD60A]/25 hover:shadow-[0_0_22px_rgba(255,214,10,0.16)] active:scale-[0.97]"
+                  style={{ animationDelay: `${Math.min(i, 11) * 45}ms` }}
+                  className="group relative p-4 rounded-2xl glass card-lift"
                 >
                   <Link href={`/pujo-routing/${r.id}`} className="block">
                     <h3 className="text-sm font-semibold text-white line-clamp-1 pr-14">{displayTitle}</h3>
                     <p className="text-xs text-white/40 mt-1 line-clamp-2">{r.description || `${count} pandals • ${isPrivate ? 'private' : 'public'}`}</p>
                     <div className="flex items-center gap-2 mt-2 text-[11px] text-white/30 flex-wrap">
                       <span className="inline-flex items-center gap-1.5">
-                        <span className="w-5 h-5 rounded-full bg-[#FFD60A]/15 border border-[#FFD60A]/20 flex items-center justify-center text-[10px] text-[#FFD60A]">👤</span>
+                        <span className="w-5 h-5 rounded-full bg-[#FFD60A]/15 border border-[#FFD60A]/20 flex items-center justify-center text-[10px] font-bold text-[#FFD60A]" aria-hidden>{(r.username || 'A').charAt(0).toUpperCase()}</span>
                         <span className="text-[#FFD60A]/80 font-medium">{r.username || 'Anonymous'}</span>
                       </span>
                       {isAdminSuggested && <span className="text-[10px] px-2 py-0.5 rounded-full bg-purple-500/15 border border-purple-500/30 text-purple-300">Admin Suggested</span>}
@@ -263,7 +263,7 @@ export default function PujoRoutingFeedClient() {
                       <span>{r.distance_m ? `${(r.distance_m / 1000).toFixed(1)} km` : ''}</span>
                       <span>{r.duration_s ? `• ${Math.round(r.duration_s / 60)} min` : ''}</span>
                       {!isPublic && !isAdminSuggested && <span className="ml-auto text-[10px] px-2 py-0.5 rounded-full bg-[#0B1220] border border-[#FFD60A]/15 text-white/50">Private</span>}
-                      {isAdminSuggested && <span className="ml-auto text-[10px] px-2 py-0.5 rounded-full bg-[#0B1220] border border-purple-500/20 text-purple-300/80">⭐ Admin</span>}
+                      {isAdminSuggested && <span className="ml-auto text-[10px] px-2 py-0.5 rounded-full bg-[#0B1220] border border-purple-500/20 text-purple-300/80">Admin</span>}
                     </div>
                   </Link>
                   {canDelete && (
@@ -273,7 +273,7 @@ export default function PujoRoutingFeedClient() {
                       aria-label="Delete route"
                       className="absolute top-3 right-3 inline-flex items-center gap-1 text-[11px] bg-red-500/10 border border-red-500/20 text-red-300 hover:bg-red-500/15 hover:border-red-500/30 px-2.5 py-1 rounded-full transition pc-btn disabled:opacity-50"
                     >
-                      <span aria-hidden>🗑️</span> {deletingId === r.id ? 'Deleting…' : 'Delete'}
+                      {deletingId === r.id ? 'Deleting…' : 'Delete'}
                     </button>
                   )}
                   {isAdminSuggested && <span className="absolute top-3 right-3 text-[10px] px-2 py-1 rounded-full bg-[#0B1220] border border-white/10 text-white/25">Admin only</span>}

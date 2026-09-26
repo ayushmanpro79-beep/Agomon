@@ -281,7 +281,7 @@ export default function BrowseClient({ initialPandals }: { initialPandals?: Pand
                     : 'glass text-[#FFD60A]/75 border-[#FFD60A]/15 hover:text-[#FFD60A] hover:border-[#FFD60A]/40'
                 }`}
               >
-                {a === 'Nearby me' ? '📍 Nearby me' : a} {a !== 'All' && a !== 'Nearby me' && filter === a && metrosForArea.length > 0 && <span className="text-[11px] leading-none ml-0.5">{metroMenuOpen ? '▴' : '▾'}</span>}
+                {a === 'Nearby me' ? (<><span className="w-1.5 h-1.5 rounded-full bg-current" aria-hidden /> Nearby me</>) : a} {a !== 'All' && a !== 'Nearby me' && filter === a && metrosForArea.length > 0 && <span className="text-[11px] leading-none ml-0.5">{metroMenuOpen ? '▴' : '▾'}</span>}
               </button>
             ))}
           </div>
@@ -361,7 +361,7 @@ export default function BrowseClient({ initialPandals }: { initialPandals?: Pand
         )}
         {allPandals.length > 0 && filteredBySearch.length === 0 && (
           <div className="glass rounded-2xl text-center py-10 px-6">
-            <p className="text-2xl" aria-hidden>🪔</p>
+            <p className="text-2xl text-[#FFD60A]" aria-hidden>◆</p>
             <p className="text-sm text-white/60 mt-2">No pandals found{query ? ` for “${query}”` : ''}</p>
             <p className="text-xs text-white/30 mt-1">Try a metro, area or landmark instead.</p>
             <button onClick={() => { setSelectedMetro('All'); setQuery(''); setFilter('All') }} className="btn-ghost text-xs px-4 py-2 mt-4 min-h-[44px]">Reset filters</button>

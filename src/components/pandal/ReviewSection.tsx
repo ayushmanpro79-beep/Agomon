@@ -65,23 +65,23 @@ export default function ReviewSection({ pandalId }: { pandalId: string }) {
       {user ? (
         <div className="mb-4 p-3 rounded-xl glass border border-[#FFD60A]/10">
           <p className="text-xs text-white/50 mb-2">Posting as <span className="text-[#FFD60A]">{username || user.email}</span></p>
-          <div className="flex items-center gap-1 mb-2">
+          <div className="flex items-center gap-0.5 mb-2" role="radiogroup" aria-label="Your rating">
             {[1,2,3,4,5].map((s) => (
-              <button key={s} onClick={() => setRating(s)} className={`text-lg ${s <= rating ? 'text-[#FFD60A]' : 'text-white/20'}`}>★</button>
+              <button key={s} onClick={() => setRating(s)} aria-label={`${s} star`} className={`h-11 w-11 -m-0.5 rounded-full text-xl transition active:scale-90 ${s <= rating ? 'text-[#FFD60A]' : 'text-white/20 hover:text-white/40'}`}>★</button>
             ))}
-            <span className="text-xs text-white/40 ml-2">{rating} / 5</span>
+            <span className="text-xs text-white/40 ml-2 tabular">{rating} / 5</span>
           </div>
           <textarea
             value={comment}
             onChange={(e) => setComment(e.target.value)}
             placeholder="Write your experience for this pandal..."
             rows={3}
-            className="w-full px-3 py-2 rounded-xl bg-[#020617]/60 backdrop-blur border border-[#FFD60A]/10 outline-none text-sm text-white placeholder:text-white/30 focus:border-[#FFD60A]/30"
+            className="input-minimal px-3.5 py-3 text-sm"
           />
           {err && <p className="text-xs text-red-400 mt-2">{err}</p>}
           {msg && <p className="text-xs text-emerald-400 mt-2">{msg}</p>}
-          <button onClick={submit} disabled={loading} className="mt-2 bg-[#FFD60A] text-[#020617] px-4 py-2 rounded-xl text-xs font-semibold disabled:opacity-50">
-            {loading ? 'Posting...' : 'Post review'}
+          <button onClick={submit} disabled={loading} className={`btn-primary mt-2 px-5 py-2.5 text-xs min-h-[44px] disabled:opacity-50 ${loading ? 'btn-busy' : ''}`}>
+            {loading ? 'Posting' : 'Post review'}
           </button>
         </div>
       ) : (

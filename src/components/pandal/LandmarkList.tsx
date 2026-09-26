@@ -31,11 +31,14 @@ export default function LandmarkList({ pandal }: { pandal: PandalLite }) {
 
   return (
     <div className="mt-4 glass rounded-2xl p-4">
-      <h3 className="text-sm font-semibold text-[#FFD60A] mb-1">Top 5 places to visit nearby</h3>
-      <p className="text-[11px] text-white/30 mb-3">Scanned malls, markets, eateries & hubs around this pandal</p>
+      <div className="flex items-center justify-between mb-1">
+        <h3 className="text-sm font-semibold text-white tracking-tight">Top 5 places nearby</h3>
+        <span className="chip-minimal px-2 py-1 text-white/40">2.2 km</span>
+      </div>
+      <p className="text-[11px] text-white/30 mb-3">Malls, markets, eateries and hubs around this pandal</p>
       <div className="space-y-2">
         {sorted.map((l, i) => (
-          <div key={l.name} className="flex items-center gap-3 p-2.5 rounded-xl glass border border-[#FFD60A]/5">
+          <div key={l.name} className="card-lift flex items-center gap-3 p-2.5 rounded-xl glass border border-[#FFD60A]/5">
             <span className="w-6 h-6 rounded-full bg-[#FFD60A]/10 border border-[#FFD60A]/20 flex items-center justify-center text-[11px] font-bold text-[#FFD60A]">{i + 1}</span>
             <div className="flex-1">
               <p className="text-sm font-medium text-white leading-none">{l.name}</p>
@@ -44,9 +47,10 @@ export default function LandmarkList({ pandal }: { pandal: PandalLite }) {
             <a
               href={`https://www.google.com/maps/dir/?api=1&destination=${l.lat},${l.lon}&travelmode=walking`}
               target="_blank"
-              className="text-[11px] bg-[#FFD60A] text-[#020617] font-semibold rounded-full px-3 py-1"
+              rel="noopener noreferrer"
+              className="text-[11px] bg-[#FFD60A] hover:bg-[#FFE566] text-[#020617] font-semibold rounded-full px-3.5 py-2 shrink-0 min-h-[36px] inline-flex items-center transition hover:shadow-[0_0_14px_rgba(255,214,10,0.4)] active:scale-90"
             >
-              Start in Google Maps
+              Maps <span aria-hidden>→</span>
             </a>
           </div>
         ))}

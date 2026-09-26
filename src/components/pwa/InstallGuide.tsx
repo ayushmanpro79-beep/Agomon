@@ -7,7 +7,7 @@ export default function InstallGuide() {
       <div className="flex items-start justify-between gap-3">
         <div>
           <p className="text-[#FFD60A]/60 tracking-[0.22em] text-[10px]">INSTALL</p>
-          <h2 className="text-base md:text-lg font-bold text-white mt-1">Install Agomon as an App 📲</h2>
+          <h2 className="text-base md:text-lg font-bold text-white mt-1 tracking-tight">Install Agomon as an app</h2>
           <p className="text-xs text-white/60 mt-1 leading-snug">
             One tap • no Play Store • no warning • works like a native app
           </p>
@@ -48,7 +48,7 @@ export default function InstallGuide() {
           </p>
           <ol className="list-decimal pl-5 text-[12.5px] text-white/75 mt-2 space-y-1 leading-relaxed">
             <li>
-              Tap <span className="text-white font-medium">Share</span> <span aria-hidden>⬆️</span> at the bottom
+              Tap <span className="text-white font-medium">Share</span> <span aria-hidden>↑</span> at the bottom
             </li>
             <li>
               Tap <span className="text-white font-medium">Add to Home Screen</span> → <span className="text-white font-medium">Add</span>

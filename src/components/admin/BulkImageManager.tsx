@@ -260,7 +260,7 @@ export default function BulkImageManager() {
         <div className="flex flex-col md:flex-row md:items-center gap-3">
           <div className="flex-1 min-w-0">
             <p className="text-sm font-semibold text-white flex items-center gap-2">
-              <span className="w-8 h-8 rounded-full bg-[#FFD60A]/15 border border-[#FFD60A]/20 flex items-center justify-center text-[#FFD60A] text-xs">⬆</span>
+              <span className="w-8 h-8 rounded-full bg-[#FFD60A]/15 border border-[#FFD60A]/20 flex items-center justify-center text-[#FFD60A] text-sm font-bold" aria-hidden>↑</span>
               Drag & drop images here
             </p>
             <p className="text-[11px] text-white/40 mt-1 leading-relaxed">

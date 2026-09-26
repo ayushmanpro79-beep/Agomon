@@ -41,12 +41,12 @@ export default async function RouteView({ params }: { params: Promise<{ id: stri
   return (
     <div className="max-w-3xl mx-auto">
       <SectionBorder />
-      <div className="glass-strong rounded-3xl p-4 md:p-6">
+      <div className="animate-fade-up glass-strong rounded-[24px] p-4 md:p-7 ring-1 ring-[#FFD60A]/10">
         <div className="flex items-center justify-between gap-3">
-          <Link href="/pujo-routing" className="text-xs text-white/40">← All routes</Link>
+          <Link href="/pujo-routing" className="chip-minimal px-3 py-1.5 text-[#FFD60A] hover:bg-[#FFD60A]/10 transition">← All routes</Link>
           {isOwner && <RouteDeleteButton routeId={route.id} ownerId={route.user_id} />}
         </div>
-        <h1 className="text-xl font-bold text-white mt-2">{route.title}</h1>
+        <h1 className="text-xl md:text-2xl font-bold text-white mt-2.5 tracking-tight text-balance">{route.title}</h1>
         <p className="text-xs text-white/40 mt-1">
           by {route.username || 'Anonymous'} • {route.distance_m ? `${(route.distance_m / 1000).toFixed(1)} km • ${Math.round(route.duration_s / 60)} min` : ''} • {new Date(route.created_at).toLocaleDateString()} {route.is_public ? '• Public' : '• Private'}{' '}
           {isAdminSuggested && <span className="ml-2 text-[10px] px-2 py-0.5 rounded-full bg-purple-500/15 border border-purple-500/30 text-purple-300">Admin Suggested</span>}
@@ -54,20 +54,20 @@ export default async function RouteView({ params }: { params: Promise<{ id: stri
         </p>
         {isAdminSuggested && <p className="text-[11px] text-purple-300/70 mt-1">This route is Admin Suggested — public for everyone, deletable only by admin in Admin tab.</p>}
         {route.description && <p className="text-sm text-white/60 mt-2">{route.description}</p>}
-        {pandals.length > 0 && <div className="mt-4"><PandalMap pandals={pandals} routeGeoJson={route.geojson} /></div>}
+        {pandals.length > 0 && <div className="bezel mt-4"><div className="bezel-inner"><PandalMap pandals={pandals} routeGeoJson={route.geojson} /></div></div>}
         {pandals.length >= 2 && (
           <a
             href={`https://www.google.com/maps/dir/?api=1&origin=${pandals[0].latitude},${pandals[0].longitude}&destination=${pandals[pandals.length - 1].latitude},${pandals[pandals.length - 1].longitude}${pandals.length > 2 ? `&waypoints=${pandals.slice(1, -1).map((p: any) => `${p.latitude},${p.longitude}`).join('|')}` : ''}&travelmode=driving`}
             target="_blank"
             rel="noopener"
-            className="mt-3 block w-full text-center bg-[#FFD60A] text-[#020617] rounded-xl py-2.5 text-sm font-semibold"
+            className="btn-primary mt-3 w-full py-3 text-sm min-h-[48px]"
           >
-            Open same route in Google Maps →
+            Open same route in Google Maps
           </a>
         )}
-        <ol className="mt-3 space-y-1.5">
+        <ol className="stagger mt-3 space-y-1.5">
           {pandals.map((p: any, i: number) => (
-            <li key={p.id} className="flex items-center gap-2 text-sm bg-[#020617]/40 border border-[#FFD60A]/10 rounded-xl px-3 py-2">
+            <li key={p.id} style={{ animationDelay: `${Math.min(i, 11) * 45}ms` }} className="flex items-center gap-2 text-sm bg-[#020617]/40 border border-[#FFD60A]/10 rounded-xl px-3 py-2.5">
               <span className="w-7 h-7 rounded-full bg-[#FFD60A] text-[#020617] flex items-center justify-center text-xs font-bold">{i + 1}</span>
               <span className="text-white flex-1">{p.name}</span>
               <Link href={`/pandal/${p.slug}`} className="text-xs text-[#FFD60A]/70 underline">View</Link>
